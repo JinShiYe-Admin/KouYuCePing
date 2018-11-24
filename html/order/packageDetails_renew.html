@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+	<!-- 套餐详情：续费  -->
+	<head>
+		<meta charset="utf-8">
+		<title> </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+		<style type="text/css">
+			body{
+				background: #fff;
+			}
+			.head-portrait {
+				width: 100px;
+				height: 100px;
+				border-radius: 50%;
+				margin-bottom: 10px;
+				padding: 3px;
+				border: 1px #ECECEC solid;
+			}
+			
+			.title-info {
+				padding: 30px 0 5px 0;
+				text-align: center;
+				background: #fff;
+			}
+			
+			.title-footer{
+				background: #fff;
+				margin: -40px 10px 0 10px;
+			}
+			
+			.user-title{
+				font-size: 18px;
+				color: #333333;
+				font-weight: bold;
+			}
+			
+			.user-title-body{
+				text-align: left;
+				margin: 0 10px;
+				color: #6d6d6d;
+				text-indent: 2em;
+			}
+			
+			.user-title-footer{
+				text-align: left;
+				margin: 10px 10px 0;
+			}
+			
+			.ul-btn{
+				display: inline;
+				vertical-align: middle;
+				float: right;
+				height: 24px;
+				margin-top: -2px;
+				padding: 2px 12px;
+				background: #33CCFF;
+				color: #fff;
+				border: none;
+			}
+			.ul-p{
+				width: 30%;
+				display: inline;
+				vertical-align: middle;
+				font-size: 13px;
+			}
+			
+			.ul-p-right{
+				width: 25%;
+				display: inline;
+				/*color: #00CFBD;*/
+				float: right;
+				vertical-align: middle;
+				font-size: 13px;
+			}
+			
+			.ul-list-title{
+				margin-top: 5px;
+				padding: 10px 10px 0;
+				background: #FFF;
+			}
+			
+			.ul-list-title-p{
+				text-align: left;
+				color: #6d6d6d;
+			}
+			
+			.ul-list{
+				margin-top: -10px;
+				padding: 10px 10px 0;
+				background: #FFF;
+			}
+			
+			.mui-table-view:before {
+			    height: 0px;
+			}
+			
+			.mui-table-view-cell:after {
+			    left: 0px;
+			}
+			
+			.mui-table-view-cell {
+			    position: relative;
+			    overflow: hidden;
+			    padding: 11px 0px;
+			    text-align: right;
+			    -webkit-touch-callout: none;
+			}
+			.ul-li-l{
+				text-align:left;
+				width: 40%;
+				float: left;
+			}
+			.ul-li-r{
+				width: 30%;
+				float: left;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav orals-header"> 
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" >套餐详情</h1>
+		</header>
+		<div id="scroll"  class="mui-content">
+	    	<div id='renews'>
+	    		<div class="mui-row title-info">
+	    			 <img v-cloak  class="head-portrait" :src=curPageData.busimg />
+	    			 <p v-cloak class="user-title">{{curPageData.cname||curPageData.cnname}}
+	    			 	<span v-for="pn in getPrdName(curPageData.fext)" class="mark">{{pn}}</span>
+	    			 </p>
+	    			 <p v-cloak class="user-title-body">{{curPageData.busnote}}</p>
+	    			 <div v-cloak class="user-title-footer">
+	    			 	<p class="ul-p">结束时间：{{curPageData.etime}}</p>
+					 	<button class="ul-btn btn-order mui-btn-mini" onclick="packageRenew()">套餐续费</button>
+					 	<p class="ul-p-right">{{curPageData.feecode}}元/{{curPageData.busmonth}}月</p>
+	    			 </div>
+	    		</div>
+	    		<div class="mui-row ul-list-title">
+	    			<p class="ul-list-title-p">订购记录</p>
+	    		</div>
+	    		<div class="mui-row ul-list"> 
+		    		<ul class="mui-table-view">
+							 <li v-cloak v-for="item in orderRecordList" class="mui-table-view-cell">
+							 	<p class="ul-li-l">{{item.rectime}}</p>
+							 	<p class="ul-li-r">{{item.feem}}元</p>
+							 	<p class="ul-li-r">{{item.servm}}个月</p>
+							 </li>
+					</ul>
+	    		</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<!--<script src='../../js/utils/sortSign.js'></script>-->
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>-->
+		<script src="../../js/utils/events.js"></script>
+		
+		<script src="../../js/orals/orals-common.js"></script>
+		<script>
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			console.log('personal********:' + JSON.stringify(personal));
+			
+			mui.init({
+//				pullRefresh: {
+//					container: '#scroll',
+//					down: {
+//						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+//						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+//						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+//						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+//						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+//						auto: false, //可选,默认false.首次加载自动上拉刷新一次
+//						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+//					}
+//				}
+			});
+			
+			
+			//下拉刷新
+//			function pulldownRefresh() {
+//				getRenewList();
+//			}
+			
+			window.addEventListener('refreshList', function(data) {
+				console.log(data.detail.newEtime);
+				renew.curPageData.etime=data.detail.newEtime;
+			});		
+			
+			var  renew;
+			var curPageData;
+			mui.plusReady(function() {
+					curPageData = utils.getDataFromUrl(window.location.href);
+					console.log('curPage********:' + JSON.stringify(curPageData));
+					renew =new Vue({
+						el:'#renews'
+						,data:{
+							flag: 0 //0刷新，1加载更多
+							,pageIndex: 1 //当前页数
+							,canTap:true //下拉刷新时，上拉加载能否使用 true
+							,orderRecordList:[]
+							,curPageData:curPageData
+						},
+						methods: {
+							getPrdName: getPrdName
+						}
+					});
+					getRenewList();
+			});
+			
+			//套餐续订
+			function packageRenew(){
+				utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", curPageData);
+			}
+			
+			 
+			function getRenewList(){  
+				console.log("获取订购列表")
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					uid: personal.uid, //用户账号
+					servid:renew.curPageData.serviceid,
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//获取验证码
+				//发送网络请求，data为网络返回值
+				postDataEncry('UserFeeDetail', enData1, comData1, 0, function(data1) {
+					console.log('UserFeeDetail:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						if(data1.RspData) {
+							renew.orderRecordList=data1.RspData.servdetail;
+						}
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+//					mui('#scroll').pullRefresh().endPulldownToRefresh(); //参数为true代表没有更多数据了。
+				});
+}
+		</script> 
+	</body>
+
+</html>

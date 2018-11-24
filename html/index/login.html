@@ -1,0 +1,302 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+		<style type="text/css">
+			.mui-bar-nav.blue {
+				background:linear-gradient(-55deg,rgba(60,157,251,1),rgba(60,157,251,1));
+				box-shadow: none;
+			}
+			.mui-content .banner {
+				height: 1rem; 
+				min-height: 100px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav orals-header">
+			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+			<!--<a id='register' class="mui-btn-link mui-pull-right">注册</a>-->
+			<h1 class="mui-title">口语测评</h1>
+		</header>
+		<div class="mui-content">
+			<div style="height: 200px;font-size: 18px;color: #3DADEF;;padding: 100px 0px;text-align: center;">欢迎登录</div>
+			<div class="mui-input-row">
+				<label style="margin-top: -5px;"><image src="../../img/login/username.png" style="width: 25px;height: 25px;" /></label>
+				<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入用户名">
+			</div>
+			<hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 30px 60px ;" />
+
+			<div class="mui-input-row ">
+				<label><image src="../../img/login/password.png" style="width: 25px;height: 25px;" /></label>
+				<input id='password' type="password" class="mui-input-clear mui-input " placeholder="请输入密码">
+			</div>
+			<hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 40px 60px ;" />
+
+			<div style="padding: 0px 20px;">
+				<button id='login' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #3DADEF; border:none; margin-top: 30px;height: 40px;padding-top: 8px;">登录</button>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<!--<script type="text/javascript" src="../../js/vue.js" ></script>-->
+	<!--<script type="text/javascript" src="../../js/vconsole.min.js" ></script>-->
+	<script src='../../js/jquery.min.js'></script>
+	
+	<!--加密-->
+	<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+	<!---->
+	<script src='../../js/libs/crypto-js/require.js'></script>
+	<script src='../../js/utils/signHmacSHA1.js'></script>
+	<script src="../../js/publicProtocolNew.js"></script>
+	<script src="../../js/storageKeyName.js"></script>
+	<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/events.js"></script>
+	<!--<script src='../../js/utils/sortSign.js'></script>-->
+	<!--<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>-->
+	<!--<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>-->
+	
+	<script type="text/javascript" src="../../js/orals/orals-common.js" ></script>
+	<script type="text/javascript">
+		var tempModel = {};
+		var loginFlag = 0; //0自动登录，1不自动登录
+		mui.plusReady(function() {
+			//设置uuid(手机识别)与appid(APP识别)
+			tempModel = {
+				uuid: plus.device.uuid,
+				appid: plus.runtime.appid
+			}
+			if(tempModel.uuid == '') {
+				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+				if(publicPar) {
+					tempModel.uuid = publicPar.uuid;
+					tempModel.appid = publicPar.appid;
+				}
+			}
+			store.set(window.storageKeyName.PUBLICPARAMETER, tempModel);
+			
+			//自动登录
+			setUUID();
+			
+			document.addEventListener("netchange", wainshow, false);
+			function wainshow() {
+				if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+					mui.toast("网络异常，请检查网络设置！");
+				} else {
+					mui.toast("已接入网络");
+					//判断上次有没有登录，如果登录，就不执行登录协议
+					if(loginFlag == 0) {
+						loginFlag = 1;
+						setUUID();
+					}
+				}
+			}
+			
+			var backButtonPress = 0;
+			mui.back = function(event) {
+				backButtonPress++;
+				if(backButtonPress > 1) {
+					plus.runtime.quit();
+				} else {
+					plus.nativeUI.toast('再按一次退出应用');
+				}
+				setTimeout(function() {
+					backButtonPress = 0;
+				}, 1500);
+				return false;
+			};
+			
+		});
+
+		document.getElementById("login").addEventListener('tap', function(event) {
+			console.log("登录");
+			var tempName = document.getElementById("account").value;
+			var tempPW = document.getElementById("password").value;
+			
+			//判断输入是否符合要求
+			if(checkInput(tempName) && checkInput(tempPW)) {
+				//login登录
+				loginPro(tempName, tempPW);
+			}
+		});
+		
+//		document.getElementById("register").addEventListener('tap', function (event) {
+//	        console.log("注册");
+//	        mui.openWindow({url: 'register.html'});
+//	    });
+
+		window.addEventListener('quit', function(data) {
+			loginFlag = 1;
+		});
+
+		/**
+		 * 获取本地推送标识信息
+		 */
+		function getPushInfo() {
+			var info = plus.push.getClientInfo();
+			outSet("获取客户端推送标识信息：");
+			outLine("id: " + info.id);
+			outLine("token: " + info.token);
+			outLine("clientid: " + info.clientid);
+			outLine("appid: " + info.appid);
+			outLine("appkey: " + info.appkey);
+		}
+
+		//login登录
+		var loginPro = function(tempName, tempPW) {
+			var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+			//握手
+			var enData0 = {};
+			//不需要加密的数据
+			var comData0 = {
+				uuid: publicPar.uuid, //用户设备号
+				shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+				appid: publicPar.appid //系统所分配的应用ID
+			};
+			events.showWaiting();
+			//发送网络请求，data为网络返回值
+			postDataEncry('ShakeHand', enData0, comData0, 0, function(data) {
+				console.log('ShakeHand成功');
+				if(data.RspCode == 0) {
+					store.set(window.storageKeyName.SHAKEHAND, data.RspData);
+					//加密数据
+					var enData1 = {
+						uid: tempName, //用户账号
+						pw: tempPW //用户密码
+					};
+					//不需要加密的数据
+					var comData1 = {
+						uuid: publicPar.uuid, //用户设备号
+						shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+						appid: publicPar.appid, //系统所分配的应用ID
+						schid: storageKeyName.SCHOOLID, //学校ID
+						utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
+					};
+					//登录
+					postDataEncry('Login', enData1, comData1, 0, function(data1) {
+						console.log("---登录成功---");
+						events.closeWaiting();
+						if(data1.RspCode == 0) {
+							if(data1.RspData.dpts == null) {
+								data1.RspData.dpts = [];
+							}
+							if(data1.RspData.grds == null) {
+								data1.RspData.grds = [];
+							}
+							if(data1.RspData.clss == null) {
+								data1.RspData.clss = [];
+							}
+							if(data1.RspData.subs == null) {
+								data1.RspData.subs = [];
+							}
+							
+							if(data1.RspData.urolestr == null) {
+								data1.RspData.urolestr = '00000000000000000000000000000';
+							}
+
+							data1.RspData.userName0 = tempName;
+							data1.RspData.password0 = tempPW;
+							
+							//保存用户信息
+							store.set(window.storageKeyName.PERSONALINFO, data1.RspData);
+							var personal = store.get(window.storageKeyName.PERSONALINFO);
+							console.log('已保存personal: ' + JSON.stringify(personal));
+							
+							//绑定
+//							var info = plus.push.getClientInfo();//获取客户端推送标识信息
+//							var tempBindData = {
+//								appId: info.appid,
+//								alias: data1.RspData.utid,
+//								cid: info.clientid
+//							}
+//							bindPro(tempBindData, function function_name(data) {
+//								if(data.RspCode == 0) {
+//									console.log("绑定成功");
+//								}else{
+//									console.log(data.RspTxt);
+//								}
+//							});
+
+							//如果密码为1--6，让修改密码后，进入主界面
+							if(personal.password0 == '123456') {
+								var tempModel = {
+									flag:1//0是主动修改密码，1是判断是默认密码，自动让修改
+								}
+								utils.mOpenWithData("modifyPassword.html", tempModel);
+							} else {
+								//判断权限  
+								var permission = true;
+								if(personal.utid == '0') {
+									permission = false;
+								}
+								if(permission) {
+									plus.webview.open('../orals/orals_index.html', 'orals_index', 
+									{}, "auto", 200, function(){
+										plus.webview.currentWebview().close();
+									});
+								}else{
+									mui.toast("此用户无登录权限");
+								}
+							}
+						} else {
+							mui.toast(data1.RspTxt);
+						}
+					});
+				} else {
+					mui.toast(data.RspTxt);
+				}
+			});
+
+		}
+
+		var setUUID = function(tempStr) {
+			//自动登录
+			if(loginFlag == 0) {
+				//判断上次是否登录过，自动登录
+				//获取个人信息
+				var personal = window.storageKeyName.PERSONALINFO?store.get(window.storageKeyName.PERSONALINFO):"";
+				console.log('personal: ', personal);
+				
+				if(personal) {
+					if(personal.utid == 'undefined' || personal.utid == null || personal.userName0 == null) {
+						console.log("用户信息为空");
+						//loginPro('00000000000', '123');
+					} else {
+						document.getElementById("account").value = personal.userName0;
+						document.getElementById("password").value = personal.password0;
+						//login登录
+						loginPro(personal.userName0, personal.password0);
+					}
+				} else {
+					console.log("找不到用户");
+					//loginPro('00000000000', '000000');
+				}
+			} 
+			
+		}
+
+		//判断是否输入了值
+		var checkInput = function(text) {
+			if(text.trim().length == 0) {
+				mui.toast('请输入账号密码');
+				return false;
+			}
+			if(events.isNull(text)) {
+				mui.toast('请输入账号密码');
+				return false;
+			}
+			return true;
+		}
+
+	</script>
+
+</html>

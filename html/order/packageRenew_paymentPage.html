@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+	<!-- 套餐续订 支付页 -->
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+		<style type="text/css">
+			body {
+				background: #F2F2F2;
+			}
+			
+			.mui-row {
+				background: #FFF;
+			}
+			
+			.mui-table-view .mui-media-object {
+				max-width: 100px;
+			}
+			
+			.mui-table-view .mui-media-object.mui-pull-left {
+				margin-right: 5px;
+			}
+			
+			.ul-btn {
+				display: inline;
+				vertical-align: middle;
+				float: right;
+				height: 24px;
+				padding: 2px 12px;
+				background: #33CCFF;
+				color: #fff;
+				border: none;
+			}
+			
+			.ul-p {
+				display: inline;
+				vertical-align: middle;
+				font-size: 12px;
+				line-height: 24px;
+			}
+			
+			a {
+				text-decoration: none;
+				color: #000000;
+			}
+			
+			.mui-content-padded {
+				margin: 10px 10px 10px 16px;
+			}
+			
+			select {
+				color: #8f8f94;
+			}
+			
+			.line:before {
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 15px;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.2);
+				transform: scaleY(.2);
+				background-color: #c8c7cc;
+			}
+			
+			.wxImg {
+				width: 30px;
+			}
+			
+			.mui-checkbox input[type=checkbox]:before,
+			.mui-radio input[type=radio]:before {
+				font-size: 25px;
+			}
+			
+			.check {
+				text-align: left;
+				font-size: 15px;
+				margin: 10px 0 100px 0;
+			}
+			.pay-btn-je {
+				height: 50px;
+				border: 0px;
+				text-align: left;
+			}
+			
+			input::-webkit-input-placeholder {
+				color: #8f8f94;
+			}
+			
+			
+			.mui-input-row label~select{
+				font-size: 14px;
+				margin-left: 13px;
+			}
+			
+			.mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea {
+			   float: left;
+			}
+			
+			.mui-input-row label {
+			    width: 28%;
+			}
+			
+			.spanCheck {
+				width: 65%;
+			}
+			
+			
+			.xyCheck input[type=checkbox]:before {
+			    content: '\e411';
+			}
+			.xyCheck input[type=checkbox]:checked:before {
+			    content: '\e442';
+			}
+			.mui-input-row label~input {
+				margin-top: 5px;
+				text-align: left;
+			    float: left;
+			    font-size: 14px;
+			    margin-left: 14px;
+			}
+			
+			.mui-btn:disabled, button:disabled{
+			    opacity: .6;
+			    background: #cccccc;
+			}
+			.feem-list {
+				text-align: right; font-size: 15px;color: #666666;
+			}
+			.feem-list > label {
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav orals-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">套餐续订</h1>
+		</header>
+		<div class="mui-content">
+			<div id='orderDetailData'>
+				<div class="mui-row">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media">
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" :src=orderDetail.busimg style="width: 90px;height:90px;">
+								<div class="mui-media-body" v-cloak>
+									<p class='mui-ellipsis-title'>{{orderDetail.cnname}}
+										<span v-for="pn in getPrdName(orderDetail.fext)" class="mark">{{pn}}</span>
+									</p>
+									<p class='mui-ellipsis'>{{orderDetail.busnote}}</p>
+									<p class="ul-p" style="color:#FF6600;margin-top: 5px;">缴费金额：{{orderDetail.feecode}}元/{{orderDetail.busmonth}}月</p>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="mui-row" style="margin-top: 5px;">
+						<h5 class="mui-content-padded">原订购信息</h5>
+						<div class="mui-input-row line">
+							<a class="">
+								<label>缴费金额</label>
+								<input  type="button" :value=orderDetail.feecode+'元/'+orderDetail.busmonth+'月' disabled/>
+							</a>
+						</div>
+						<div class="mui-input-row line">
+							<a class="">
+								<label>订购时间</label>
+								<input  type="button" :value=orderDetail.stime disabled/>
+							</a>
+						</div>
+						<div class="mui-input-row line">
+							<a class="">
+								<label>结束时间</label>
+								<input type="button" :value=orderDetail.etime disabled/>
+							</a>
+						</div> 
+				</div>
+				<form id="orderForm">
+					<div class="mui-row" style="margin-top: 5px;">
+						<div class="mui-input-row" style="margin-top: 5px;">
+							<a class="mui-navigate-right">
+								<label>时长</label> 
+								<select name="sc" class="mui-btn-block" @change="gradeChange($event)">
+									<option value="" disabled selected>请选择时长</option>
+									<option :value=index+1 v-for="(item,index) in monthList" :monthnum=item>{{item}}个月</option>
+								</select>
+							</a>
+						</div>
+						<div class="mui-input-row line feem-list" v-cloak>
+							<label>缴费金额：<span id="zfje-1">{{feem}}</span>元</label>
+							<label>缴费时间：{{nowDate}}</label>
+							<label v-if="newEtime ==''">新结束时间：{{orderDetail.etime}}</label>
+							<label v-else>新结束时间：{{newEtime}}</label>
+						</div>
+					</div>
+
+					<div class="mui-row" style="margin-top: 5px;">
+						<h5 class="mui-content-padded">请选择支付方式</h5>
+						<div class="mui-input-row mui-radio line" @click="radioClick">
+							<label style="width: 100%;">
+									<img src="../../img/wxpay.png" class="wxImg" style="vertical-align: middle;"/>
+									<span  style="vertical-align: middle;">微信支付</span>
+								</label>
+							<input name="" type="radio" style="margin-top: 10px;" :checked="radioChecked">
+						</div>
+					</div>
+
+					<div class="check mui-checkbox mui-left">
+						<label for="checkBox" style="padding-left:45px;margin-top: 10px;">我已阅读并接受<a href="javascript:;;">《支付协议》</a></label>
+						<input @click="checkboxClick" id="checkBox" name="" type="checkbox" style="left: 15px;" />
+					</div>
+				</form>
+				
+				<div class="mui-row bottom-row">
+					<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
+	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;" v-cloak>{{feem}}</span>元
+	    				<span id="zffs" style="font-size:10px;color: #8f8f94;"></span>
+	    			</button>
+					<button class="mui-btn btn-theme mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>-->
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/payUtil.js"></script>
+		
+		<script src="../../js/orals/orals-common.js"></script>
+		<script>
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+//			console.log('personal********:' + JSON.stringify(personal));
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			mui.init();
+
+			var curPageData;
+			var orderDetailData;
+			var univlent;//单价
+			var monthList=[];//月份集合
+			var nowDate=getNowFormatDate();
+			mui.plusReady(function() {
+				orderDetailData = new Vue({
+					el: '#orderDetailData',
+					data: {
+						nowDate:nowDate,
+						newEtime:'',
+						orderDetail: {},
+						radioChecked: false,//是否选择支付方式
+						chekcboxChecked: false,//注册协议是否阅读
+						isDisabled: true,//支付按钮是否关闭
+						sysfuncList: [], //附加信息
+						monthList: monthList,
+						servm:0,//订购套餐总月数
+						feem:0//订购套餐总费用
+					},
+					methods: {
+						getPrdName: getPrdName,
+						radioClick: function() {
+							this.radioChecked = !this.radioChecked
+							if(this.radioChecked == true)
+								$('#zffs').html('&ensp;|&ensp;微信支付');
+							if(this.radioChecked == false){
+								this.isDisabled = true
+								$('#zffs').html('');
+							}else if(this.radioChecked == true && this.chekcboxChecked == true)
+								this.isDisabled = false
+						},
+						checkboxClick: function() {
+							this.chekcboxChecked = !this.chekcboxChecked
+							if(this.chekcboxChecked == false)
+								this.isDisabled = true
+							else if(this.chekcboxChecked == true && this.radioChecked == true)
+								this.isDisabled = false
+						},
+						gradeChange:function(e){//月份下拉选选中事件
+							 var domDiv=e.target;
+							 var selectTime=$(domDiv).val();
+							 this.servm=$(domDiv).find("option:selected").attr('monthnum');
+							 this.feem=(selectTime*1*univlent*1).toFixed(2);
+							 appPay.feem=this.feem;
+							 this.newEtime=addMonths(this.orderDetail.etime,this.servm);
+						},
+						payAction:function(){//支付
+							var parent=this;
+							if(this.servm==0){
+								mui.toast('您还没有选择时长')
+							}else{
+								//如果是0元套餐，直接走订购
+								if(this.feem==0){
+									order();
+								}else{
+									appPay.payCode=true;
+									//调起支付
+									appPay.pay(appPay.wxpay,function success(){
+									},function fail(code,err){
+										
+									});
+								}
+							}
+						}
+					}
+				});
+				
+				// 获取支付通道
+				appPay.getChannels();
+				
+				var _data=utils.getDataFromUrl(window.location.href);
+				orderDetailData.orderDetail = _data;
+				orderDetailData.orderDetail.imgUrl = setImg(orderDetailData.orderDetail.imgUrl,1);
+				//计算可以订购的时长  为月份数组 start
+				univlent=_data.feecode;
+				var month=_data.busmonth;
+				var num =36/month;
+				for(var i=1;i<=num;i++){ 
+					monthList.push(month*i) 
+				}
+				//end
+				
+				//添加支付返回APP时的监听
+				//第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
+				appPay.addListener(function(){//查询成功
+					console.log('appPay success')
+					order();
+				},function(e){//查询失败
+					var btnArray = ['否', '是'];
+					mui.confirm(e+'! 是否重新查询？', '校讯通', btnArray, function(e) {
+						if (e.index == 1) {
+							reCheck();
+						} 
+					})
+				},function(e){//查询超时
+					reCheck();
+				})
+			});
+			
+			//尝试重新查询
+			function reCheck(){
+				appPay.payResult(function(){//查询成功
+						order();
+					},function(e){//查询失败
+							mui.toast(e);
+					},function(e){//查询超时
+							mui.toast(e);
+					},'正尝试重新查询...',10000);
+			}
+			
+			//用户续订套餐
+			var order = function() {
+				console.log('order')
+				var data={
+					servid:orderDetailData.orderDetail.serviceid,//套餐代码
+					servm:orderDetailData.servm*1, //订购总月数
+					feem:orderDetailData.feem*1//订购花费
+				}
+				appPay.UserFeeFunc('UserReFee',data,function success(){
+					mui.toast('套餐续订成功');
+					//修改新结束时间
+					orderDetailData.orderDetail.etime=orderDetailData.newEtime;
+					//通知套餐详情页面刷新时间
+					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
+						newEtime:orderDetailData.newEtime
+					});
+					mui.back();
+				},function fail(err){
+					mui.toast(err);
+				});
+			}
+
+			//年月日加减
+			var addMonths = function(date,months) {
+			   var nd=date.split(".").join("/");
+		       var d=new Date(nd);
+		       d.setMonth(parseInt(d.getMonth())+parseInt(months)); 
+		       var y=d.getFullYear()
+		       var m=d.getMonth()+1; 
+		       var d=d.getDate(); 
+		       return getNowFormatDate(y,m,d); 
+			}
+
+			//获取当前日期
+			function getNowFormatDate(years,months,days) {
+				  var date = new Date();
+				  var seperator1 = ".";
+				  var year ='';
+				  var month ='';
+				  var strDate ='';
+				  if(years==undefined)
+				    year=date.getFullYear();
+				  else
+				    year=years*1
+				    
+				  if(months==undefined)
+				  	month=date.getMonth() + 1;
+				  else
+				  	month =months;
+				  	
+				  if(days==undefined)
+				  	strDate=date.getDate();
+				  else
+				  	strDate=days;
+				  
+				  if (month >= 1 && month <= 9) 
+				    month = "0" + month;
+				  
+				  if (strDate >= 0 && strDate <= 9) 
+				    strDate = "0" + strDate;
+				  
+				  var currentdate = year + seperator1 + month + seperator1 + strDate;
+				  return currentdate;
+			};
+			
+		</script>
+	</body>
+
+</html>

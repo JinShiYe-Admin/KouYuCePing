@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+		<style type="text/css">
+			.user-info {
+				padding: 30px 0;
+				text-align: center;
+				background: #fff;
+			}
+			.head-portrait {
+				width: 1.6rem;
+				height: 1.6rem;
+				border-radius: 50%;
+				margin-bottom: 10px;
+				object-fit: cover;
+			}
+			.user-text {
+				font-size: 20px;
+				color: #333333;
+				margin-bottom: 0;
+			}
+			.btns {
+				color: #333333;
+				font-size: 14px;
+			}
+			.btns .mui-icon, .btns .mui-icon-extra {
+				color: #00A5E0;
+			}
+			.out-btn {
+				position: fixed;
+				bottom: 0px;
+				width: 100%;
+				padding: 0.15rem 10% ;
+				background: #fff;
+			}
+			.out-btn button {
+				width: 100%;
+				height: 0.55rem;
+				line-height: 0.55rem;
+				padding: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="mine">
+			<div class="mui-row">
+				<div class="user-info">
+					<img v-on:click="clickHeadImg()" class="head-portrait" :src=userImg />
+					<p class="user-text" v-cloak>{{userName}}</p>
+				</div>
+			</div>
+			<div style="background: #EEEEEE;height: 0.22rem;"></div>
+			<div class="mui-row btns">
+				<ul class="mui-table-view">
+					<template v-for="setting in settings" v-cloak>
+						<li v-show="setting.qx.indexOf(utp)!=-1" class="mui-table-view-cell" v-on:click="jumpToDetail(setting)" >
+							<a class="mui-navigate-right">
+								<span :class="setting.cls"></span> {{setting.name}}
+							</a>
+						</li>
+					</template>
+				</ul>
+				<div class="out-btn">
+					<button id="close-btn" type="button" class="mui-btn mui-btn-danger">退出登录</button>
+				</div>
+			</div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<script src='../../js/libs/jquery.js'></script>
+		
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="../../js/orals/orals-common.js"></script>
+		<script type="text/javascript">
+			var self;
+			var personal = store.get(window.storageKeyName.PERSONALINFO)||{};
+//			console.log(personal);
+			var mine = new Vue({
+				el: "#mine",
+				data: {
+					userName: personal.utname,
+					userImg: setImg(personal.imgurl),
+					settings: [{
+						name: "密码修改",
+						icon: "",
+						href: "",
+						tempID: 0,
+						cls: 'mui-icon mui-icon-locked',
+						qx:"0,1,2"
+//					}, {
+//						name: "我的订购",
+//						icon: "",
+//						href: "",
+//						tempID: 1,
+//						cls: 'mui-icon-extra mui-icon-extra-cart',
+//						qx:"0,1,2"
+					}, {
+						name: "关于我们",
+						icon: "",
+						href: "",
+						tempID: 2,
+						cls: 'mui-icon mui-icon-info',
+						qx:"0,1,2"
+					}],
+					isMineShow: false,//屏蔽或显示我的界面
+					utp: personal.utp//身份信息 身份 0老师，2学生，1家长
+				},
+				methods: {
+					clickHeadImg: function(){
+						mui.openWindow({url: "headImg.html"});
+//						self.hide();
+					},
+					jumpToDetail: function(setting){
+						if(setting.tempID == 0){
+							//密码修改
+							utils.mOpenWithData("../../html/index/modifyPassword.html", {flag: 0});
+						}else if(setting.tempID == 1){
+							//我的订购
+							mui.toast('功能暂未开放');
+							return;
+//							mui.openWindow("../../html/order/orderList.html");
+						}else if(setting.tempID == 2){
+							//关于我们
+							mui.openWindow({url: "about.html"});
+						}
+//						self.hide();
+					}
+				}
+			});
+			
+			mui.init();
+			
+			mui.plusReady(function(){
+				self = plus.webview.currentWebview();
+				if(JSON.stringify(personal)=="{}") {
+					self.reload();
+				}
+				
+				mui.back = function() {
+					self.hide("slide-out-left", 150);
+					self.opener().setStyle({mask: 'none'});
+					self.opener().setStyle({
+						left: '0',
+						transition: {
+							duration: 150
+						}
+					});
+				}
+				
+				//修改头像
+				window.addEventListener('mine_setHeadImg', function(data) {
+					mine.userImg = data.detail.imgurl;
+					mui.fire(self.opener(), 'home_setHeadImg', {
+						imgurl: data.detail.imgurl
+					});
+				});
+			});
+			
+			//退出当前账号
+			document.getElementById("close-btn").addEventListener('tap', function(){
+				//获取个人信息
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				//解绑个推
+//				var info = plus.push.getClientInfo();
+//				var tempBindData = {
+//					appId: info.appid,
+//					alias: personal.utid,
+//					cid: info.clientid
+//				}
+//				unbindPro(tempBindData, function function_name(data) {
+//					if(data.RspCode == 0) {} else {}
+//				});
+				//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
+//				utils.setBadgeNumber(0, 0);
+
+				//获取所有已打开的webview 实例————重新打开login.html————循环关闭页面
+				store.remove(window.storageKeyName.PERSONALINFO);
+				plus.webview.open('../../html/index/login.html','orals_index');
+				var wvs = plus.webview.all();
+				for(var i = 0, len = wvs.length; i < len; i++) {
+					//关闭除login页面外的其他页面
+					if(wvs[i].id=='orals_index') {
+						continue;
+					}
+					plus.webview.close(wvs[i]);
+				}
+			});
+		</script>
+	</body>
+
+</html>
