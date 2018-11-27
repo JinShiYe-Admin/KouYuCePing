@@ -67,6 +67,7 @@
 	
 	<script type="text/javascript" src="../../js/orals/orals-common.js" ></script>
 	<script type="text/javascript">
+		setRem(document, window);
 		var tempModel = {};
 		var loginFlag = 0; //0自动登录，1不自动登录
 		mui.plusReady(function() {
@@ -114,6 +115,14 @@
 				}, 1500);
 				return false;
 			};
+			
+			//沉浸式，保存状态栏高度
+			if(plus.navigator.isImmersedStatusbar()) {
+				var statusbarHeight = plus.navigator.getStatusbarHeight();
+				localStorage.setItem("statusbarHeight", statusbarHeight);
+				setNavHeight();
+			}
+			
 			
 		});
 
@@ -239,7 +248,7 @@
 									permission = false;
 								}
 								if(permission) {
-									plus.webview.open('../orals/orals_index.html', 'orals_index', 
+									plus.webview.open('../orals/orals_index1.html', 'orals_index', 
 									{}, "auto", 200, function(){
 										plus.webview.currentWebview().close();
 									});

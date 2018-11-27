@@ -336,7 +336,7 @@ nav.mui-bar {
 }
 
 .book-items-box + .content-title {
-	margin-top: 10px;
+	padding-top: 10px;
 }
 .content-title > a {
 	vertical-align: middle;
@@ -412,9 +412,9 @@ nav.mui-bar {
 	padding: 0 0.1rem;
 	display: inline-block;
 	width: 0.73rem;
-	height: 0.25rem;
 	border-radius: 0.125rem;
-	line-height: 0.25rem;
+	font-size: 14px;
+    line-height: 1.6;
 }
 
 .test-pannel {
@@ -456,7 +456,7 @@ nav.mui-bar {
 }
 .action-box .score-box {
 	text-align: center;
-	margin-bottom: 25px;
+	/*margin-bottom: 25px;*/
 	min-height: 0.5rem;
 }
 .score-box .score {
@@ -548,7 +548,8 @@ nav.mui-bar {
 .skip-box > a {
 	display: inline-block;
 	border: 2px solid #DDDDDD;
-	width: 0.80rem;
+	min-width: 0.80rem;
+	padding: 0 10px;
 	height: 0.36rem;
 	text-align: center;
 	line-height: 0.35rem;
@@ -700,9 +701,11 @@ nav.mui-bar {
 .menu-box {
 	position: fixed;
 	bottom: 0;
+	left: 0;
+    right: 0;
 	z-index: 1000;
-	width: 100%;
 	height: calc(100% - 128px);
+	text-align: left;
 }
 .menu-box:before {
 	display: block;
