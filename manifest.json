@@ -229,7 +229,8 @@
 					"html/orals/index.html",
 					"html/mine/modifyPassword.html",
 					"html/orals/orals_index.html",
-					"html/index/register.html"
+					"html/index/register.html",
+					"html/orals/orals_index1.html"
 				],
 				"priority": 0
 			},
@@ -384,6 +385,14 @@
 					"html/center/about.html",
 					"html/center/headImg.html",
 					"html/order/orderList.html"
+				],
+				"priority": 0
+			},
+			"html/orals/orals_index1.html": {
+				"resources": [],
+				"refer": [
+					"html/orals/record.html",
+					"html/orals/book.html"
 				],
 				"priority": 0
 			}

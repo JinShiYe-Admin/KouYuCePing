@@ -1,22 +1,22 @@
-var isImmersedStatusbar, statusbarHeight;
+var isImmersedStatusbar;
+var statusbarHeight = parseFloat(localStorage.getItem("statusbarHeight"));
 mui.plusReady(function(){
 	//沉浸式状态栏
-	var nav = document.querySelector(".mui-bar-nav");
 	isImmersedStatusbar = plus.navigator.isImmersedStatusbar();
-	if(nav&&isImmersedStatusbar) {
+	if(!statusbarHeight&&isImmersedStatusbar) {
 		statusbarHeight = plus.navigator.getStatusbarHeight();
-		nav.style.height = (45+statusbarHeight)+"px";
-		nav.style.paddingTop = statusbarHeight+"px";
-		var content = document.querySelector('.mui-bar-nav~.mui-content');
-		if(content) {
-			content.style.paddingTop = (45+statusbarHeight)+"px";
-		}
+		localStorage.setItem("statusbarHeight", statusbarHeight);
+		setNavHeight();
 	}
 });
 
 var REM = parseFloat(localStorage.getItem("REM"));
-if(!REM){
+if(REM){
+	document.documentElement.style.fontSize = REM + 'px';
+	setNavHeight();
+}else{
 	setRem(document, window);
+	setNavHeight();
 }
 
 //设置rem, 1rem = 100px
@@ -28,10 +28,24 @@ function setRem(doc, win){
             if (!clientWidth) return;
             REM = 100 * (clientWidth / 375); //设计图中 100px=1rem
             docEl.style.fontSize = REM + 'px';
+            localStorage.setItem("REM", REM);
         };
     if (!doc.addEventListener) return;
     win.addEventListener(resizeEvt, recalc, false);
     doc.addEventListener('DOMContentLoaded', recalc, false);
+}
+
+//沉浸式状态栏
+function setNavHeight() {
+	var nav = document.querySelector(".mui-bar-nav");
+	if(nav&&statusbarHeight) {
+		nav.style.height = (44+statusbarHeight)+"px";
+		nav.style.paddingTop = statusbarHeight+"px";
+		var content = document.querySelector(".mui-bar-nav~.mui-content");
+		if(content) {
+			content.style.paddingTop = (44+statusbarHeight)+"px";
+		}
+	}
 }
 
 // 获取套餐学段名
@@ -50,8 +64,9 @@ function getPrdName(fx) {
 }
 
 //var host = "https://res.jiaobaowang.net";
-var host = "http://139.129.252.49:8080/res";
+//var host = "http://139.129.252.49:8080/res";
 //var host = "http://192.168.0.122:801/res"
+var host = "http://139.129.252.49:8080/speeking";
 
 //选择教材
 function goBook() {
@@ -179,7 +194,6 @@ function uploadRecordFile(record, fs, callback) {
 					callback(res);
 				}else{
 					mui.toast(res.msg||"评分失败，请重试", {duration: "short", type: "div"});
-					console.log(res);
 				}
 			}else{
 				mui.toast("评分失败，请重试", {duration: "short", type: "div"});
