@@ -392,7 +392,8 @@
 				"resources": [],
 				"refer": [
 					"html/orals/record.html",
-					"html/orals/book.html"
+					"html/orals/book.html",
+					"html/orals/result.html"
 				],
 				"priority": 0
 			}

@@ -1,52 +1,14 @@
-var isImmersedStatusbar;
-var statusbarHeight = parseFloat(localStorage.getItem("statusbarHeight"));
+//var isImmersedStatusbar;
+//var statusbarHeight = parseFloat(localStorage.getItem("statusbarHeight"));
 mui.plusReady(function(){
 	//沉浸式状态栏
-	isImmersedStatusbar = plus.navigator.isImmersedStatusbar();
-	if(!statusbarHeight&&isImmersedStatusbar) {
-		statusbarHeight = plus.navigator.getStatusbarHeight();
-		localStorage.setItem("statusbarHeight", statusbarHeight);
-		setNavHeight();
-	}
+//	isImmersedStatusbar = plus.navigator.isImmersedStatusbar();
+//	if(!statusbarHeight&&isImmersedStatusbar) {
+//		statusbarHeight = plus.navigator.getStatusbarHeight();
+//		localStorage.setItem("statusbarHeight", statusbarHeight);
+//		setNavHeight();
+//	}
 });
-
-var REM = parseFloat(localStorage.getItem("REM"));
-if(REM){
-	document.documentElement.style.fontSize = REM + 'px';
-	setNavHeight();
-}else{
-	setRem(document, window);
-	setNavHeight();
-}
-
-//设置rem, 1rem = 100px
-function setRem(doc, win){
-	var docEl = doc.documentElement,
-        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-        recalc = function () {
-            var clientWidth = docEl.clientWidth>750?750:docEl.clientWidth;
-            if (!clientWidth) return;
-            REM = 100 * (clientWidth / 375); //设计图中 100px=1rem
-            docEl.style.fontSize = REM + 'px';
-            localStorage.setItem("REM", REM);
-        };
-    if (!doc.addEventListener) return;
-    win.addEventListener(resizeEvt, recalc, false);
-    doc.addEventListener('DOMContentLoaded', recalc, false);
-}
-
-//沉浸式状态栏
-function setNavHeight() {
-	var nav = document.querySelector(".mui-bar-nav");
-	if(nav&&statusbarHeight) {
-		nav.style.height = (44+statusbarHeight)+"px";
-		nav.style.paddingTop = statusbarHeight+"px";
-		var content = document.querySelector(".mui-bar-nav~.mui-content");
-		if(content) {
-			content.style.paddingTop = (44+statusbarHeight)+"px";
-		}
-	}
-}
 
 // 获取套餐学段名
 function getPrdName(fx) {
@@ -63,10 +25,7 @@ function getPrdName(fx) {
     return  names;
 }
 
-//var host = "https://res.jiaobaowang.net";
-//var host = "http://139.129.252.49:8080/res";
-//var host = "http://192.168.0.122:801/res"
-var host = "http://139.129.252.49:8080/speeking";
+var host = window.storageKeyName.ORALSHOST;
 
 //选择教材
 function goBook() {
@@ -284,7 +243,7 @@ function compareDate(d1,d2){
 	return ((new Date(d1.replace(/-/g,"\/")))>(new Date(d2.replace(/-/g,"\/"))));
 }
 
-//token过期
+//请求时判断token过期
 function oralsAjax(url, data, success, fail, error) {
 	if(isNetAbort){
 		mui.toast("网络异常，请检查网络设置！", {duration:'long', type:'div'});
@@ -293,7 +252,7 @@ function oralsAjax(url, data, success, fail, error) {
 	}
 	var auth1 = JSON.parse(plus.storage.getItem('orals_auth'));
 	var cdata = mui.extend(data, auth1);
-	mui.ajax(url, {
+	mui.ajax(host + url, {
 		data: cdata,
 		type: "post",
 		timeout: 6000,

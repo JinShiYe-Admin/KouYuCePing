@@ -6,6 +6,7 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 	</head>
 
@@ -115,7 +116,7 @@
 						}
                 		params[item+"code"] = this.items[item].selected;
                 		console.log(JSON.stringify(params));
-                		oralsAjax(host+'/persubmat', params, function(res){
+                		oralsAjax('/persubmat', params, function(res){
                 			var rd = res.data;
                 			console.log(JSON.stringify(rd));
 							_this.items.per = rd.per;
@@ -138,7 +139,7 @@
 							matercode: _this.items.mater.selected,
 							fasccode: _this.items.fasc.selected
 						};
-						oralsAjax(host+'/catalog', data, function(r){
+						oralsAjax('/catalog', data, function(r){
 							var book_ser = {list:[], selected:0}
 			               	r.data.forEach(function(v, i){
 			               		book_ser.list.push({sercode: i, sername: v.name});
@@ -189,7 +190,6 @@
 				//点击 确定
 				document.getElementById("submitBook").addEventListener("tap", function(){
 					mui.fire(self.opener(), "changeBook");
-					mui.fire(plus.webview.getWebviewById("orals_errs"), "getData");
 					mui.back();
 				});
 				

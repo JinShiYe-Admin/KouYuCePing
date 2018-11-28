@@ -199,10 +199,17 @@ html {
     body{font-size: 18px;}
 }
 @media screen and (min-width: 768px) {
-    body{font-size: 22px;}
+    body{font-size: 20px;}
 }
-@media screen and (min-width: 992px) {
-    body{font-size: 25px;}
+/*@media screen and (min-width: 992px) {
+    body{font-size: 24px;}
+}*/
+.mui-bar-nav {
+	height: calc(44px + 0.22rem);
+	padding-top: 0.22rem;
+}
+.mui-bar-nav~.mui-content {
+	padding-top: calc(44px + 0.22rem);
 }
 
 html, body {
@@ -343,30 +350,6 @@ nav.mui-bar {
 	font-size: 18px;
 	color: #B5B5B5;
 }
-#contentTitle {
-	font-size: 16px;
-	color: #333333;
-	display: inline-block;
-	vertical-align: middle;
-	width: 80%;
-	padding: 0 8px;
-	overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#testView {
-	background-color: #FFFFFF;
-	height: 100%;
-	position: relative;
-	overflow-y: auto;
-}
-#testView .action-box {
- 	display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    min-height: calc(60% - 66px - 0.15rem);
-}
 
 .book-select {
 	padding: 0.25rem 0.15rem;
@@ -456,7 +439,7 @@ nav.mui-bar {
 }
 .action-box .score-box {
 	text-align: center;
-	/*margin-bottom: 25px;*/
+	margin-bottom: 20px;
 	min-height: 0.5rem;
 }
 .score-box .score {
@@ -483,7 +466,7 @@ nav.mui-bar {
 	width: 0.55rem;
 	height: 0.55rem;
 	border-radius: 50%;
-	margin: 0 0.05rem;
+	margin: 0 0.1rem;
 	color: #3DADEF;
 }
 .btns-box .btn-record {
@@ -549,7 +532,7 @@ nav.mui-bar {
 	display: inline-block;
 	border: 2px solid #DDDDDD;
 	min-width: 0.80rem;
-	padding: 0 10px;
+	padding: 0 0.1rem;
 	height: 0.36rem;
 	text-align: center;
 	line-height: 0.35rem;
@@ -715,7 +698,6 @@ nav.mui-bar {
 	filter: blur(1px);
 	background: #FFFFFF;
     z-index: -1;
-    /*opacity: 0.95;*/
 }
 .menu-box .title {
 	font-size: 16px;

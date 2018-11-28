@@ -6,6 +6,7 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 	</head>
 
@@ -117,7 +118,7 @@
 				document.querySelector('.mui-bar .mui-title').innerHTML = self.title;
 				
 				//获取内容
-				oralsAjax(host+'/orals', {category: self.cate, bookCatalogId: self.catalog_id}, function(res){
+				oralsAjax('/orals', {category: self.cate, bookCatalogId: self.catalog_id}, function(res){
 					resultVue.key = res.data.key;
 					resultVue.model.push({
 						list: res.data.list
@@ -271,9 +272,8 @@
 					//提交
 					submit: function(cur) {
 						var _this = this;
-						oralsAjax(host+"/orals/save", {data: JSON.stringify([cur])}, function(res){
+						oralsAjax("/orals/save", {data: JSON.stringify([cur])}, function(res){
 							detail_progress = true;
-//							console.log(res);
 						});
 					}
 					
