@@ -401,7 +401,6 @@
 				
 				//获取数据
 				getInitData();
-				getErrList();
 				
 				function getInitData() {
 					var book_items = plus.storage.getItem('book_items');
@@ -961,7 +960,7 @@
 					valid_touch: false, //是否可touch
 					openLi: {index: -1, i: -1}, //打开的li
 					isLoading: false,
-					isReload: false,
+					isReload: true,
 					page: 1,
 					lastPage: false
 				},
