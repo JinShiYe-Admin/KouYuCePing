@@ -3,8 +3,6 @@
 var storageKeyName = (function(mod) {
 
 	mod.key = 1;//0开发，1部署
-	//口语测评host：https://res.jiaobaowang.net; http://139.129.252.49:8080/res; http://192.168.0.122:801/res; http://139.129.252.49:8080/speeking
-	mod.ORALSHOST = "http://139.129.252.49:8080/speeking";
 	var exLog = console.log;
 	console.log = function(hint, object) {
 		if(mod.key === 1) {
@@ -88,6 +86,9 @@ var storageKeyName = (function(mod) {
 	
 	mod.ISFIRST = 'isFitst'; //是否是第一次登陆
 	mod.ICONNUM = 0; //角标数量
+	
+	//口语测评host：https://res.jiaobaowang.net; http://139.129.252.49:8080/res; http://192.168.0.122:801/res; http://139.129.252.49:8080/speeking
+	mod.ORALSHOST = "http://139.129.252.49:8080/speeking";
 	
 	/**
 	 * 在本地存永久数据

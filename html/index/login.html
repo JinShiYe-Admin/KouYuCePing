@@ -117,14 +117,6 @@
 				return false;
 			};
 			
-			//沉浸式，保存状态栏高度
-//			if(plus.navigator.isImmersedStatusbar()) {
-//				var statusbarHeight = plus.navigator.getStatusbarHeight();
-//				localStorage.setItem("statusbarHeight", statusbarHeight);
-//				setNavHeight();
-//			}
-			
-			
 		});
 
 		document.getElementById("login").addEventListener('tap', function(event) {
@@ -249,9 +241,8 @@
 									permission = false;
 								}
 								if(permission) {
-									plus.webview.open('../orals/orals_index.html', 'orals_index', 
-									{}, "auto", 200, function(){
-										plus.webview.currentWebview().close();
+									mui.openWindow({
+										url: '../orals/oralsIndex.html'
 									});
 								}else{
 									mui.toast("此用户无登录权限");

@@ -40,7 +40,7 @@
 								<span class="icon active img-icon"></span>
 								<!--<img class="icon active" src="../../css/orals/icon-voice.gif"/>-->
 							</a>
-							<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="stopRecord($event)" @touchend.stop="stopRecord($event)">
+							<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord($event)">
 								<svg class="icon" aria-hidden="true">
 								  <use xlink:href="#icon-icon-record"></use>
 								</svg>
@@ -164,6 +164,20 @@
 				}
 			}
 			
+			//按住录音按钮时的滑动距离
+			var startX = startY = endX =endY =0;
+			function touchStart(touch) {
+				startX = touch.pageX;
+				startY = touch.pageY;
+			}
+			function touchEnd(touch, callback) {
+				endX = touch.pageX;
+        		endY = touch.pageY;
+        		if(Math.abs(endX-startX)>30 || Math.abs(endY-startY)>30) {
+					callback();
+				}
+			}
+			
 			var resultVue = new Vue({
 				el: "#result",
 				data: {
@@ -215,6 +229,7 @@
 							setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
 							}, cur.time_len*1000||5000);
+							touchStart(e.targetTouches[0]);
 						}
 					},
 					//开始录音
@@ -234,6 +249,12 @@
 							files.push({name:"uploadkey",path:p});
 							cur['key'] = _this.key;
 							_this.uploadRecord(cur);
+						});
+					},
+					touchMove: function(event) {
+						var _this = this;
+						_this.isRecording && touchEnd(event.targetTouches[0], function(){
+							_this.stopRecord();
 						});
 					},
 					//停止录音

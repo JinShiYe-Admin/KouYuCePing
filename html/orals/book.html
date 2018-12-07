@@ -94,7 +94,7 @@
 		<script type="text/javascript">
 			mui.init();
 			
-			var auth={};
+			var catalog=[];
 			
 			var book = new Vue({
 				el: "#bookSelect",
@@ -153,12 +153,13 @@
 			               	
 						});
 					},
+					//改变分册
 					serChange: function() {
 						var _this = this;
 						var menu_tree = JSON.parse(plus.storage.getItem("orals_menu"));
 						if(menu_tree.length){
 							//获取最终目录，并存储目录
-							var catalog = [];
+							catalog = [];
 							readTree(menu_tree[_this.items.ser.selected].childList, function(node){
 			                    if(!node.childList||!node.childList.length) {
 			                        catalog.push(node);
@@ -171,9 +172,6 @@
 									}
 								});
 							});
-			               	plus.storage.setItem("book_items", JSON.stringify(_this.items));
-			               	plus.storage.setItem("orals_catalog", JSON.stringify(catalog));
-			               	plus.storage.setItem("orals_catalog_id", String(catalog[0]?catalog[0].id:0));
 						}
 					}
 				}
@@ -182,13 +180,14 @@
 			mui.plusReady(function() {
 				var self = plus.webview.currentWebview();
 				
-				auth = JSON.parse(plus.storage.getItem('orals_auth'));
-				
 				//当前教材	
 				book.items = JSON.parse(plus.storage.getItem('book_items'));
 				
-				//点击 确定
+				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){
+					plus.storage.setItem("book_items", JSON.stringify(book.items));
+	               	plus.storage.setItem("orals_catalog", JSON.stringify(catalog));
+	               	plus.storage.setItem("orals_catalog_id", String(catalog[0]?catalog[0].id:0));
 					mui.fire(self.opener(), "changeBook");
 					mui.back();
 				});

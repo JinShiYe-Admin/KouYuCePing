@@ -239,7 +239,8 @@
       "html/orals/index.html",
       "html/orals/orals_index.html",
       "html/index/register.html",
-      "html/orals/orals_index1.html"
+      "html/orals/orals_index1.html",
+      "html/orals/oralsIndex.html"
     ],
     "priority": 0
   },
@@ -276,6 +277,14 @@
     "refer": [
       "html/orals/record.html",
       "html/orals/book.html",
+      "html/orals/result.html"
+    ]
+  },
+  "html/orals/oralsIndex.html": {
+    "refer": [
+      "html/orals/book.html",
+      "html/index/login.html",
+      "html/orals/record.html",
       "html/orals/result.html"
     ]
   }

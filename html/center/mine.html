@@ -171,32 +171,8 @@
 			
 			//退出当前账号
 			document.getElementById("close-btn").addEventListener('tap', function(){
-				//获取个人信息
-				var personal = store.get(window.storageKeyName.PERSONALINFO);
-				//解绑个推
-//				var info = plus.push.getClientInfo();
-//				var tempBindData = {
-//					appId: info.appid,
-//					alias: personal.utid,
-//					cid: info.clientid
-//				}
-//				unbindPro(tempBindData, function function_name(data) {
-//					if(data.RspCode == 0) {} else {}
-//				});
-				//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
-//				utils.setBadgeNumber(0, 0);
-
 				//获取所有已打开的webview 实例————重新打开login.html————循环关闭页面
-				store.remove(window.storageKeyName.PERSONALINFO);
-				plus.webview.open('../../html/index/login.html','orals_index');
-				var wvs = plus.webview.all();
-				for(var i = 0, len = wvs.length; i < len; i++) {
-					//关闭除login页面外的其他页面
-					if(wvs[i].id=='orals_index') {
-						continue;
-					}
-					plus.webview.close(wvs[i]);
-				}
+				reLogin(1);
 			});
 		</script>
 	</body>

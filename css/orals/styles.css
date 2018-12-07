@@ -201,9 +201,7 @@ html {
 @media screen and (min-width: 768px) {
     body{font-size: 20px;}
 }
-/*@media screen and (min-width: 992px) {
-    body{font-size: 24px;}
-}*/
+
 .mui-bar-nav {
 	height: calc(44px + 0.22rem);
 	padding-top: 0.22rem;
@@ -525,17 +523,19 @@ nav.mui-bar {
 	display: inline-block;
 }
 .skip-box {
-	/*padding: 0.3rem 0.1rem 0.2rem;*/
 	text-align: center;
 }
 .skip-box > a {
-	display: inline-block;
+	/*display: inline-flex;
+    justify-content: center;
+    align-items: center;*/
+   	display: inline-block;
+   	line-height: 0.36rem;
+   	text-align: center;
 	border: 2px solid #DDDDDD;
 	min-width: 0.80rem;
-	padding: 0 0.1rem;
+	padding: 0px 0.1rem;
 	height: 0.36rem;
-	text-align: center;
-	line-height: 0.35rem;
 	border-radius: 0.18rem;
 	color: #666666;
 }
@@ -752,10 +752,10 @@ nav.mui-bar {
 }
 
 .btn-record .img-icon {
-	background: url(../../css/orals/icon-record.gif) center center / cover;
+	background: url(../../css/orals/icon-record.gif) 0 0 / 100% 100%;
 }
 .btn-voice .img-icon {
-	background: url(../../css/orals/icon-voice.gif) center center / cover;
+	background: url(../../css/orals/icon-voice.gif) 0 0 / 100% 100%;
 }
 
 .net-error-box {
@@ -769,6 +769,8 @@ nav.mui-bar {
 }
 .net-error-box button {
 	height: 0.36rem;
+	line-break: 0.36rem;
+	padding: 0 15px;
 	border-radius: 0.18rem;
 	color: #FFFFFF;
 	background-color: #3DADEF;

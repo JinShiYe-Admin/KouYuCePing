@@ -1,14 +1,32 @@
-//var isImmersedStatusbar;
-//var statusbarHeight = parseFloat(localStorage.getItem("statusbarHeight"));
-mui.plusReady(function(){
-	//沉浸式状态栏
-//	isImmersedStatusbar = plus.navigator.isImmersedStatusbar();
-//	if(!statusbarHeight&&isImmersedStatusbar) {
-//		statusbarHeight = plus.navigator.getStatusbarHeight();
-//		localStorage.setItem("statusbarHeight", statusbarHeight);
-//		setNavHeight();
-//	}
-});
+
+//重新登录，flag：1关闭所有页面，退出登录；0仅返回登录页
+function reLogin(flag) {
+	var launch = plus.webview.getLaunchWebview();
+	if(launch && launch.getURL().indexOf('login.html') != -1){
+		plus.webview.getLaunchWebview().show("fade-in");
+	}else{
+		mui.openWindow({
+			url: '../../html/index/login.html',
+			show: {
+				aniShow: "fade-in"
+			},
+			waiting: {
+				autoShow: false
+			}
+		});
+	}
+	var wvs = plus.webview.all();
+	for(var i = 0, len = wvs.length; i < len; i++) {
+		//关闭除login页面外的其他页面
+		if(wvs[i]&&wvs[i].getURL()&&wvs[i].getURL().indexOf('login.html') != -1) {
+			continue;
+		}
+		plus.webview.close(wvs[i]);
+	}
+	if(flag==1) {
+		store.remove(window.storageKeyName.PERSONALINFO);
+	}
+}
 
 // 获取套餐学段名
 function getPrdName(fx) {
@@ -50,6 +68,18 @@ function goRecord(activeTab) {
 		waiting: {
 			autoShow:false,
 			title:'正在加载...'
+		}
+	});
+}
+
+//打开结果页
+function goResult(extras) {
+	mui.openWindow({
+		url: "result.html",
+		id: "result.html",
+		extras: extras,
+		waiting: {
+			autoShow:true
 		}
 	});
 }
@@ -161,7 +191,13 @@ function uploadRecordFile(record, fs, callback) {
 			wt.close();
 		}
 	);
-	var orals_auth = JSON.parse(plus.storage.getItem('orals_auth'));
+	var orals_auth = getAuth();
+	if(!orals_auth||!orals_auth.uuid) {
+		plus.nativeUI.closeWaiting();
+		plus.nativeUI.toast("身份过期，请重新登录");
+		reLogin();
+		return false;
+	}
 	task.addData("data", JSON.stringify(record) );
 	task.addData("ext", "amr");
 	task.addData("token", orals_auth.token);
@@ -250,7 +286,13 @@ function oralsAjax(url, data, success, fail, error) {
 		plus.nativeUI.closeWaiting();
 		return false;
 	}
-	var auth1 = JSON.parse(plus.storage.getItem('orals_auth'));
+	var auth1 = getAuth();
+	if(!auth1||!auth1.uuid) {
+		plus.nativeUI.closeWaiting();
+		plus.nativeUI.toast("身份过期，请重新登录");
+		reLogin();
+		return false;
+	}
 	var cdata = mui.extend(data, auth1);
 	mui.ajax(host + url, {
 		data: cdata,
@@ -266,20 +308,19 @@ function oralsAjax(url, data, success, fail, error) {
 					var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 					var personal = store.get(window.storageKeyName.PERSONALINFO);
 					var comData = {
-						uuid: auth1.uuid,
-						utid: auth1.utid,
-						utoken: auth1.token,
+						uuid: publicParameter.uuid,
+						utid: personal.utid,
+						utoken: personal.utoken,
 						appid: publicParameter.appid,
-						schid: auth1.schid,
+						schid: personal.schid,
 						utp: personal.utp,
-						utname: auth1.utname
+						utname: personal.utname
 					};
 					//令牌续订
 					postDataEncry('TokenReset', {}, comData, 0, function(data1) {
 						if(data1.RspCode == 0) {
-							auth1.token = data1.RspData;
-							plus.storage.setItem('orals_auth', JSON.stringify(auth1));
-							cdata.token = data1.RspData;
+							personal.utoken = data1.RspData;
+							store.set(window.storageKeyName.PERSONALINFO, personal);
 							oralsAjax(url, data, success, fail, error);
 						}
 					});
@@ -296,6 +337,19 @@ function oralsAjax(url, data, success, fail, error) {
 			error && error();
 		}
 	});
+}
+
+//获取认证信息
+function getAuth() {
+	var userInfo = store.get(window.storageKeyName.PERSONALINFO);
+	var deviceParam = store.get(window.storageKeyName.PUBLICPARAMETER);
+	return {
+		uuid: deviceParam.uuid,
+		utid: userInfo.utid,
+		schid: userInfo.schid,
+		utname: userInfo.utname,
+		token: userInfo.utoken
+	}
 }
 
 //svg图标

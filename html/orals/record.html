@@ -114,6 +114,7 @@
 					lastPage: false
 				},
 				mounted: function() {
+					var _this = this;
 					//上拉刷新
 					var startX, startY;
 					var pullrefresh = document.getElementById("historyLlist");
@@ -126,8 +127,8 @@
 			            endX = ev.changedTouches[0].pageX;
 			            endY = ev.changedTouches[0].pageY;
 			            var direction = GetSlideDirection(startX, startY, endX, endY);
-			            if(direction==1) {
-			            	if(pullrefresh.scrollHeight==pullrefresh.scrollTop+pullrefresh.clientHeight){
+			            if(direction==1&&!_this.lastPage&&_this.isLoaded) {
+			            	if(this.scrollHeight<=this.scrollTop+this.clientHeight){
 			            		!historyLlist.lastPage && getHistoryList();
 			            	}
 			            }
@@ -136,17 +137,10 @@
 				methods: {
 					goDetaile: function(index) {
 						var cur_li = this.list[index];
-						mui.openWindow({
-							url: "result.html",
-							id: "result.html",
-							extras: {
-								title: cur_li.book_catalog_name,
-								cate: cur_li.category,
-								catalog_id: cur_li.book_catalog_id
-							},
-							waiting: {
-								autoShow:true
-							}
+						goResult({
+							title: cur_li.book_catalog_name,
+							cate: cur_li.category,
+							catalog_id: cur_li.book_catalog_id
 						});
 					}
 				}

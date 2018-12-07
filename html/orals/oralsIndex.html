@@ -193,7 +193,7 @@
 								<span class="icon active img-icon"></span>
 								<!--<img class="icon active" src="../../css/orals/icon-voice.gif"/>-->
 							</a>
-							<a class="btn-record" :class="{active: isRecording}" @touchstart.stop="record" @touchmove.stop="stopRecord" @touchend.stop="stopRecord">
+							<a class="btn-record" :class="{active: isRecording}" @touchstart.stop="record($event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord">
 								<svg class="icon" aria-hidden="true">
 								  <use xlink:href="#icon-icon-record"></use>
 								</svg>
@@ -254,13 +254,9 @@
 														<svg class="icon" aria-hidden="true">
 														  <use xlink:href="#icon-icon-voice"></use>
 														</svg>
-														<!--<svg class="icon active" aria-hidden="true">
-														  <use xlink:href="#icon-icon-voice-active"></use>
-														</svg>-->
 														<span class="icon active img-icon"></span>
-														<!--<img class="icon active" src="../../css/orals/icon-voice.gif"/>-->
 													</a>
-													<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="stopRecord($event)" @touchend.stop="stopRecord($event)">
+													<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord($event)">
 														<svg class="icon" aria-hidden="true">
 														  <use xlink:href="#icon-icon-record"></use>
 														</svg>
@@ -318,7 +314,7 @@
 		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<script src='../../js/utils/vconsole.min.js'></script>
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/orals/layer/layer.js"></script>
 		
@@ -332,13 +328,15 @@
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
 		
 		<script src="../../js/orals/orals-common.js"></script>
 		<script type="text/javascript">
+//			setRem(document, window);
 			var muiTitle = document.querySelector('.mui-bar .mui-title');
 			var go_record = document.getElementById("goRecord");
 			
-			var recorder, files = [], gentry, pms_record;
+			var recorder, files = [], gentry, recorderTimer;
 			
 			var activeTab = 'word';
 			var mask = mui.createMask(function(){
@@ -353,28 +351,17 @@
 				//禁止横屏
 				plus.screen.lockOrientation("portrait-primary");
 				
-				//登录认证
+				//判断登录者是否有上一次记录
 				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
-				var deviceParam = store.get(window.storageKeyName.PUBLICPARAMETER);
-				var auth = {
-					uuid: deviceParam.uuid,
-					utid: userInfo.utid,
-					schid: userInfo.schid,
-					utname: userInfo.utname,
-					token: userInfo.utoken
-				}
-				
-				//是否获取到上一次记录
+				var auth = getAuth();
 				var isGetLast = false;
 				if(JSON.parse(plus.storage.getItem('orals_auth'))) {
 					isGetLast = auth.utid==JSON.parse(plus.storage.getItem('orals_auth')).utid;
 				}
-				
-				//保存认证
 				plus.storage.setItem("orals_auth", JSON.stringify(auth));
 				
-				recorder = plus.audio.getRecorder();
 				// 获取音频目录对象
+				recorder = plus.audio.getRecorder();
 				plus.io.resolveLocalFileSystemURL('_doc/', function(entry){
 					entry.getDirectory('audio', {create:true}, function(dir){
 						gentry = dir;
@@ -390,6 +377,7 @@
 					var catalog_id = plus.storage.getItem("orals_catalog_id");
 					if(catalog_id!=testVue.catalogId){
 						setBaseData();
+						//错题本数据重置
 						resultVue.page = 1;
 						if(activeTab=="errs"){
 							getErrList();
@@ -483,9 +471,9 @@
 		               	//保存分册目录
 		               	plus.storage.setItem("orals_catalog", JSON.stringify(catalog)); 
 
-		               	setBaseData();
+		               	setBaseData();//设置数据
 		               	
-		               	pms_record = plus.navigator.checkPermission("RECORD");
+		               	plus.navigator.checkPermission("RECORD");//判断录音权限
 		               	
 					}, function(res){
 						plus.nativeUI.closeWaiting();
@@ -742,6 +730,20 @@
 				}
 			}
 			
+			//按住录音按钮时的滑动距离
+			var startX = startY = endX =endY =0;
+			function touchStart(touch) {
+				startX = touch.pageX;
+				startY = touch.pageY;
+			}
+			function touchEnd(touch, callback) {
+				endX = touch.pageX;
+        		endY = touch.pageY;
+        		if(Math.abs(endX-startX)>30 || Math.abs(endY-startY)>30) {
+					callback();
+				}
+			}
+			
 			//测评对象
 			testVue = new Vue({
 				el: "#testView",
@@ -773,9 +775,6 @@
 					},
 					category: function(v, ov) {
 						this.getContent("category");
-					},
-					state: function(v) {
-						plus.storage.setItem("orals_test_state", String(v));
 					}
 				},
 				mounted: function() {
@@ -863,9 +862,9 @@
 						}
 					},
 					//点击录音
-					record: function() {
+					record: function(event) {
 						if(!this.list[this.index]) return;
-						if(pms_record=="denied") {
+						if(plus.navigator.checkPermission("RECORD")=="denied") {
 							mui.toast("录音已被禁用，请在手机设置中设为允许。");
 							return false;
 						}
@@ -873,9 +872,10 @@
 							this.isRecording = true;
 							this.startRecord();
 							var _this = this;
-							mui.later(function(){
+							recorderTimer = setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
 							}, _this.list[_this.index].time_len*1000||5000);
+							touchStart(event.targetTouches[0]);
 						}
 					},
 					//开始录音
@@ -892,11 +892,18 @@
 							_this.uploadRecord(record);
 						});
 					},
+					touchMove: function(event) {
+						var _this = this;
+						_this.isRecording && touchEnd(event.targetTouches[0], function(){
+							_this.stopRecord();
+						});
+					},
 					//停止录音
-					stopRecord: function() {
+					stopRecord: function(event) {
 						if(this.isRecording) {
 							recorder && recorder.stop();
 							this.isRecording = false;
+							clearTimeout(recorderTimer);
 						}
 					},
 					//上传录音
@@ -923,17 +930,11 @@
 						plus.nativeUI.showWaiting("正在提交");
 						oralsAjax("/orals/save", {data: JSON.stringify(_this.list)}, function(res){
 							_this.state = 5;
-							mui.openWindow({
-								url: "result.html",
-								id: "result.html",
-								extras: {
-									title: secondTitle.contentTitle,
-									cate: _this.list[0].category,
-									catalog_id: _this.catalogId
-								},
-								waiting: {
-									autoShow: true
-								}
+							//打开结果页
+							goResult({
+								title: secondTitle.contentTitle,
+								cate: _this.list[0].category,
+								catalog_id: _this.catalogId
 							});
 							resultVue.page = 1;
 							resultVue.isReload = true;
@@ -975,19 +976,19 @@
 				},
 				mounted: function() {
 					var _this = this;
-					var startX, startY;
+					var startX1, startY1;
 					pullrefreshBox = document.getElementById("pullrefreshBox");
 					pullrefreshBox.addEventListener('touchstart',function (ev) {
-			            startX = ev.touches[0].pageX;
-			            startY = ev.touches[0].pageY;
+			            startX1 = ev.touches[0].pageX;
+			            startY1 = ev.touches[0].pageY;
 			        }, false);
 			        pullrefreshBox.addEventListener("touchend", function(ev){
-			        	var endX, endY;
-			            endX = ev.changedTouches[0].pageX;
-			            endY = ev.changedTouches[0].pageY;
-			            var direction = GetSlideDirection(startX, startY, endX, endY);
+			        	var endX1, endY1;
+			            endX1 = ev.changedTouches[0].pageX;
+			            endY1 = ev.changedTouches[0].pageY;
+			            var direction = GetSlideDirection(startX1, startY1, endX1, endY1);
 			            if(direction==1&&!_this.isLoading&&!_this.lastPage) {
-			            	if(this.scrollHeight==this.scrollTop+this.clientHeight){
+			            	if(this.scrollHeight<=this.scrollTop+this.clientHeight){
 								getErrList();
 							}
 			            }
@@ -1038,9 +1039,10 @@
 							ele.classList.add('active');
 							this.isRecording = true;
 							this.startRecord(cur);
-							setTimeout(function(){
+							clearTimeout = setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
 							}, cur.time_len*1000||5000);
+							touchStart(e.targetTouches[0]);
 						}
 					},
 					//开始录音
@@ -1061,6 +1063,12 @@
 							_this.uploadRecord(cur);
 						});
 					},
+					touchMove: function(event) {
+						var _this = this;
+						_this.isRecording && touchEnd(event.targetTouches[0], function(){
+							_this.stopRecord();
+						});
+					},
 					//停止录音
 					stopRecord: function(e) {
 						if(this.isRecording) {
@@ -1072,6 +1080,7 @@
 							}
 							recorder && recorder.stop();
 							this.isRecording = false;
+							clearTimeout(clearTimeout);
 						}
 					},
 					//上传录音
