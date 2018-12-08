@@ -1,291 +1,292 @@
 {
-  "html/mine/about.html": {
-    "href": "html/mine/about.html",
-    "resources": [
-      "css/mui.min.css",
-      "js/mui.min.js",
-      "js/jquery.min.js",
-      "img/login/headImg.png"
-    ],
-    "refer": [],
-    "priority": 0
-  },
-  "html/mine/modifyPassword.html": {
-    "href": "html/mine/modifyPassword.html",
-    "resources": [
-      "js/utils/utils.js",
-      "js/utils/storageutil.js",
-      "css/mui.min.css",
-      "js/mui.min.js",
-      "js/lib/vconsole/vconsole.min.js",
-      "js/vue.js",
-      "js/lib/RSA/Barrett.js",
-      "js/lib/RSA/BigInt.js",
-      "js/lib/RSA/RSA.js",
-      "js/utils/RSAEncrypt.js",
-      "js/lib/crypto-js/require.js",
-      "js/utils/signHmacSHA1.js",
-      "js/utils/sortSign.js",
-      "js/utils/storageKeyName.js",
-      "js/utils/store.js",
-      "js/publicProtocol.js",
-      "js/utils/events.js",
-      "js/lib/jquery.js"
-    ],
-    "refer": [
-      "html/index/home.html"
-    ],
-    "priority": 0
-  },
-  "html/orals/result.html": {
-    "href": "html/orals/result.html",
-    "resources": [
-      "css/mui.min.css",
-      "css/orals/styles.css",
-      "js/orals/iconfont.js",
-      "js/mui.min.js",
-      "js/vue.min.js",
-      "js/lib/vconsole/vconsole.min.js",
-      "js/orals/orals-common.js"
-    ],
-    "refer": [
-      "html/orals/record.html"
-    ],
-    "priority": 0
-  },
-  "html/orals/record.html": {
-    "href": "html/orals/record.html",
-    "resources": [
-      "css/mui.min.css",
-      "css/orals/styles.css",
-      "js/orals/iconfont.js",
-      "js/mui.min.js",
-      "js/vue.min.js",
-      "js/orals/orals-common.js"
-    ],
-    "refer": [
-      "html/orals/result.html"
-    ],
-    "priority": 0
-  },
-  "html/orals/book.html": {
-    "href": "html/orals/book.html",
-    "resources": [
-      "css/mui.min.css",
-      "css/orals/styles.css",
-      "js/mui.min.js",
-      "js/vue.min.js",
-      "js/lib/vconsole/vconsole.min.js",
-      "js/orals/orals-common.js"
-    ],
-    "refer": [
-      "html/orals/index.html",
-      "html/orals/record.html"
-    ],
-    "priority": 0
-  },
-  "html/orals/errs.html": {
-    "href": "html/orals/errs.html",
-    "resources": [
-      "css/mui.min.css",
-      "css/orals/styles.css",
-      "js/orals/iconfont.js",
-      "js/mui.min.js",
-      "js/vue.min.js",
-      "js/lib/vconsole/vconsole.min.js",
-      "js/orals/orals-common.js"
-    ],
-    "refer": [
-      "html/orals/book.html"
-    ],
-    "priority": 0
-  },
-  "html/orals/index.html": {
-    "href": "html/orals/index.html",
-    "resources": [
-      "css/mui.min.css",
-      "css/orals/styles.css",
-      "js/orals/iconfont.js",
-      "js/mui.min.js",
-      "js/vue.min.js",
-      "js/lib/vconsole/vconsole.min.js",
-      "js/utils/myStorage.js",
-      "js/utils/storageKeyName.js",
-      "js/utils/store.js",
-      "js/jquery.min.js",
-      "js/orals/layer/layer.js",
-      "js/orals/orals-common.js",
-      "css/orals/icon-voice.gif",
-      "html/orals/errs.html"
-    ],
-    "refer": [
-      "html/orals/record.html",
-      "html/orals/book.html",
-      "html/orals/result.html",
-      "html/orals/errs.html",
-      "html/index/login.html"
-    ],
-    "priority": 0
-  },
-  "html/mine/headImg.html": {
-    "href": "html/mine/headImg.html",
-    "resources": [
-      "css/mui.min.css",
-      "js/mui.min.js",
-      "js/vue.min.js",
-      "js/lib/vconsole/vconsole.min.js",
-      "js/publicProtocol.js",
-      "js/utils/store.js",
-      "js/lib/qiniu/qiniu.js",
-      "js/utils/cryption.js",
-      "js/utils/storageKeyName.js",
-      "js/utils/events.js",
-      "js/utils/camera.js",
-      "js/utils/load.js",
-      "js/utils/CloudFileUtil.js",
-      "js/cloud/AndroidFileSystem.js",
-      "js/utils/UploadHeadImage.js",
-      "js/utils/compress.js",
-      "js/utils/utils.js",
-      "js/lib/crypto-js/require.js",
-      "js/utils/signHmacSHA1.js",
-      "js/utils/sortSign.js",
-      "js/lib/jquery.js"
-    ],
-    "refer": [],
-    "priority": 0
-  },
-  "html/index/home.html": {
-    "href": "html/index/home.html",
-    "resources": [
-      "css/mui.min.css",
-      "css/weui.min.css",
-      "js/mui.min.js",
-      "js/utils/utils.js",
-      "js/utils/storageutil.js",
-      "js/vue.js",
-      "js/utils/myStorage.js",
-      "js/utils/storageKeyName.js",
-      "js/home.js",
-      "img/firstPage/u296.png",
-      "img/firstPage/firstPage2.png",
-      "img/firstPage/firstPage4.png",
-      "img/firstPage/u292.png",
-      "img/firstPage/firstPage0.png",
-      "img/firstPage/firstPage6.png",
-      "img/firstPage/firstPage5.png",
-      "img/firstPage/firstPage7.png",
-      "img/firstPage/firstPage3.png",
-      "img/firstPage/u298.png",
-      "img/firstPage/firstPage1.png",
-      "js/publicProtocol.js",
-      "js/demoCssJs/jquery-2.1.4.js",
-      "js/demoCssJs/jquery-weui.js",
-      "js/lib/RSA/Barrett.js",
-      "js/lib/RSA/BigInt.js",
-      "js/lib/RSA/RSA.js",
-      "js/utils/RSAEncrypt.js",
-      "js/lib/crypto-js/require.js",
-      "js/utils/signHmacSHA1.js",
-      "js/utils/sortSign.js",
-      "js/utils/store.js",
-      "js/lib/app-update.js",
-      "js/utils/pushPermission.js",
-      "js/clearIcon.js",
-      "img/login/mine.png",
-      "img/login/lock.png"
-    ],
-    "refer": [
-      "html/mine/about.html",
-      "html/mine/modifyPassword.html",
-      "html/index/login.html",
-      "html/orals/index.html",
-      "html/mine/headImg.html"
-    ],
-    "priority": 0
-  },
-  "html/index/login.html": {
-    "href": "html/index/login.html",
-    "resources": [
-      "js/lib/RSA/Barrett.js",
-      "js/lib/RSA/BigInt.js",
-      "js/lib/RSA/RSA.js",
-      "js/utils/RSAEncrypt.js",
-      "js/lib/vconsole/vconsole.min.js",
-      "js/lib/crypto-js/require.js",
-      "js/utils/signHmacSHA1.js",
-      "js/lib/jquery.js",
-      "js/publicProtocol.js",
-      "js/utils/storageKeyName.js",
-      "img/login/headImg.png",
-      "js/utils/sortSign.js",
-      "js/utils/myStorage.js",
-      "js/jquery-weui.min.js",
-      "js/utils/store.js",
-      "css/mui.min.css",
-      "js/mui.min.js",
-      "js/utils/utils.js",
-      "js/utils/storageutil.js",
-      "js/demoCssJs/weui.min.css",
-      "js/demoCssJs/jquery-weui.css",
-      "js/demoCssJs/demos.css",
-      "img/login/username.png",
-      "img/login/password.png",
-      "js/lib/crypto-js/crypto-js.js"
-    ],
-    "refer": [
-      "html/index/home.html",
-      "html/mine/modifyPassword.html",
-      "html/orals/index.html",
-      "html/orals/orals_index.html",
-      "html/index/register.html",
-      "html/orals/orals_index1.html",
-      "html/orals/oralsIndex.html"
-    ],
-    "priority": 0
-  },
-  "html/orals/orals_index.html": {
-    "refer": [
-      "html/orals/errs.html",
-      "html/orals/book.html",
-      "html/orals/record.html",
-      "html/orals/orals_test.html",
-      "html/orals/cover.html",
-      "html/center/mine.html"
-    ],
-    "resources": [
-      "html/orals/errs.html",
-      "html/orals/orals_test.html"
-    ]
-  },
-  "html/orals/orals_test.html": {
-    "refer": [
-      "html/orals/book.html",
-      "html/orals/result.html"
-    ]
-  },
-  "html/center/mine.html": {
-    "refer": [
-      "html/index/login.html",
-      "html/index/modifyPassword.html",
-      "html/center/about.html",
-      "html/center/headImg.html",
-      "html/order/orderList.html"
-    ]
-  },
-  "html/orals/orals_index1.html": {
-    "refer": [
-      "html/orals/record.html",
-      "html/orals/book.html",
-      "html/orals/result.html"
-    ]
-  },
-  "html/orals/oralsIndex.html": {
-    "refer": [
-      "html/orals/book.html",
-      "html/index/login.html",
-      "html/orals/record.html",
-      "html/orals/result.html"
-    ]
-  }
+	"html/mine/about.html": {
+		"href": "html/mine/about.html",
+		"resources": [
+			"css/mui.min.css",
+			"js/mui.min.js",
+			"js/jquery.min.js",
+			"img/login/headImg.png"
+		],
+		"refer": [],
+		"priority": 0
+	},
+	"html/mine/modifyPassword.html": {
+		"href": "html/mine/modifyPassword.html",
+		"resources": [
+			"js/utils/utils.js",
+			"js/utils/storageutil.js",
+			"css/mui.min.css",
+			"js/mui.min.js",
+			"js/lib/vconsole/vconsole.min.js",
+			"js/vue.js",
+			"js/lib/RSA/Barrett.js",
+			"js/lib/RSA/BigInt.js",
+			"js/lib/RSA/RSA.js",
+			"js/utils/RSAEncrypt.js",
+			"js/lib/crypto-js/require.js",
+			"js/utils/signHmacSHA1.js",
+			"js/utils/sortSign.js",
+			"js/utils/storageKeyName.js",
+			"js/utils/store.js",
+			"js/publicProtocol.js",
+			"js/utils/events.js",
+			"js/lib/jquery.js"
+		],
+		"refer": [
+			"html/index/home.html"
+		],
+		"priority": 0
+	},
+	"html/orals/result.html": {
+		"href": "html/orals/result.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/orals/styles.css",
+			"js/orals/iconfont.js",
+			"js/mui.min.js",
+			"js/vue.min.js",
+			"js/lib/vconsole/vconsole.min.js",
+			"js/orals/orals-common.js"
+		],
+		"refer": [
+			"html/orals/record.html"
+		],
+		"priority": 0
+	},
+	"html/orals/record.html": {
+		"href": "html/orals/record.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/orals/styles.css",
+			"js/orals/iconfont.js",
+			"js/mui.min.js",
+			"js/vue.min.js",
+			"js/orals/orals-common.js"
+		],
+		"refer": [
+			"html/orals/result.html",
+			"html/orals/book.html"
+		],
+		"priority": 0
+	},
+	"html/orals/book.html": {
+		"href": "html/orals/book.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/orals/styles.css",
+			"js/mui.min.js",
+			"js/vue.min.js",
+			"js/lib/vconsole/vconsole.min.js",
+			"js/orals/orals-common.js"
+		],
+		"refer": [
+			"html/orals/index.html",
+			"html/orals/record.html"
+		],
+		"priority": 0
+	},
+	"html/orals/errs.html": {
+		"href": "html/orals/errs.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/orals/styles.css",
+			"js/orals/iconfont.js",
+			"js/mui.min.js",
+			"js/vue.min.js",
+			"js/lib/vconsole/vconsole.min.js",
+			"js/orals/orals-common.js"
+		],
+		"refer": [
+			"html/orals/book.html"
+		],
+		"priority": 0
+	},
+	"html/orals/index.html": {
+		"href": "html/orals/index.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/orals/styles.css",
+			"js/orals/iconfont.js",
+			"js/mui.min.js",
+			"js/vue.min.js",
+			"js/lib/vconsole/vconsole.min.js",
+			"js/utils/myStorage.js",
+			"js/utils/storageKeyName.js",
+			"js/utils/store.js",
+			"js/jquery.min.js",
+			"js/orals/layer/layer.js",
+			"js/orals/orals-common.js",
+			"css/orals/icon-voice.gif",
+			"html/orals/errs.html"
+		],
+		"refer": [
+			"html/orals/record.html",
+			"html/orals/book.html",
+			"html/orals/result.html",
+			"html/orals/errs.html",
+			"html/index/login.html"
+		],
+		"priority": 0
+	},
+	"html/mine/headImg.html": {
+		"href": "html/mine/headImg.html",
+		"resources": [
+			"css/mui.min.css",
+			"js/mui.min.js",
+			"js/vue.min.js",
+			"js/lib/vconsole/vconsole.min.js",
+			"js/publicProtocol.js",
+			"js/utils/store.js",
+			"js/lib/qiniu/qiniu.js",
+			"js/utils/cryption.js",
+			"js/utils/storageKeyName.js",
+			"js/utils/events.js",
+			"js/utils/camera.js",
+			"js/utils/load.js",
+			"js/utils/CloudFileUtil.js",
+			"js/cloud/AndroidFileSystem.js",
+			"js/utils/UploadHeadImage.js",
+			"js/utils/compress.js",
+			"js/utils/utils.js",
+			"js/lib/crypto-js/require.js",
+			"js/utils/signHmacSHA1.js",
+			"js/utils/sortSign.js",
+			"js/lib/jquery.js"
+		],
+		"refer": [],
+		"priority": 0
+	},
+	"html/index/home.html": {
+		"href": "html/index/home.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/weui.min.css",
+			"js/mui.min.js",
+			"js/utils/utils.js",
+			"js/utils/storageutil.js",
+			"js/vue.js",
+			"js/utils/myStorage.js",
+			"js/utils/storageKeyName.js",
+			"js/home.js",
+			"img/firstPage/u296.png",
+			"img/firstPage/firstPage2.png",
+			"img/firstPage/firstPage4.png",
+			"img/firstPage/u292.png",
+			"img/firstPage/firstPage0.png",
+			"img/firstPage/firstPage6.png",
+			"img/firstPage/firstPage5.png",
+			"img/firstPage/firstPage7.png",
+			"img/firstPage/firstPage3.png",
+			"img/firstPage/u298.png",
+			"img/firstPage/firstPage1.png",
+			"js/publicProtocol.js",
+			"js/demoCssJs/jquery-2.1.4.js",
+			"js/demoCssJs/jquery-weui.js",
+			"js/lib/RSA/Barrett.js",
+			"js/lib/RSA/BigInt.js",
+			"js/lib/RSA/RSA.js",
+			"js/utils/RSAEncrypt.js",
+			"js/lib/crypto-js/require.js",
+			"js/utils/signHmacSHA1.js",
+			"js/utils/sortSign.js",
+			"js/utils/store.js",
+			"js/lib/app-update.js",
+			"js/utils/pushPermission.js",
+			"js/clearIcon.js",
+			"img/login/mine.png",
+			"img/login/lock.png"
+		],
+		"refer": [
+			"html/mine/about.html",
+			"html/mine/modifyPassword.html",
+			"html/index/login.html",
+			"html/orals/index.html",
+			"html/mine/headImg.html"
+		],
+		"priority": 0
+	},
+	"html/index/login.html": {
+		"href": "html/index/login.html",
+		"resources": [
+			"js/lib/RSA/Barrett.js",
+			"js/lib/RSA/BigInt.js",
+			"js/lib/RSA/RSA.js",
+			"js/utils/RSAEncrypt.js",
+			"js/lib/vconsole/vconsole.min.js",
+			"js/lib/crypto-js/require.js",
+			"js/utils/signHmacSHA1.js",
+			"js/lib/jquery.js",
+			"js/publicProtocol.js",
+			"js/utils/storageKeyName.js",
+			"img/login/headImg.png",
+			"js/utils/sortSign.js",
+			"js/utils/myStorage.js",
+			"js/jquery-weui.min.js",
+			"js/utils/store.js",
+			"css/mui.min.css",
+			"js/mui.min.js",
+			"js/utils/utils.js",
+			"js/utils/storageutil.js",
+			"js/demoCssJs/weui.min.css",
+			"js/demoCssJs/jquery-weui.css",
+			"js/demoCssJs/demos.css",
+			"img/login/username.png",
+			"img/login/password.png",
+			"js/lib/crypto-js/crypto-js.js"
+		],
+		"refer": [
+			"html/index/home.html",
+			"html/mine/modifyPassword.html",
+			"html/orals/index.html",
+			"html/orals/orals_index.html",
+			"html/index/register.html",
+			"html/orals/orals_index1.html",
+			"html/orals/oralsIndex.html"
+		],
+		"priority": 0
+	},
+	"html/orals/orals_index.html": {
+		"refer": [
+			"html/orals/errs.html",
+			"html/orals/book.html",
+			"html/orals/record.html",
+			"html/orals/orals_test.html",
+			"html/orals/cover.html",
+			"html/center/mine.html"
+		],
+		"resources": [
+			"html/orals/errs.html",
+			"html/orals/orals_test.html"
+		]
+	},
+	"html/orals/orals_test.html": {
+		"refer": [
+			"html/orals/book.html",
+			"html/orals/result.html"
+		]
+	},
+	"html/center/mine.html": {
+		"refer": [
+			"html/index/login.html",
+			"html/index/modifyPassword.html",
+			"html/center/about.html",
+			"html/center/headImg.html",
+			"html/order/orderList.html"
+		]
+	},
+	"html/orals/orals_index1.html": {
+		"refer": [
+			"html/orals/record.html",
+			"html/orals/book.html",
+			"html/orals/result.html"
+		]
+	},
+	"html/orals/oralsIndex.html": {
+		"refer": [
+			"html/orals/book.html",
+			"html/index/login.html",
+			"html/orals/record.html",
+			"html/orals/result.html"
+		]
+	}
 }

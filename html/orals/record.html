@@ -173,7 +173,7 @@
 			var catalog_id;
 			function getHistoryList(p, s) {
 				historyLlist.isLoaded = false;
-				var catalog = JSON.parse(plus.storage.getItem('orals_catalog'));
+				var catalog = store.get('orals_catalog')||[];
 				if(historyLlist.p==1) {
 					plus.nativeUI.showWaiting();
 					historyLlist.list = [];
@@ -195,8 +195,9 @@
 					historyLlist.isLoaded = true;
 					historyLlist.lastPage = res.data.lastPage;
 					res.data.list.forEach(function(v){
-						if(v.category==self.category) {
-							v['book_catalog_pname'] = filterArray(catalog, 'id', v.book_catalog_id)[0].pname;
+						var book_catalog = filterArray(catalog, 'id', v.book_catalog_id)[0];
+						if(v.category==self.category&&book_catalog) {
+							v['book_catalog_pname'] = book_catalog.pname;
 							historyLlist.list.push(v);
 						}
 					});

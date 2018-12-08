@@ -115,10 +115,10 @@
 							params.percode = this.items.per.selected;
 						}
                 		params[item+"code"] = this.items[item].selected;
-                		console.log(JSON.stringify(params));
+//              		console.log(JSON.stringify(params));
                 		oralsAjax('/persubmat', params, function(res){
                 			var rd = res.data;
-                			console.log(JSON.stringify(rd));
+//              			console.log(JSON.stringify(rd));
 							_this.items.per = rd.per;
 							_this.items.sub = rd.sub;
 							_this.items.mater = rd.mater;
@@ -147,7 +147,7 @@
 			               	_this.items.ser = book_ser;
 			               	
 			               	//请求成功后，保存教材信息
-			               	plus.storage.setItem("orals_menu", JSON.stringify(r.data));
+			               	store.set("orals_menu", r.data);
 			               	
 			               	_this.serChange();
 			               	
@@ -156,7 +156,7 @@
 					//改变分册
 					serChange: function() {
 						var _this = this;
-						var menu_tree = JSON.parse(plus.storage.getItem("orals_menu"));
+						var menu_tree = store.get("orals_menu");
 						if(menu_tree.length){
 							//获取最终目录，并存储目录
 							catalog = [];
@@ -164,7 +164,7 @@
 			                    if(!node.childList||!node.childList.length) {
 			                        catalog.push(node);
 			                    }
-			               });
+			                });
 			               	catalog.forEach(function(v, i){
 								readTree(menu_tree[_this.items.ser.selected].childList, function(node){
 									if(node.id==v.pid){
@@ -181,20 +181,20 @@
 				var self = plus.webview.currentWebview();
 				
 				//当前教材	
-				book.items = JSON.parse(plus.storage.getItem('book_items'));
+				book.items = store.get('book_items');
 				
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){
-					plus.storage.setItem("book_items", JSON.stringify(book.items));
-	               	plus.storage.setItem("orals_catalog", JSON.stringify(catalog));
-	               	plus.storage.setItem("orals_catalog_id", String(catalog[0]?catalog[0].id:0));
+					store.set("book_items", book.items);
+	               	store.set("orals_catalog", catalog);
+	               	store.set("orals_catalog_id", catalog[0]?catalog[0].id:0);
 					mui.fire(self.opener(), "changeBook");
 					mui.back();
 				});
 				
 			});
 			
-//			book.items = {"mater":{"list":[{"matername":"人教版（PEP）","matercode":"42"}],"selected":"15"},"sub":{"list":[{"subname":"英语","subcode":"03"}],"selected":"03"},"fasc":{"list":[],"selected":null},"per":{"list":[{"percode":"2","pername":"小学","enabled":true},{"percode":"3","pername":"初中","enabled":true},{"percode":"4","pername":"高中","enabled":false}],"selected":"2"}}
+			book.items = {"mater":{"list":[{"matername":"人教版（PEP）","matercode":"42"}],"selected":"15"},"sub":{"list":[{"subname":"英语","subcode":"03"}],"selected":"03"},"fasc":{"list":[],"selected":null},"per":{"list":[{"percode":"2","pername":"小学","enabled":true},{"percode":"3","pername":"初中","enabled":true},{"percode":"4","pername":"高中","enabled":false}],"selected":"2"}}
 			
 		</script>
 	</body>

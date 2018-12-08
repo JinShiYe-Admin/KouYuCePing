@@ -86,7 +86,7 @@ function goResult(extras) {
 
 //获取教材名
 function getBookNames() {
-	var book_items = JSON.parse(plus.storage.getItem("book_items"));
+	var book_items = store.get("book_items");
 	if(!book_items){
 		return "";
 	}else{
@@ -103,7 +103,7 @@ function getBookNames() {
 
 //获取目录名
 function getCatalogName(id) {
-	var catalog = JSON.parse(plus.storage.getItem('orals_catalog'));
+	var catalog = store.get('orals_catalog');
 	var cur_node = filterArray(catalog, 'id', id)[0];
 	var final_name = "";
 	if(cur_node) {
@@ -114,8 +114,8 @@ function getCatalogName(id) {
 
 //获取 上级+下级 目录节点
 function getSubNode(id) {
-	var menu = JSON.parse(plus.storage.getItem("orals_menu"));
-	var catalog = JSON.parse(plus.storage.getItem('orals_catalog'));
+	var menu = store.get("orals_menu");
+	var catalog = store.get('orals_catalog');
 	var cur_node = filterArray(catalog, 'id', id)[0];
 	var p_node;
 	readTree(menu, function(node){
@@ -221,7 +221,8 @@ function setRecorder(recorder, touch, success, fail) {
 	var touchTimer = setTimeout(function(){
 		touch = true;
 	}, 500);
-	recorder.record({filename:'_doc/audio/', format: 'amr', samplerate: 16000}, function(p){
+	var samp = "16000";
+	recorder.record({filename:'_doc/audio/', samplerate: samp}, function(p){
 		//录音完成
 		if(touch) {
 			plus.io.resolveLocalFileSystemURL(p, function(entry){

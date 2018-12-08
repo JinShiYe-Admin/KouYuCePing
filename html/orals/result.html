@@ -110,7 +110,7 @@
 			
 			var detail_progress = false;
 			var self;
-			var r=null, files=[], gentry;
+			var r=null, files=[], gentry, recorderTimer;
 			
 			mui.plusReady(function() {
 				plus.nativeUI.showWaiting();
@@ -226,7 +226,7 @@
 							ele.classList.add('active');
 							this.isRecording = true;
 							this.startRecord(cur);
-							setTimeout(function(){
+							recorderTimer = setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
 							}, cur.time_len*1000||5000);
 							touchStart(e.targetTouches[0]);
@@ -268,6 +268,7 @@
 							}
 							r && r.stop();
 							this.isRecording = false;
+							clearTimeout(recorderTimer);
 						}
 					},
 					//上传录音

@@ -314,7 +314,7 @@
 		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src='../../js/utils/vconsole.min.js'></script>
+		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/orals/layer/layer.js"></script>
 		
@@ -355,11 +355,11 @@
 				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
 				var auth = getAuth();
 				var isGetLast = false;
-				if(JSON.parse(plus.storage.getItem('orals_auth'))) {
-					isGetLast = auth.utid==JSON.parse(plus.storage.getItem('orals_auth')).utid;
+				if(store.get('orals_auth')) {
+					isGetLast = auth.utid==store.get('orals_auth').utid;
 				}
-				plus.storage.setItem("orals_auth", JSON.stringify(auth));
-				
+				store.set("orals_auth", auth);
+
 				// 获取音频目录对象
 				recorder = plus.audio.getRecorder();
 				plus.io.resolveLocalFileSystemURL('_doc/', function(entry){
@@ -374,7 +374,7 @@
 				
 				//教材改变
 				window.addEventListener("changeBook", function(e){
-					var catalog_id = plus.storage.getItem("orals_catalog_id");
+					var catalog_id = store.get("orals_catalog_id");
 					if(catalog_id!=testVue.catalogId){
 						setBaseData();
 						//错题本数据重置
@@ -391,11 +391,11 @@
 				getInitData();
 				
 				function getInitData() {
-					var book_items = plus.storage.getItem('book_items');
+					var book_items = store.get('book_items');
 					//保存了上一次记录时
 					if(isGetLast&&book_items) {
 						// 获取教材信息
-						var last_book_items = JSON.parse(book_items);
+						var last_book_items = book_items;
 						getBook({
 							percode: last_book_items.per.selected,
 							subcode: last_book_items.sub.selected,
@@ -451,10 +451,10 @@
 		               	});
 		               	auto_book.ser = book_ser;
 		               	//保存教材信息
-		               	plus.storage.setItem("book_items", JSON.stringify(auto_book));
+		               	store.set("book_items", auto_book);
 						
 						//保存目录
-						plus.storage.setItem("orals_menu", JSON.stringify(res.data));
+						store.set("orals_menu", res.data);
 						var catalog = []; 
 						readTree(res.data[book_ser.selected].childList, function(node){
 		                    if(!node.childList||!node.childList.length) {
@@ -469,7 +469,7 @@
 							});
 						});
 		               	//保存分册目录
-		               	plus.storage.setItem("orals_catalog", JSON.stringify(catalog)); 
+		               	store.set("orals_catalog", catalog); 
 
 		               	setBaseData();//设置数据
 		               	
@@ -496,9 +496,9 @@
 					//教材名
 					secondTitle.bookItems = getBookNames();
 					//设置目录列表
-					testVue.menu = JSON.parse(plus.storage.getItem("orals_catalog")||"[]");
+					testVue.menu = store.get("orals_catalog")||[];
 					//设置节点
-					var catalogId = plus.storage.getItem('orals_catalog_id');
+					var catalogId = store.get('orals_catalog_id');
 					var isCatalogId = testVue.menu.some(function(v,i){
 						return v.id==catalogId;
 					});
@@ -638,7 +638,7 @@
 					bookSelect: function() {
 						resultVue.audioStop();
 						!audioEle.ended && audioEle.pause();
-						if(testVue.state==4){
+						if(testVue.state==4&&(activeTab=="word"||activeTab=="sentence")){
 							layerBeforeLeave("您还没有提交，确定要离开吗？", ["确定", "取消"], goBook);
 						}else{
 							goBook();
@@ -771,7 +771,7 @@
 				watch: {
 					catalogId: function(v, ov) {
 						this.getContent();
-						plus.storage.setItem("orals_catalog_id", String(v));
+						store.set("orals_catalog_id", String(v));
 					},
 					category: function(v, ov) {
 						this.getContent("category");
@@ -1039,7 +1039,7 @@
 							ele.classList.add('active');
 							this.isRecording = true;
 							this.startRecord(cur);
-							clearTimeout = setTimeout(function(){
+							recorderTimer = setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
 							}, cur.time_len*1000||5000);
 							touchStart(e.targetTouches[0]);
@@ -1080,7 +1080,7 @@
 							}
 							recorder && recorder.stop();
 							this.isRecording = false;
-							clearTimeout(clearTimeout);
+							clearTimeout(recorderTimer);
 						}
 					},
 					//上传录音
@@ -1165,7 +1165,7 @@
 					resultVue.model = [];
 					catalog_ids = [];
 					//可选目录节点
-					var catalog = JSON.parse(plus.storage.getItem('orals_catalog'));
+					var catalog = store.get('orals_catalog');
 					if(!catalog) {
 						return;
 					}
