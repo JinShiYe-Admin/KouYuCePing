@@ -72,7 +72,7 @@
 		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<script src='../../js/utils/vconsole.min.js'></script>
 		
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
@@ -91,15 +91,15 @@
 			
 			var bookItems = document.getElementById("bookItems");
 			var self;
-			var ischangeBook = false;
+//			var ischangeBook = false;
 			
 			mui.init({
 				beforeback: function(){
 					historyLlist.isLoaded = false;
-					if(ischangeBook) {
-						mui.fire(self.opener(), "changeBook");
-						ischangeBook = false;
-					}
+//					if(ischangeBook) {
+//						ischangeBook = false;
+//						mui.fire(self.opener(), "changeBook");
+//					}
 					return true;
 				}
 			});
@@ -159,10 +159,11 @@
 				});
 				
 				window.addEventListener("changeBook", function(e) {
-					ischangeBook = true;
+//					ischangeBook = true;
 					bookItems.innerHTML = getBookNames();
 					historyLlist.p = 1;
 					getHistoryList();
+					mui.fire(self.opener(), "changeBook");
 				});
 				
 				//根据高度加载记录数

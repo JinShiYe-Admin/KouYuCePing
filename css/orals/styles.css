@@ -174,11 +174,10 @@
 	margin-bottom: 5px;
 }
 
-input {
-	-webkit-tap-highlight-color:transparent;
-	-webkit-touch-callout: none;
-	-webkit-backface-visibility: hidden;
-	-webkit-transform: translate3d(0,0,0);
+input{
+  outline:none;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+  -webkit-backface-visibility: hidden;
 }
 
 
@@ -202,6 +201,7 @@ html {
     body{font-size: 20px;}
 }
 
+/*沉浸式状态栏*/
 .mui-bar-nav {
 	height: calc(44px + 0.22rem);
 	padding-top: 0.22rem;
@@ -228,6 +228,8 @@ a {
 }
 .mui-content {
 	background-color: #FFFFFF;
+	max-height: 100%;
+	overflow-y: auto;
 }
 
 .mui-toast-container {
@@ -245,7 +247,7 @@ a {
     font-weight: normal;
 }
 
-.mui-bar-tab .mui-tab-item.mui-active {
+.mui-bar-tab .mui-tab-item.mui-active, .mui-bar .mui-btn-link {
 	color: #3DADEF;
 }
 nav.mui-bar {
@@ -300,6 +302,10 @@ nav.mui-bar {
 	font-size: 12px;
 }
 
+.transparent-header {
+	box-shadow: none;
+	background: transparent;
+}
 .orals-header {
 	background-color: #3DADEF;
 	box-shadow: none;

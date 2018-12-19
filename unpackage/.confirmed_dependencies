@@ -286,7 +286,8 @@
 			"html/orals/book.html",
 			"html/index/login.html",
 			"html/orals/record.html",
-			"html/orals/result.html"
+			"html/orals/result.html",
+			"html/center/mine.html"
 		]
 	}
 }

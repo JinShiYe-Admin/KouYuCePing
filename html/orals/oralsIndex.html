@@ -139,24 +139,6 @@
 						</svg>
 		    		</a>
 		    	</div>
-		    	<!--目录-->
-		    	<transition name="slide-up">
-					<div class="menu-box" v-show="isShowMenu" v-cloak>
-						<div class="title">
-							<span class="mui-icon mui-icon-bars"></span> 选择章节
-						</div>
-						<div class="menu-list-box">
-							<ul class="mui-table-view menu-list" v-for="(v,i) in menu" :key="i">
-								<li class="list-name mui-table-view-cell">{{v.name}}</li>
-								<li v-for="(item, k) in v.list" class="mui-table-view-cell" 
-									:key="k" :class="{selected: item.id==catalogId}" @click="selectMenu(item.id)">
-								 	{{item.name}}	
-								</li>
-							</ul>
-						</div>
-						<div class="bottom" @tap="hideMenu">关闭</div>
-					</div>
-				</transition>
 		   </div>
 		    
 			<!--测试页-->
@@ -312,6 +294,27 @@
 			<p class="dialog-content">您还没有提交，离开将不保存成绩！</p>
 		</div>
 		
+		<!--目录-->
+		<div id="menuList" v-show="isShowMenu">
+			<transition name="slide-up">
+				<div class="menu-box" v-show="isShowMenu" v-cloak>
+					<div class="title">
+						<span class="mui-icon mui-icon-bars"></span> 选择章节
+					</div>
+					<div class="menu-list-box">
+						<ul class="mui-table-view menu-list" v-for="(v,i) in menu_list" :key="i">
+							<li class="list-name mui-table-view-cell">{{v.name}}</li>
+							<li v-for="(item, k) in v.list" class="mui-table-view-cell" 
+								:key="k" :class="{selected: item.id==catalogId}" @click="selectMenu(item.id)">
+							 	{{item.name}}	
+							</li>
+						</ul>
+					</div>
+					<div class="bottom" @tap="hideMenu">关闭</div>
+				</div>
+			</transition>
+		</div>
+		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
 		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
@@ -328,7 +331,7 @@
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/events.js"></script>
+		<!--<script src="../../js/utils/events.js"></script>-->
 		
 		<script src="../../js/orals/orals-common.js"></script>
 		<script type="text/javascript">
@@ -340,7 +343,7 @@
 			
 			var activeTab = 'word';
 			var mask = mui.createMask(function(){
-				secondTitle.isShowMenu = false;
+				menuList.isShowMenu = false;
 			});
 
 			mui.plusReady(function() {
@@ -361,7 +364,8 @@
 				store.set("orals_auth", auth);
 
 				// 获取音频目录对象
-				recorder = plus.audio.getRecorder();
+				//判断录音权限
+				plus.navigator.checkPermission("RECORD");
 				plus.io.resolveLocalFileSystemURL('_doc/', function(entry){
 					entry.getDirectory('audio', {create:true}, function(dir){
 						gentry = dir;
@@ -473,8 +477,6 @@
 
 		               	setBaseData();//设置数据
 		               	
-		               	plus.navigator.checkPermission("RECORD");//判断录音权限
-		               	
 					}, function(res){
 						plus.nativeUI.closeWaiting();
 					}, function(){
@@ -559,32 +561,50 @@
 				});
 				
 				
-				//头像
-//				var headImg = document.getElementById('headImg');
-//				console.log(JSON.stringify(userInfo));
-//				headImg.setAttribute('src', setImg(userInfo.imgurl));
-//				//修改头像
-//				window.addEventListener("home_setHeadImg", function(e){
-//					headImg.setAttribute('src', e.detail.imgurl);
-//				});
-//				//打开个人中心
-//				headImg.onclick = function() {
-//					if(!center) return;
-//					center.show("slide-in-left", 150);
-//					//主窗体开始侧滑；
-//					self.setStyle({
-//						left: '70%',
-//						mask:"rgba(0,0,0,0.35)",
-//						transition: {
-//							duration: 150
-//						}
-//					});
-//				}	
+				//有头像时
+				var headImg = document.getElementById('headImg');
+				if(headImg){
+					headImg.setAttribute('src', setImg(userInfo.imgurl));
+					//修改头像
+					window.addEventListener("home_setHeadImg", function(e){
+						headImg.setAttribute('src', e.detail.imgurl);
+					});
+					
+					//个人中心
+					center = mui.preload({
+						url: '../center/mine.html',
+						id: 'orals-mine',
+						styles: {
+							left: 0,
+							width: '70%'
+						}
+					});
+					self.addEventListener("maskClick", function(){
+						center.evalJS("mui.back();");
+					});
+					
+					//打开个人中心
+					headImg.onclick = function() {
+						if(!center) return;
+						center.show("slide-in-left", 150);
+						//主窗体开始侧滑；
+						self.setStyle({
+							left: '70%',
+							mask:"rgba(0,0,0,0.35)",
+							transition: {
+								duration: 150
+							}
+						});
+					}	
+					
+					//关闭登录页
+					self.opener().close("none");
+				}
 				
 				//退出
 				var clickNum = 0;
 				mui.back = function(){
-					if(testVue.state=="4") {
+					if(testVue.state=="4"&&(activeTab=="word"||activeTab=="sentence")) {
 						layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function(){
 							plus.runtime.quit();
 						});
@@ -605,33 +625,12 @@
 			
 			
 			//副标题
-			var menuListBox;
 			var secondTitle = new Vue({
 				el: "#second-title",
 				data: {
 					bookItems: "",
 					contentTitle: "...",
-					isContentTitle: true,
-					isShowMenu: false,
-					menu: [],
-					catalogId: 0
-				},
-				watch: {
-					isShowMenu: function(v) {
-						if(v){
-							this.$nextTick(function() {
-								if(document.querySelector('.menu-list-box .selected')){
-									menuListBox.scrollTop = document.querySelector('.menu-list-box .selected').parentNode.offsetTop;
-								}
-							});
-							mask.show();
-						}else{
-							mask.close();
-						}
-					}
-				},
-				mounted: function() {
-					menuListBox = document.querySelector('.menu-list-box');
+					isContentTitle: true
 				},
 				methods: {
 					//选择教材
@@ -643,6 +642,21 @@
 						}else{
 							goBook();
 						}
+					},
+					//显示目录
+					showMenu: function() {
+						menuList.isShowMenu = true;
+						var menu_list = [];
+						testVue.menu.forEach(function(v){
+							var cur_list = filterArray(menu_list, "id", v.pid)[0];
+							if(cur_list){
+								cur_list.list.push(v);
+							}else{
+								menu_list.push({id: v.pid, name: v.pname, list: [v]});
+							}
+						});
+						menuList.menu_list = menu_list;
+						menuList.catalogId = testVue.catalogId;
 					},
 					//切换目录
 					changeMenu: function(d) { 
@@ -665,21 +679,36 @@
 							}
 						}
 					},
-					//显示目录
-					showMenu: function() {
-						this.isShowMenu = true;
-						var menu_list = [];
-						testVue.menu.forEach(function(v){
-							var cur_list = filterArray(menu_list, "id", v.pid)[0];
-							if(cur_list){
-								cur_list.list.push(v);
-							}else{
-								menu_list.push({id: v.pid, name: v.pname, list: [v]});
-							}
-						});
-						this.menu = menu_list;
-						this.catalogId = testVue.catalogId;
-					},
+				}
+			});
+			
+			//菜单
+			var menuListBox;
+			var menuList = new Vue({
+				el: "#menuList",
+				data: {
+					isShowMenu: false,
+					menu_list: [],
+					catalogId: 0
+				},
+				watch: {
+					isShowMenu: function(v) {
+						if(v){
+							this.$nextTick(function() {
+								if(document.querySelector('.menu-list-box .selected')){
+									menuListBox.scrollTop = document.querySelector('.menu-list-box .selected').parentNode.offsetTop;
+								}
+							});
+							mask.show();
+						}else{
+							mask.close();
+						}
+					}
+				},
+				mounted: function() {
+					menuListBox = document.querySelector('.menu-list-box');
+				},
+				methods: {
 					hideMenu: function() {
 						this.isShowMenu = false;
 					},
@@ -864,10 +893,6 @@
 					//点击录音
 					record: function(event) {
 						if(!this.list[this.index]) return;
-						if(plus.navigator.checkPermission("RECORD")=="denied") {
-							mui.toast("录音已被禁用，请在手机设置中设为允许。");
-							return false;
-						}
 						if(!this.isRecording) {
 							this.isRecording = true;
 							this.startRecord();
@@ -887,7 +912,8 @@
 						}, function(e){
 							console.log('操作失败：'+e.message);
 						});
-						setRecorder(recorder, _this.valid_touch, function(p){
+						
+						recorder = setRecorder(_this.valid_touch, function(p){
 							files.push({name:"uploadkey",path:p});
 							_this.uploadRecord(record);
 						});
@@ -1048,16 +1074,12 @@
 					//开始录音
 					startRecord: function(cur) {
 						var _this = this;
-						if ( recorder == null ) {
-							console.log('录音对象未获取');
-							return;
-						}
 						gentry.removeRecursively(function(){
 							console.log('已清除缓存！');
 						}, function(e){
 							console.log('操作失败：'+e.message);
 						});
-						setRecorder(recorder, _this.valid_touch, function(p){
+						recorder = setRecorder(_this.valid_touch, function(p){
 							files.push({name:"uploadkey",path:p});
 							cur['key'] = _this.key;
 							_this.uploadRecord(cur);
@@ -1208,6 +1230,11 @@
                		resultVue.isLoading = false;
                		resultVue.page==1 && plus.nativeUI.closeWaiting();
                	});
+			}
+			
+			//检查录音权限
+			function checkRecordPsm() {
+				
 			}
 			
 //			resultVue.model = [{title:"abcd", list: [{words: "chicken",total_score: 3.3,category: "read_word"},{words: "chicken",total_score: 3.3,category: "read_word"}]}];

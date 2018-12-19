@@ -105,7 +105,8 @@
 						fasc: {list:[]},
 						per: {list:[]},
 						ser: {list:[]}
-					}
+					},
+					isChange: false
 				},
 				methods: {
 					itemChange: function(item) {
@@ -129,6 +130,7 @@
 							}else{
 								_this.items.ser = {list:[]};
 							}
+							_this.isChange = true;
                 		});
 					},
 					fascChange: function() {
@@ -150,7 +152,7 @@
 			               	store.set("orals_menu", r.data);
 			               	
 			               	_this.serChange();
-			               	
+			               	_this.isChange = true;
 						});
 					},
 					//改变分册
@@ -172,6 +174,7 @@
 									}
 								});
 							});
+							_this.isChange = true;
 						}
 					}
 				}
@@ -185,16 +188,18 @@
 				
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){
-					store.set("book_items", book.items);
-	               	store.set("orals_catalog", catalog);
-	               	store.set("orals_catalog_id", catalog[0]?catalog[0].id:0);
-					mui.fire(self.opener(), "changeBook");
+					if(book.isChange){
+						store.set("book_items", book.items);
+		               	store.set("orals_catalog", catalog);
+		               	store.set("orals_catalog_id", catalog[0]?catalog[0].id:0);
+						mui.fire(self.opener(), "changeBook");
+					}
 					mui.back();
 				});
 				
 			});
 			
-			book.items = {"mater":{"list":[{"matername":"人教版（PEP）","matercode":"42"}],"selected":"15"},"sub":{"list":[{"subname":"英语","subcode":"03"}],"selected":"03"},"fasc":{"list":[],"selected":null},"per":{"list":[{"percode":"2","pername":"小学","enabled":true},{"percode":"3","pername":"初中","enabled":true},{"percode":"4","pername":"高中","enabled":false}],"selected":"2"}}
+//			book.items = {"mater":{"list":[{"matername":"人教版（PEP）","matercode":"42"}],"selected":"15"},"sub":{"list":[{"subname":"英语","subcode":"03"}],"selected":"03"},"fasc":{"list":[],"selected":null},"per":{"list":[{"percode":"2","pername":"小学","enabled":true},{"percode":"3","pername":"初中","enabled":true},{"percode":"4","pername":"高中","enabled":false}],"selected":"2"}}
 			
 		</script>
 	</body>

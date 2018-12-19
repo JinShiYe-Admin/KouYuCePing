@@ -1,78 +1,99 @@
 <!doctype html>
 <html>
-
+<!--注册页-->
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 		<style type="text/css">
-			.mui-bar-nav {
-				top: 0;
-				-webkit-box-shadow: 0 1px 6px #ccc;
-				box-shadow: 0 0 #ccc;
+			#register {
+				padding-left: 0.15rem;
+				padding-right: 0.15rem;
 			}
-			
 			.register-form {
-				margin-top: 70px;
+				padding-top: 20px;
 			}
-			
-			.mui-input-row {
-				padding: 2px 8%;
+			.register-form .mui-input-row {
+				padding-bottom: 2px;
+				margin-bottom: 8px;
 			}
-			
 			.mui-input-row label {
-				font-family: 'Helvetica Neue', Helvetica, sans-serif;
-				line-height: 1.1;
-				float: left;
-				width: 20%;
-				padding: 11px 15px;
+				width: 15%;
+				padding-right: 0;
 			}
-			
+			.mui-input-row label .icon {
+				font-size: 20px;
+				color: #B5B5B5;
+			}
 			.mui-input-row label~input {
-				float: right;
-				width: 80%;
-				margin-bottom: 0;
-				padding-left: 0;
-				border: 0;
+				font-size: 14px;
+				width: 84%;
 			}
-			
 			.mui-input-row:after {
 				position: absolute;
-				right: 12%;
+				right: 15px;
 				bottom: 0;
-				top: 35px;
-				left: 21%;
+				top: 96%;
+				left: 15px;
 				height: 1px;
 				content: '';
 				-webkit-transform: scaleY(.5);
 				transform: scaleY(.5);
 				background-color: #c8c7cc;
 			}
-			
-			.mui-title {
-				color: white;
-				font-size: 20px;
-				font-weight: 600;
+			#idenCodebtn {
+				border-radius: 13px;
+			    height: 25px;
+			    width: 85px;
+			    font-size: 12px;
+			    padding: 6px 0;
+			    margin-top: -35px;
+			    right: 5%;
 			}
-			
+			#idenCode ~ .mui-icon-clear {
+				right: 105px;
+			}
 			.check {
-				text-align: right;
-				margin-right: 12%;
+				text-align: center;
 				font-size: 12px;
+				color: #B5B5B5;
 			}
-			
+			.check .mui-checkbox {
+				display: inline-block;
+			}
+			.check .mui-checkbox input[type=checkbox] {
+				top: 0;
+				left: 5px;
+			}
+			.check .mui-checkbox input[type=checkbox]:before {
+				font-size: 18px;
+			}
+			.check .mui-checkbox.mui-left label {
+				width: auto;
+				padding-right: 2px;
+    			padding-left: 30px;
+			}
+			.check a {
+				vertical-align: middle;
+				color: #B5B5B5;
+				text-decoration: underline;
+			}
+			.check label, .check input {
+				vertical-align: middle;
+			}
 			.regbtnbox {
-				margin-top: 40px;
-				padding: 0px 12%;
+				margin-top: 10px;
+				padding: 0px 15px;
 			}
-			
 			.regbtn {
 				width: 100%;
-				border-radius: 25px;
-				height: 40px;
-				padding-top: 8px;
+				border-radius: 22px;
+				height: 44px;
+				padding: 0;
+				line-height: 44px;
 			}
 		</style>
 	</head>
@@ -85,36 +106,57 @@
 		<div id="register" class="mui-content">
 			<form id="registerForm" class="register-form">
 				<div class="mui-input-row">
-					<label style="margin-top: -6px;"><image src="../../img/register/phone.png" style="width: 30px;height: 30px;" /></label>
-					<input id='phoneNumber' maxlength="11" name='phoneNumber' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号">
+					<label>
+						<svg class="icon" aria-hidden="true">
+						  	<use xlink:href="#icon-icon-phone"></use>
+						</svg>
+					</label>
+					<input id='phoneNumber' maxlength="11" name='phoneNumber' type="text" class="mui-input-clear mui-input" placeholder="请输入手机号">
 				</div>
 
 				<div class="mui-input-row ">
-					<label style="margin-top: -6px;"><image src="../../img/register/idencode.png" style="width: 30px;height: 30px;" /></label>
-					<input id='idenCode' maxlength="6" name="idenCode" type="number" class="mui-input-clear mui-input " placeholder="请输入验证码">
-					<button id='idenCodebtn' @click="getPhoneCode" type="button" class="mui-btn btn-theme" style="border-radius: 25px;height: 25px;width: 90px;font-size: 12px;padding: 7px 15px;margin-top: -35px;right: 5%;">发送验证码</button>
+					<label>
+						<svg class="icon" aria-hidden="true">
+						  	<use xlink:href="#icon-icon-passcode"></use>
+						</svg>
+					</label>
+					<input id='idenCode' maxlength="6" name="idenCode" type="text" class="mui-input-clear mui-input" placeholder="请输入验证码">
+					<button id='idenCodebtn' @click="getPhoneCode" type="button" class="mui-btn btn-theme-border">发送验证码</button>
 				</div>
 
 				<div class="mui-input-row">
-					<label style="margin-top: -6px;"><image src="../../img/register/username.png" style="width: 30px;height: 30px;" /></label>
-					<input id='userName' maxlength="" name="userName" type="text" class="mui-input-clear mui-input" placeholder="请输入昵称">
+					<label>
+						<svg class="icon" aria-hidden="true">
+						  	<use xlink:href="#icon-icon-user"></use>
+						</svg>
+					</label>
+					<input id='userName' maxlength="18" name="userName" type="text" class="mui-input-clear mui-input" placeholder="请输入昵称">
 				</div>
 
 				<div class="mui-input-row">
-					<label style="margin-top: -6px;"><image src="../../img/register/password.png" style="width: 30px;height: 30px;" /></label>
+					<label>
+						<svg class="icon" aria-hidden="true">
+						  	<use xlink:href="#icon-icon-password"></use>
+						</svg>
+					</label>
 					<input id='password' maxlength="18" name="password" type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
 				</div>
 				<div class="mui-input-row">
-					<label style="margin-top: -6px;"><image src="../../img/register/password.png" style="width: 30px;height: 30px;" /></label>
+					<label>
+						<svg class="icon" aria-hidden="true">
+						  	<use xlink:href="#icon-icon-password"></use>
+						</svg>
+					</label>
 					<input id='confirmPassword' maxlength="18" name="confirmPassword" type="password" class="mui-input-clear mui-input" placeholder="请再次输入密码">
 				</div>
 			</form>
 			<div class="check">
-				<input @click="checked" id="checkBox" type="checkbox" style="vertical-align:middle;" /><label for="checkBox" style="vertical-align:middle;">我已阅读并接受</label>
-				<a href="javascript:;;">《注册协议》</a>
+				<div class="mui-checkbox mui-left">
+					<input @click="checked" id="checkBox" type="checkbox"/><label for="checkBox">我已阅读并接受</label>《<a href="javascript:;">注册协议</a>》
+				</div>
 			</div>
 			<div class="regbtnbox">
-				<button id='regbtn' @click="zhuce" :disabled="isDisabled" type="button" class="mui-btn mui-btn-primary btn-theme regbtn">立即注册</button>
+				<button id='regbtn' @click="zhuce" :class="{'mui-disabled':isDisabled}" type="button" class="mui-btn mui-btn-primary btn-theme regbtn">立即注册</button>
 			</div>
 		</div>
 	</body>
@@ -144,6 +186,9 @@
 		var personal;
 		var publicParameter;
 		mui.plusReady(function() {
+			plus.webview.currentWebview().setStyle({
+		        softinputMode: "adjustResize"
+		    });
 			//获取个人信息
 			personal = store.get(window.storageKeyName.PERSONALINFO);
 			console.log('personal:' + JSON.stringify(personal));
@@ -161,11 +206,11 @@
 				},
 				getPhoneCode: function() { //获取验证码
 					var params = $('#registerForm').serializeObject();
-					console.log('****************' + JSON.stringify(params));
+					console.log('获取验证码: ' + JSON.stringify(params));
 					if(params.phoneNumber == '') {
-						mui.toast('请输入手机号');
+						mui.toast('请输入手机号', {duration:'long', type:'div'});
 					} else if(!isPhone(params.phoneNumber)) {
-						mui.toast('请输入正确的手机号');
+						mui.toast('请输入正确的手机号', {duration:'long', type:'div'});
 					} else {
 						//握手
 						var enData0 = {};
@@ -199,7 +244,7 @@
 									console.log('GetCode:' + JSON.stringify(data1));
 									events.closeWaiting();
 									if(data1.RspCode == 0) {
-										mui.toast('验证码已发送');
+										mui.toast('验证码已发送', {duration:'long', type:'div'});
 									} else {
 										mui.toast(data1.RspTxt);
 									}
@@ -211,26 +256,30 @@
 					}
 				},
 				zhuce: function() {
+					if(this.isDisabled) {
+						mui.toast("请先接受《注册协议》", {duration:'long', type:'div'});
+						return false;
+					}
 					var params = $('#registerForm').serializeObject();
-					console.log('****************' + JSON.stringify(params));
+					console.log('注册数据：' + JSON.stringify(params));
 					if(params.phoneNumber == '') {
-						mui.toast('请输入手机号');
+						mui.toast('请输入手机号', {duration:'long', type:'div'});
 					} else if(!isPhone(params.phoneNumber)) {
-						mui.toast('请输入正确的手机号');
+						mui.toast('请输入正确的手机号', {duration:'long', type:'div'});
 					} else if(params.idenCode == '' || params.idenCode.length != 6) {
-						mui.toast('请输入正确的验证码');
+						mui.toast('请输入正确的验证码', {duration:'long', type:'div'});
 					} else if(params.userName == '') {
-						mui.toast('请输入昵称');
+						mui.toast('请输入昵称', {duration:'long', type:'div'});
 					} else if(params.password == '') {
-						mui.toast('请输入密码');
+						mui.toast('请输入密码', {duration:'long', type:'div'});
 					} else if(params.confirmPassword == '') {
-						mui.toast('请输入确认密码');
+						mui.toast('请输入确认密码', {duration:'long', type:'div'});
 					} else if(!(params.password === params.confirmPassword)) {
 						mui.toast('两次输入的密码不一致');
 					} else if(!checkPass(params.confirmPassword)) {
-						mui.toast('密码需为数字和字母的组合');
+						mui.toast('密码需为数字和字母的组合', {duration:'long', type:'div'});
 					} else if(params.confirmPassword.length > 18 || params.confirmPassword.length < 6) {
-						mui.toast('密码长度需为6到18个字符');
+						mui.toast('密码长度需为6到18个字符', {duration:'long', type:'div'});
 					} else {
 						//握手
 						var enData0 = {
@@ -281,12 +330,8 @@
 
 		//判断字符串是否为数字和字母组合
 		function checkPass(password) {
-			var re = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/g;
-			if(!re.test(password)) {
-				return false;
-			} else {
-				return true;
-			}
+			var re = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{2,}$/g;
+			return re.test(password);
 		}
 
 		//将输入表单中的内容，转为obj

@@ -9,13 +9,44 @@
 		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 		<style type="text/css">
-			.mui-bar-nav.blue {
-				background:linear-gradient(-55deg,rgba(60,157,251,1),rgba(60,157,251,1));
-				box-shadow: none;
+			.login-box {
+				padding: 0.3rem 0.15rem;
 			}
-			.mui-content .banner {
-				height: 1rem; 
-				min-height: 100px;
+			.login-box .mui-input-row {
+				margin-bottom: 0.2rem;
+				padding-bottom: 5px;
+			}
+			.mui-input-row label {
+				width: 15%;
+				padding-right: 0;
+			}
+			.mui-input-row label .icon {
+				font-size: 18px;
+				color: #B5B5B5;
+			}
+			.mui-input-row label~input {
+				font-size: 14px;
+				width: 84%;
+			}
+			.mui-input-row:after {
+				position: absolute;
+				right: 15px;
+				bottom: 0;
+				top: 96%;
+				left: 15px;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+			}
+			#login {
+				height: 44px;
+				line-height: 44px;
+				border-radius: 22px;
+				font-size: 16px;
+				width: 100%;
+				padding: 0;
 			}
 		</style>
 	</head>
@@ -23,30 +54,38 @@
 	<body>
 		<header class="mui-bar mui-bar-nav orals-header">
 			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
-			<!--<a id='register' class="mui-btn-link mui-pull-right">注册</a>-->
-			<h1 class="mui-title">口语测评</h1>
+			<a id='register' class="mui-btn-link mui-pull-right">注册</a>
+			<h1 class="mui-title">登录</h1>
 		</header>
 		<div class="mui-content">
-			<div style="height: 200px;font-size: 18px;color: #3DADEF;;padding: 100px 0px;text-align: center;">欢迎登录</div>
-			<div class="mui-input-row">
-				<label style="margin-top: -5px;"><image src="../../img/login/username.png" style="width: 25px;height: 25px;" /></label>
-				<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入用户名">
+			<div class="login-box" id="loginBox">
+				<div class="mui-input-row">
+					<label>
+						<svg class="icon" aria-hidden="true">
+						  	<use xlink:href="#icon-icon-user"></use>
+						</svg>
+					</label>
+					<input id='account' type="text" class="mui-input-clear mui-input" v-model="tempName" placeholder="请输入用户名">
+				</div>
+	
+				<div class="mui-input-row">
+					<label>
+						<svg class="icon" aria-hidden="true">
+						  	<use xlink:href="#icon-icon-password"></use>
+						</svg>
+					</label>
+					<input id='password' type="password" class="mui-input-clear mui-input" v-model="tempPW" placeholder="请输入密码">
+				</div>
+	
+				<div style="padding: 15px;">
+					<button id='login' type="button" class="mui-btn btn-theme" :class="{'mui-disabled': !isInput}" @click="login">登录</button>
+				</div>
 			</div>
-			<hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 30px 60px ;" />
-
-			<div class="mui-input-row ">
-				<label><image src="../../img/login/password.png" style="width: 25px;height: 25px;" /></label>
-				<input id='password' type="password" class="mui-input-clear mui-input " placeholder="请输入密码">
-			</div>
-			<hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 40px 60px ;" />
-
-			<div style="padding: 0px 20px;">
-				<button id='login' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #3DADEF; border:none; margin-top: 30px;height: 40px;padding-top: 8px;">登录</button>
-			</div>
+			
 		</div>
 	</body>
 	<script src="../../js/mui.min.js"></script>
-	<!--<script type="text/javascript" src="../../js/vue.js" ></script>-->
+	<script src="../../js/utils/vue.min.js"></script>
 	<!--<script type="text/javascript" src="../../js/vconsole.min.js" ></script>-->
 	<script src='../../js/jquery.min.js'></script>
 	
@@ -72,6 +111,9 @@
 		var tempModel = {};
 		var loginFlag = 0; //0自动登录，1不自动登录
 		mui.plusReady(function() {
+			plus.webview.currentWebview().setStyle({
+		        softinputMode: "adjustResize"
+		    });
 			//设置uuid(手机识别)与appid(APP识别)
 			tempModel = {
 				uuid: plus.device.uuid,
@@ -118,23 +160,48 @@
 			};
 			
 		});
-
-		document.getElementById("login").addEventListener('tap', function(event) {
-			console.log("登录");
-			var tempName = document.getElementById("account").value;
-			var tempPW = document.getElementById("password").value;
-			
-			//判断输入是否符合要求
-			if(checkInput(tempName) && checkInput(tempPW)) {
-				//login登录
-				loginPro(tempName, tempPW);
+		
+		var loginBox = new Vue({
+			el: "#loginBox",
+			data: {
+				tempName: "",
+				tempPW: ""
+			},
+			computed: {
+				isInput: function() {
+					return this.tempName||this.tempPW
+				}
+			},
+			methods: {
+				login: function() {
+					console.log("登录");
+					//判断输入是否符合要求
+					if(checkInput(this.tempName) && checkInput(this.tempPW)) {
+						loginPro(this.tempName, this.tempPW);//login登录
+					}
+				}
+			}
+		});
+		//监听清除按钮
+		$("#loginBox").on("tap",".mui-icon-clear", function(){
+			var input = $(this).siblings('input');
+			switch(input.attr('id')) {
+				case 'account':
+					loginBox.tempName = "";
+					break;
+				case 'password':
+					loginBox.tempPW = "";
+					break;
 			}
 		});
 		
-//		document.getElementById("register").addEventListener('tap', function (event) {
-//	        console.log("注册");
-//	        mui.openWindow({url: 'register.html'});
-//	    });
+		//注册
+		var register = document.getElementById("register");
+		if(register) {
+			register.addEventListener('tap', function (event) {
+		        mui.openWindow({url: 'register.html'});
+		    });
+		}
 
 		window.addEventListener('quit', function(data) {
 			loginFlag = 1;
@@ -272,8 +339,8 @@
 						console.log("用户信息为空");
 						//loginPro('00000000000', '123');
 					} else {
-						document.getElementById("account").value = personal.userName0;
-						document.getElementById("password").value = personal.password0;
+						loginBox.tempName = personal.userName0;
+						loginBox.tempPW = personal.password0;
 						//login登录
 						loginPro(personal.userName0, personal.password0);
 					}
