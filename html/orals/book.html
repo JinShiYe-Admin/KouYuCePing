@@ -146,8 +146,8 @@
 			               	r.data.forEach(function(v, i){
 			               		book_ser.list.push({sercode: i, sername: v.name});
 			               	});
-			               	_this.items.ser = book_ser;
-			               	
+//			               	_this.items.ser = book_ser;
+			               	Vue.set(_this.items, "ser", book_ser);
 			               	//请求成功后，保存教材信息
 			               	store.set("orals_menu", r.data);
 			               	
