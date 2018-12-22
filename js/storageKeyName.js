@@ -2,10 +2,10 @@
 
 var storageKeyName = (function(mod) {
 
-	mod.key = 0;//0测试；1正式
+	mod.key = 1;//0测试；1正式
 	var exLog = console.log;
 	console.log = function(hint, object) {
-		if(mod.key === 0) {
+		if(mod.key === 1) {
 			var argus = hint;
 			if(typeof(object) !== 'undefined') {
 				argus = hint + JSON.stringify(object);
@@ -36,10 +36,10 @@ var storageKeyName = (function(mod) {
 			break;
 			
 			case 1:
-				mod.SCHOOLID = 100008; //学校ID
+				mod.SCHOOLID = 100131; //学校ID
 				mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
-				mod.INTERFACEGU = "";//用户信息接口
-				mod.ORALSHOST = "";//口语测评接口
+				mod.INTERFACEGU = "https://boss.zhuxue101.net:444/api/Data/";//用户信息接口
+				mod.ORALSHOST = "http://zhxyx.jiaobaowang.net/speeking/";//口语测评接口
 			break;
 			
 		default:
@@ -70,7 +70,7 @@ var storageKeyName = (function(mod) {
 	mod.SHAKEHAND = 'ShakeHand'; //公钥，登录时，返回的握手信息，
 	mod.AUTOLOGIN = 'autoLogin'; //登录信息
 
-	mod.PUBLICPARAMETER = 'publicParameter' //共用参数
+	mod.PUBLICPARAMETER = 'publicParameter'; //共用参数
 
 	mod.WAITING = '加载中...'; //
 	mod.UPLOADING = '上传中...';

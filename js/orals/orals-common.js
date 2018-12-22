@@ -86,7 +86,7 @@ function getBookNames() {
 			per: filterArray(book_items.per.list, "percode", book_items.per.selected)[0],
 			ser: filterArray(book_items.ser.list, "sercode", book_items.ser.selected)[0]
 		}
-		return book.sub.subname+book.mater.matername+book.fasc.fascname+book.ser.sername;
+		return (book.sub?book.sub.subname:"")+(book.mater?book.mater.matername:"")+(book.fasc?book.fasc.fascname:"")+(book.ser?book.ser.sername:"");
 	}
 }
 
