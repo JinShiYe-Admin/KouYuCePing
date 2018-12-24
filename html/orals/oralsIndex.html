@@ -397,20 +397,20 @@
 				function getInitData() {
 					var book_items = store.get('book_items');
 					//保存了上一次记录时
-					getBook();
-//					if(isGetLast&&book_items) {
-//						// 获取教材信息
-//						var last_book_items = book_items;
-//						getBook({
-//							percode: last_book_items.per.selected,
-//							subcode: last_book_items.sub.selected,
-//							matercode: last_book_items.mater.selected,
-//							fasccode: last_book_items.fasc.selected
-//						}, last_book_items.ser.selected);
-//					}else{
-//						// 获取教材信息
-//						getBook({});
-//					}		
+//					getBook();
+					if(isGetLast&&book_items) {
+						// 获取教材信息
+						var last_book_items = book_items;
+						getBook({
+							percode: last_book_items.per.selected,
+							subcode: last_book_items.sub.selected,
+							matercode: last_book_items.mater.selected,
+							fasccode: last_book_items.fasc.selected
+						}, last_book_items.ser?last_book_items.ser.selected:0);
+					}else{
+						// 获取教材信息
+						getBook({});
+					}		
 				}
 				
 				// 获取教材信息
@@ -480,7 +480,7 @@
 		               	setBaseData();//设置数据
 		               	
 					}, function(res){
-						console.log(JSON.stringify(res));
+//						console.log(JSON.stringify(res));
 						store.set("book_items", auto_book);
 						plus.nativeUI.closeWaiting();
 					}, function(){
