@@ -333,7 +333,7 @@
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
 		<!--<script src="../../js/utils/events.js"></script>-->
 		
-		<script src="../../js/orals/orals-common.js"></script>
+		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
 //			setRem(document, window);
 			var muiTitle = document.querySelector('.mui-bar .mui-title');
@@ -396,21 +396,15 @@
 				
 				function getInitData() {
 					var book_items = store.get('book_items');
+					var book_code = {};
 					//保存了上一次记录时
-//					getBook();
-					if(isGetLast&&book_items) {
-						// 获取教材信息
-						var last_book_items = book_items;
-						getBook({
-							percode: last_book_items.per.selected,
-							subcode: last_book_items.sub.selected,
-							matercode: last_book_items.mater.selected,
-							fasccode: last_book_items.fasc.selected
-						}, last_book_items.ser?last_book_items.ser.selected:0);
-					}else{
-						// 获取教材信息
-						getBook({});
-					}		
+					if(isGetLast&&book_items&&book_items.per.list.length){
+						book_code.percode = book_items.per.selected||book_items.per.list[0].percode;
+						book_code.subcode = book_items.sub.selected;
+						book_code.matercode = book_items.mater.selected;
+						book_code.fasccode = book_items.fasc.selected;
+					}
+					getBook(book_code, book_items&&book_items.ser?book_items.ser.selected:0);	
 				}
 				
 				// 获取教材信息
@@ -450,6 +444,7 @@
 						fasccode: auto_book.fasc.selected
 					};
 					oralsAjax('/catalog', data, function(res){
+						persubmatTime = 0;
 						//保存教材
 						var book_ser = {list:[], selected: ser||0}
 		               	res.data.forEach(function(v, i){
@@ -480,8 +475,12 @@
 		               	setBaseData();//设置数据
 		               	
 					}, function(res){
-//						console.log(JSON.stringify(res));
+						//获取不到 目录和教材 时
+						console.log(JSON.stringify(res));
+						auto_book.ser = {list:[], selected: null};
 						store.set("book_items", auto_book);
+						store.set("orals_menu", []);
+						store.set("orals_catalog", []);
 						plus.nativeUI.closeWaiting();
 					}, function(){
 						plus.nativeUI.closeWaiting();
@@ -1234,11 +1233,6 @@
                		resultVue.isLoading = false;
                		resultVue.page==1 && plus.nativeUI.closeWaiting();
                	});
-			}
-			
-			//检查录音权限
-			function checkRecordPsm() {
-				
 			}
 			
 //			resultVue.model = [{title:"abcd", list: [{words: "chicken",total_score: 3.3,category: "read_word"},{words: "chicken",total_score: 3.3,category: "read_word"}]}];

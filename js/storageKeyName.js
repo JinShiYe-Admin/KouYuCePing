@@ -2,10 +2,10 @@
 
 var storageKeyName = (function(mod) {
 
-	mod.key = 1;//0测试；1正式
+	mod.key = 0;//0测试；1正式
 	var exLog = console.log;
 	console.log = function(hint, object) {
-		if(mod.key === 1) {
+		if(mod.key === 0) {
 			var argus = hint;
 			if(typeof(object) !== 'undefined') {
 				argus = hint + JSON.stringify(object);
@@ -15,7 +15,7 @@ var storageKeyName = (function(mod) {
 	}
 	switch(mod.key) {
 		case 0: //测试
-			mod.SCHOOLID = 100008; //学校ID
+			mod.SCHOOLID = 100102; //学校ID
 			mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/'; //用户信息接口
 //			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像

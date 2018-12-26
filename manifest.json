@@ -243,7 +243,7 @@
 					"js/orals/iconfont.js",
 					"js/mui.min.js",
 					"js/vue.min.js",
-					"js/orals/orals-common.js"
+					"js/orals/common.js"
 				],
 				"refer": [
 					"html/orals/index.html",
@@ -269,7 +269,7 @@
 					"js/utils/store.js",
 					"js/jquery.min.js",
 					"js/orals/layer/layer.js",
-					"js/orals/orals-common.js",
+					"js/orals/common.js",
 					"css/orals/icon-voice.gif",
 					"css/orals/icon-record.gif"
 				],
@@ -290,7 +290,7 @@
 					"js/mui.min.js",
 					"js/vue.min.js",
 					"js/lib/vconsole/vconsole.min.js",
-					"js/orals/orals-common.js"
+					"js/orals/common.js"
 				],
 				"refer": [
 					"html/orals/book.html"
@@ -333,7 +333,7 @@
 					"js/mui.min.js",
 					"js/vue.min.js",
 					"js/lib/vconsole/vconsole.min.js",
-					"js/orals/orals-common.js"
+					"js/orals/common.js"
 				],
 				"refer": [
 					"html/orals/record.html"
@@ -349,7 +349,7 @@
 					"js/mui.min.js",
 					"js/vue.min.js",
 					"js/lib/vconsole/vconsole.min.js",
-					"js/orals/orals-common.js"
+					"js/orals/common.js"
 				],
 				"refer": [
 					"html/orals/index.html",

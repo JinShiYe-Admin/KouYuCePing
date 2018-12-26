@@ -105,7 +105,7 @@
 	<!--<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>-->
 	<!--<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>-->
 	
-	<script type="text/javascript" src="../../js/orals/orals-common.js" ></script>
+	<script type="text/javascript" src="../../js/orals/common.js" ></script>
 	<script type="text/javascript">
 		setRem(document, window);
 		var tempModel = {};
@@ -304,7 +304,7 @@
 							} else {
 								//判断权限  
 								var permission = true;
-								if(personal.utid == '0') {
+								if(personal.utid == '0'||personal.schid!=window.storageKeyName.SCHOOLID) {
 									permission = false;
 								}
 								if(permission) {
@@ -312,7 +312,7 @@
 										url: '../orals/oralsIndex.html'
 									});
 								}else{
-									mui.toast("此用户无登录权限");
+									mui.toast("您没有登录权限");
 								}
 							}
 						} else {

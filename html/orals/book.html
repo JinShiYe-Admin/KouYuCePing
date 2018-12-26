@@ -90,7 +90,7 @@
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
 		
-		<script src="../../js/orals/orals-common.js"></script>
+		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
 			mui.init();
 			
@@ -185,8 +185,21 @@
 						
 			mui.plusReady(function() {
 				var self = plus.webview.currentWebview();
+				
 				//当前教材	
-				book.items = store.get('book_items');
+//				book.items = store.get('book_items');
+				//获取教材
+				var book_items = store.get('book_items');
+				oralsAjax('/persubmat', {
+					percode: book_items.per.selected,
+					subcode: book_items.sub.selected,
+					matercode: book_items.mater.selected,
+					fasccode: book_items.fasc.selected
+				}, function(res){
+					var auto_book = res.data;
+					book.items = auto_book;
+					book.fascChange();
+				});
 				
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){
