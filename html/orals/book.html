@@ -187,19 +187,8 @@
 				var self = plus.webview.currentWebview();
 				
 				//当前教材	
-//				book.items = store.get('book_items');
-				//获取教材
-				var book_items = store.get('book_items');
-				oralsAjax('/persubmat', {
-					percode: book_items.per.selected,
-					subcode: book_items.sub.selected,
-					matercode: book_items.mater.selected,
-					fasccode: book_items.fasc.selected
-				}, function(res){
-					var auto_book = res.data;
-					book.items = auto_book;
-					book.fascChange();
-				});
+				book.items = store.get('book_items');
+				book.itemChange("per");
 				
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){

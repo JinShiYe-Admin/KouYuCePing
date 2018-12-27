@@ -118,7 +118,7 @@
 			
 			<!--副标题-->
 			<div id="second-title" class="second-title mui-text-center" :class="{'no-second': !isContentTitle}">
-		    	<div class="book-items-box" @click.stop="bookSelect()" v-cloak>
+		    	<div class="book-items-box" @tap.stop="bookSelect()" v-cloak>
 		    		<div id="bookItems">{{bookItems}}</div>
 		    		<a>
 		    			<svg class="icon" aria-hidden="true">
@@ -127,13 +127,13 @@
 		    		</a>
 		    	</div>
 		    	<div class="content-title" v-show="isContentTitle" v-cloak>
-		    		<a class="mui-icon" @click.stop="changeMenu(-1)">
+		    		<a class="mui-icon" @tap.stop="changeMenu(-1)">
 		    			<svg class="icon" aria-hidden="true">
 						  <use xlink:href="#icon-icon-left"></use>
 						</svg>
 		    		</a>
 		    		<div id="contentTitle" @tap="showMenu" v-html="contentTitle"></div>
-		    		<a class="mui-icon" @click.stop="changeMenu(1)">
+		    		<a class="mui-icon" @tap.stop="changeMenu(1)">
 		    			<svg class="icon" aria-hidden="true">
 						  <use xlink:href="#icon-icon-right"></use>
 						</svg>
