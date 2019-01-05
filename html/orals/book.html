@@ -133,21 +133,32 @@
 							_this.isChange = true;
                 		});
 					},
+					//改变年级
 					fascChange: function() {
 						var _this = this;
-						var data = {
-							percode: _this.items.per.selected,
-							subcode: _this.items.sub.selected,
-							matercode: _this.items.mater.selected,
-							fasccode: _this.items.fasc.selected
-						};
+						var data = {};
+						if(_this.items.per){
+							data.percode = _this.items.per.selected;
+						}
+						if(_this.items.sub){
+							data.subcode = _this.items.sub.selected;
+						}
+						if(_this.items.mater) {
+							data.matercode = _this.items.mater.selected;
+						}
+						if(_this.items.fasc) {
+							data.fasccode = _this.items.fasc.selected;
+						}
 						oralsAjax('/catalog', data, function(r){
 							var book_ser = {list:[], selected:0}
 			               	r.data.forEach(function(v, i){
 			               		book_ser.list.push({sercode: i, sername: v.name});
 			               	});
 							if(_this.items.hasOwnProperty("ser")){
-								_this.items.ser = book_ser;
+								_this.items.ser.list = book_ser.list;
+								if(r.data.length-1<_this.items.ser.selected||!_this.items.ser.selected) {
+									_this.items.ser.selected = 0;
+								}
 							}else{
 								Vue.set(_this.items, "ser", book_ser);
 							}
@@ -162,7 +173,7 @@
 					serChange: function() {
 						var _this = this;
 						var menu_tree = store.get("orals_menu");
-						if(menu_tree.length){
+						if(menu_tree&&menu_tree.length){
 							//获取最终目录，并存储目录
 							catalog = [];
 							readTree(menu_tree[_this.items.ser.selected].childList, function(node){
@@ -187,8 +198,32 @@
 				var self = plus.webview.currentWebview();
 				
 				//当前教材	
-				book.items = store.get('book_items');
-				book.itemChange("per");
+				var s_items = store.get('book_items');
+				oralsAjax('/persubmat', {}, function(res){
+					var rd = res.data;
+                	book.items.per = rd.per;
+                	var has_per = rd.per.list.some(function(v){return v.percode==s_items.per.selected});
+                	if(has_per){
+                		book.items.per.selected = s_items.per.selected;
+                	}
+					book.items.sub = rd.sub;
+					var has_sub = rd.sub.list.some(function(v){return v.subcode==s_items.sub.selected});
+					if(has_sub) {
+						book.items.sub.selected = s_items.sub.selected;
+					}
+					book.items.mater = rd.mater;
+					var has_mater = rd.mater.list.some(function(v){return v.matercode==s_items.mater.selected});
+					if(has_mater) {
+						book.items.mater.selected = s_items.mater.selected;
+					}
+					book.items.fasc = rd.fasc;
+					var has_fasc = rd.fasc.list.some(function(v){return v.fasccode==s_items.fasc.selected});
+					if(has_fasc){
+						book.items.fasc.selected = s_items.fasc.selected;
+					}
+					book.items.ser = s_items.ser;
+					book.fascChange();
+				});
 				
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){
