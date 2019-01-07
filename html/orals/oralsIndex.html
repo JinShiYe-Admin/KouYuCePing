@@ -319,7 +319,7 @@
 		<script src="../../js/utils/vue.min.js"></script>
 		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
 		<script src='../../js/libs/jquery.js'></script>
-		<script src="../../js/orals/layer/layer.js"></script>
+		<script src="../../js/layer/layer.js"></script>
 		
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
@@ -709,6 +709,10 @@
 						this.isShowMenu = false;
 					},
 					selectMenu: function(id) {
+						if(this.catalogId==id){
+							this.isShowMenu = false;
+							return false;
+						}
 						var _this = this;
 						if(testVue.state==4){
 							layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function(){
