@@ -118,7 +118,7 @@
 			
 			<!--副标题-->
 			<div id="second-title" class="second-title mui-text-center" :class="{'no-second': !isContentTitle}">
-		    	<div class="book-items-box" @tap.stop="bookSelect()" v-cloak>
+		    	<div class="book-items-box" @tap.stop="bookSelect()" @touchend.prevent v-cloak>
 		    		<div id="bookItems">{{bookItems}}</div>
 		    		<a>
 		    			<svg class="icon" aria-hidden="true">
@@ -335,7 +335,6 @@
 		
 		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
-//			setRem(document, window);
 			var muiTitle = document.querySelector('.mui-bar .mui-title');
 			var go_record = document.getElementById("goRecord");
 			
@@ -364,16 +363,22 @@
 				store.set("orals_auth", auth);
 
 				// 获取音频目录对象
-				//判断录音权限
-				plus.navigator.checkPermission("RECORD");
+				plus.navigator.checkPermission("RECORD");//判断录音权限
 				plus.io.resolveLocalFileSystemURL('_doc/', function(entry){
 					entry.getDirectory('audio', {create:true}, function(dir){
-						gentry = dir;
+						//清除缓存
+						gentry = function() {
+							dir.removeRecursively(function(){
+								console.log('已清除缓存！');
+							}, function(e){
+								console.log('操作失败：'+e.message);
+							});
+						}
 					}, function(e){
-						outSet('Get directory "audio" failed: '+e.message);
+						console.log('Get directory "audio" failed: '+e.message);
 					});
 				}, function(e){
-					outSet('Resolve "_doc/" failed: '+e.message);
+					console.log('Resolve "_doc/" failed: '+e.message);
 				} );
 				
 				//教材改变
@@ -413,7 +418,7 @@
 					oralsAjax('/persubmat', data, function(res){
 						//教材
 						var auto_book = res.data||{};
-						console.log("book_items:"+JSON.stringify(auto_book));
+						console.log("教材:"+JSON.stringify(auto_book));
 						//获取目录
 						if(ser){
 							getCatalog(auto_book, ser);
@@ -456,19 +461,7 @@
 						
 						//保存目录
 						store.set("orals_menu", res.data);
-						var catalog = []; 
-						readTree(res.data[book_ser.selected].childList, function(node){
-		                    if(!node.childList||!node.childList.length) {
-		                        catalog.push(node);
-		                    }
-		               	});
-		               	catalog.forEach(function(v, i){
-							readTree(res.data[book_ser.selected].childList, function(node){
-								if(node.id==v.pid){
-									catalog[i]["pname"] = node.name;
-								}
-							});
-						});
+						var catalog = getFinalCatalog(res.data[book_ser.selected].childList);
 		               	//保存分册目录
 		               	store.set("orals_catalog", catalog); 
 
@@ -734,7 +727,6 @@
 			
 			//audio对象
 			var audioEle = document.getElementById('audio');
-//			var audioErrored = false;
 			audioEle.onpause = function() {
 				testVue.playingAudio = false;
 				testVue.playingRecord = false;
@@ -910,12 +902,7 @@
 					startRecord: function() {
 						var _this = this;
 						var record = this.list[this.index];
-						gentry.removeRecursively(function(){
-							console.log('已清除缓存！');
-						}, function(e){
-							console.log('操作失败：'+e.message);
-						});
-						
+						gentry&&gentry();
 						recorder = setRecorder(_this.valid_touch, function(p){
 							files.push({name:"uploadkey",path:p});
 							_this.uploadRecord(record);
@@ -1042,7 +1029,6 @@
 							mui.toast('没有录音', { duration:'short', type:'div' });
 							return false;
 						}
-//						audioErrored = false;
 						this.audioStop();
 						audioEle.src = url;
 						audioEle.play();
@@ -1077,11 +1063,7 @@
 					//开始录音
 					startRecord: function(cur) {
 						var _this = this;
-						gentry.removeRecursively(function(){
-							console.log('已清除缓存！');
-						}, function(e){
-							console.log('操作失败：'+e.message);
-						});
+						gentry&&gentry();
 						recorder = setRecorder(_this.valid_touch, function(p){
 							files.push({name:"uploadkey",path:p});
 							cur['key'] = _this.key;
@@ -1175,11 +1157,6 @@
 				});
 			}
 			
-			//分数
-			function setWordsScore(score) {
-				return Math.round(score*20);
-			}
-			
 			//错题本列表
 			var catalog_ids;
 			function getErrList(callback) {
@@ -1236,7 +1213,8 @@
 			}
 			
 //			resultVue.model = [{title:"abcd", list: [{words: "chicken",total_score: 3.3,category: "read_word"},{words: "chicken",total_score: 3.3,category: "read_word"}]}];
-		
+//			testVue.list = [{"symbol":"ɪ'reɪzə","relative_id":0,"orals_id":15608,"integrity_score":0,"create_time":"2018-12-17 11:14:38","words":"eraser","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"橡皮","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/b179be8e19444d82a5bdbb6ab4a50494.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:fdxqDXdo09BDj8aV9B_hEdujB1g=","total_score":null,"id":15608,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'pensl","relative_id":0,"orals_id":15607,"integrity_score":0,"create_time":"2018-12-07 16:49:49","words":"pencil","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"铅笔","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/a02121e9e6234feea5341954295336bf.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:9dByQHYkSj4O-aSUaxujSjJIw80=","total_score":null,"id":15607,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'ruːlə","relative_id":0,"orals_id":15606,"integrity_score":0,"create_time":"2018-12-07 16:31:50","words":"ruler","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"尺子","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/617d511b40244892939ff102964b014a.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:-3iWp2PImbcH1rFTTuhmyu_ZWVI=","total_score":null,"id":15606,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"ˈkreɪən","relative_id":null,"orals_id":null,"integrity_score":null,"create_time":null,"words":"crayon","relative_type":null,"content":null,"time_len":3,"fluency_score":null,"record_url":null,"school_id":null,"user_id":null,"translations":"蜡笔","accuracy_score":null,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/e335bec0ab064f0da1d035167c17ebb3.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:0cDN7YfyaLaJYOQWOn1shPIYbdo=","total_score":null,"id":15609,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"}];
+//			testVue.index = 0;
 		</script>
 	</body>
 </html>

@@ -189,9 +189,7 @@
 					key: ""
 				},
 				methods: {
-					setScore: function(score) {
-						return Math.round(score*20);
-					},
+					setScore: setWordsScore,
 					toggleOpen: function(index, i) {
 						this.openLi.index = index;
 						this.openLi.i = i;

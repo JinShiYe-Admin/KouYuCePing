@@ -32,7 +32,13 @@ function getPrdName(fx) {
     return  names;
 }
 
+//接口地址
 var host = window.storageKeyName.ORALSHOST;
+
+//分数格式
+function setWordsScore(score) {
+	return Math.round(score*20);
+}
 
 //选择教材
 function goBook() {
@@ -99,6 +105,24 @@ function getCatalogName(id) {
 		final_name = cur_node.pid?((cur_node.pname||"")+"&nbsp;&nbsp;"+cur_node.name):cur_node.name;
 	}
 	return final_name;
+}
+
+//根据分册获取最末端目录，list：分册树形目录
+function getFinalCatalog(list){
+	var catalog = []; 
+	readTree(list, function(node){
+        if(!node.childList||!node.childList.length) {
+            catalog.push(node);
+        }
+   	});
+   	catalog.forEach(function(v, i){
+		readTree(list, function(node){
+			if(node.id==v.pid){
+				catalog[i]["pname"] = node.name;
+			}
+		});
+	});
+	return catalog;
 }
 
 //获取 上级+下级 目录节点
@@ -216,8 +240,12 @@ function setRecorder(touch, success, fail) {
 	if(mui.os.ios){
 		var rdps = plus.navigator.checkPermission("RECORD");
 		recorder = plus.audio.getRecorder();
-		if(rdps=="denied") {
-			mui.toast("录音已被禁用，请设置为允许。");
+		if(["authorized","notdeny"].indexOf(rdps)==-1){
+			if(rdps=="denied"){
+				mui.toast("录音已被禁用，请设置为允许。");
+			}else{
+				recorder.record({filename:"_doc/audio/"},function(){});
+			}
 			return false;
 		}
 	}else{

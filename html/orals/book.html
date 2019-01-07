@@ -175,19 +175,7 @@
 						var menu_tree = store.get("orals_menu");
 						if(menu_tree&&menu_tree.length){
 							//获取最终目录，并存储目录
-							catalog = [];
-							readTree(menu_tree[_this.items.ser.selected].childList, function(node){
-			                    if(!node.childList||!node.childList.length) {
-			                        catalog.push(node);
-			                    }
-			                });
-			               	catalog.forEach(function(v, i){
-								readTree(menu_tree[_this.items.ser.selected].childList, function(node){
-									if(node.id==v.pid){
-										catalog[i]["pname"] = node.name;
-									}
-								});
-							});
+							catalog = getFinalCatalog(menu_tree[_this.items.ser.selected].childList);
 							_this.isChange = true;
 						}
 					}
