@@ -79,6 +79,7 @@
 		
 		<header class="mui-bar mui-bar-nav orals-header">
 			<div class="mui-clearfix">
+				<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
 				<!--<a class="mui-icon mui-pull-left" style="padding: 6px 10px;">
 					<img id="headImg" src="" class="head-img"/>
 				</a>-->
@@ -350,8 +351,6 @@
 				mui.init();
 				
 				var self = plus.webview.currentWebview();
-				//禁止横屏
-				plus.screen.lockOrientation("portrait-primary");
 				
 				//判断登录者是否有上一次记录
 				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
@@ -401,6 +400,7 @@
 				
 				function getInitData() {
 					var book_items = store.get('book_items');
+//					console.log(JSON.stringify(book_items));
 					var book_code = {};
 					//保存了上一次记录时
 					if(isGetLast&&book_items&&book_items.per.list.length){
@@ -409,7 +409,11 @@
 						book_code.matercode = book_items.mater.selected;
 						book_code.fasccode = book_items.fasc.selected;
 					}
-					getBook(book_code, book_items&&book_items.ser?book_items.ser.selected:0);	
+					var ser = 0;
+					if(book_items&&book_items.ser){
+						ser = book_items.ser.selected;
+					}
+					getBook(book_code,ser);	
 				}
 				
 				// 获取教材信息
@@ -428,7 +432,7 @@
 					}, function(res){
 						persubmatTime++;
 						if(persubmatTime<5) {
-							getBook(data);
+							getBook(data,ser);
 							return "noToast";
 						}else{
 							plus.nativeUI.closeWaiting();

@@ -114,6 +114,9 @@
 			plus.webview.currentWebview().setStyle({
 		        softinputMode: "adjustResize"
 		    });
+		    //禁止横屏
+			plus.screen.lockOrientation("portrait-primary");
+			
 			//设置uuid(手机识别)与appid(APP识别)
 			tempModel = {
 				uuid: plus.device.uuid,

@@ -216,6 +216,7 @@
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){
 					if(book.isChange){
+//						console.log(JSON.stringify(book.items))
 						store.set("book_items", book.items);
 		               	store.set("orals_catalog", catalog);
 		               	store.set("orals_catalog_id", catalog[0]?catalog[0].id:0);
