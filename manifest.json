@@ -110,7 +110,7 @@
                 "frameworks":[
                 ],/*调用Native.js调用原生Objective-c API需要引用的FrameWork，如需调用GameCenter，则添加"GameKit.framework"*/
                "plistcmds": [
-					"Set:NSMicrophoneUsageDescription 获取您的语音信息",
+					"Set:NSMicrophoneUsageDescription 获取您的语音信息来录制语音",
 					"Set:NSPhotoLibraryUsageDescription 更换头像时，选择相片",
 					"Set:NSCameraUsageDescription 更换头像时，进行拍照",
 					"Set:NSLocationAlwaysUsageDescription 根据您的位置信息提供服务",
