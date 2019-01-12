@@ -15,7 +15,8 @@ var storageKeyName = (function(mod) {
 	}
 	switch(mod.key) {
 		case 0: //测试
-			mod.SCHOOLID = 100102; //学校ID
+			mod.SCHOOLID = 0;
+//			mod.SCHOOLID = 100102; //学校ID
 			mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/'; //用户信息接口
 //			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
@@ -36,7 +37,8 @@ var storageKeyName = (function(mod) {
 			break;
 			
 			case 1:
-				mod.SCHOOLID = 100131; //学校ID
+				mod.SCHOOLID = 0;
+//				mod.SCHOOLID = 100131; //学校ID
 				mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
 				mod.INTERFACEGU = "https://boss.zhuxue101.net:444/api/Data/";//用户信息接口
 				mod.ORALSHOST = "http://zhxyx.jiaobaowang.net/speeking/";//口语测评接口
