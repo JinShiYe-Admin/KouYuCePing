@@ -895,7 +895,10 @@
 					},
 					//点击录音
 					record: function(event) {
-						if(!this.list[this.index]) return;
+						if(!this.list[this.index]){
+							mui.toast("没有测评内容", { duration:'short', type:'div' });
+							return;
+						}
 						if(!this.isRecording) {
 							this.isRecording = true;
 							this.startRecord();
