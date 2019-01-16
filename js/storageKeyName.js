@@ -5,7 +5,7 @@ var storageKeyName = (function(mod) {
 	mod.key = 1;//0测试；1正式
 	var exLog = console.log;
 	console.log = function(hint, object) {
-		if(mod.key === 0) {
+		if(mod.key === 1) {
 			var argus = hint;
 			if(typeof(object) !== 'undefined') {
 				argus = hint + JSON.stringify(object);
@@ -41,7 +41,7 @@ var storageKeyName = (function(mod) {
 //				mod.SCHOOLID = 100131; //学校ID
 				mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
 				mod.INTERFACEGU = "https://boss.zhuxue101.net:444/api/Data/";//用户信息接口
-				mod.ORALSHOST = "http://zhxyx.jiaobaowang.net/speeking/";//口语测评接口
+				mod.ORALSHOST = "https://zhxyx.jiaobaowang.net/speeking/";//口语测评接口
 			break;
 			
 		default:
