@@ -109,7 +109,7 @@
 	<script type="text/javascript">
 		setRem(document, window);
 		var tempModel = {};
-		var loginFlag = 0; //0自动登录，1不自动登录
+		var loginFlag = 1; //0自动登录，1不自动登录
 		mui.plusReady(function() {
 			plus.webview.currentWebview().setStyle({
 		        softinputMode: "adjustResize"
@@ -330,29 +330,16 @@
 		}
 
 		var setUUID = function(tempStr) {
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal: ', personal);
+			if(personal) {
+				loginBox.tempName = personal.userName0;
+				loginBox.tempPW = personal.password0;
+			}
 			//自动登录
 			if(loginFlag == 0) {
-				//判断上次是否登录过，自动登录
-				//获取个人信息
-				var personal = window.storageKeyName.PERSONALINFO?store.get(window.storageKeyName.PERSONALINFO):"";
-				console.log('personal: ', personal);
-				
-				if(personal) {
-					if(personal.utid == 'undefined' || personal.utid == null || personal.userName0 == null) {
-						console.log("用户信息为空");
-						//loginPro('00000000000', '123');
-					} else {
-						loginBox.tempName = personal.userName0;
-						loginBox.tempPW = personal.password0;
-						//login登录
-						loginPro(personal.userName0, personal.password0);
-					}
-				} else {
-					console.log("找不到用户");
-					//loginPro('00000000000', '000000');
-				}
-			} 
-			
+				loginBox.login();
+			}
 		}
 
 		//判断是否输入了值
