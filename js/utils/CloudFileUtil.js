@@ -74,7 +74,7 @@ var CloudFileUtil = (function($, mod) {
 			}
 			//console.log("参数数据：" + JSON.stringify(configure.options));
 			mui.ajax(url, {
-//				async: false,
+				async: false,
 				data: configure.options,
 				dataType: 'json', //服务器返回json格式数据
 				type: 'post', //HTTP请求类型
@@ -152,7 +152,8 @@ var CloudFileUtil = (function($, mod) {
 		if(data.type == "2" || data.type == "3") { //视频||音频
 			configure.thumbKey = [];
 		}
-		for(var i in data.fileArray) {
+//		for(var i in data.fileArray) {
+		for (var i = 0; i < data.fileArray.length; i++) {
 			var filePaths = data.fileArray[i].split("/");
 			var QNFileName = filePaths[filePaths.length - 1];
 			var param = {
@@ -722,7 +723,7 @@ var CloudFileUtil = (function($, mod) {
 //		console.log('url:'+url);
 //		console.log('data:'+data);
 		mui.ajax(url, {
-//			async: false,
+			async: false,
 			data: data, //请求参数
 			dataType: 'json', //服务器返回json格式数据
 			type: 'post', //HTTP请求类型
@@ -903,7 +904,7 @@ var CloudFileUtil = (function($, mod) {
 				}
 				//console.log("参数数据：" + JSON.stringify(configure.options));
 				mui.ajax(url, {
-//					async: false,
+					async: false,
 					data: configure.options,
 					dataType: 'json', //服务器返回json格式数据
 					type: 'post', //HTTP请求类型

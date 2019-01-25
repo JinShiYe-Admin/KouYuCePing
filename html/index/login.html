@@ -4,11 +4,14 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 		<style type="text/css">
+			body {
+				backface-visibility: hidden;
+			}
 			.login-box {
 				padding: 0.3rem 0.15rem;
 			}
@@ -107,6 +110,7 @@
 	
 	<script type="text/javascript" src="../../js/orals/common.js" ></script>
 	<script type="text/javascript">
+		mui.init();
 		setRem(document, window);
 		var tempModel = {};
 		var loginFlag = 1; //0自动登录，1不自动登录
@@ -311,9 +315,14 @@
 									permission = false;
 								}
 								if(permission) {
-									mui.openWindow({
-										url: '../orals/oralsIndex.html'
-									});
+									if(mui.os.ios){
+										plus.webview.open('../orals/oralsIndex.html','orals-index',{},'slide-in-right');
+									}else{
+										mui.openWindow({
+											url: '../orals/oralsIndex.html',
+											id: 'orals-index'
+										});
+									}
 								}else{
 									mui.toast("您没有登录权限");
 								}

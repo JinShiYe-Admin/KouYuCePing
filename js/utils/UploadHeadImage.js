@@ -156,7 +156,7 @@ var UploadHeadImage = (function($, mod) {
 						//console.log('未选取图片:' + JSON.stringify(error));
 					}
 				}
-			});
+			},{multiple:false,maximum:1});
 		} catch(e) {
 			alert('### ERROR ### 调用系统相册异常 name:' + e.name + " message:" + e.message);
 			errorCB({
@@ -173,7 +173,7 @@ var UploadHeadImage = (function($, mod) {
 			path: filepath,
 			dst: '_documents/' + fileName
 		}, function(event) {
-			console.log("压缩成功")
+			console.log("压缩完成");
 			uploadHeadImge(wd, event.target);
 		}, function(error) {
 			wd.close();
@@ -205,7 +205,7 @@ var UploadHeadImage = (function($, mod) {
 		CloudFileUtil.getQNUpToken(getUploadTokenUrl, getToken, function(data) {
 			var QNUptoken = data.data; //token数据
 			var configure = data.configure; //获取token的配置信息
-			console.log('七牛上传token:' + JSON.stringify(QNUptoken));
+			//console.log('七牛上传token:' + JSON.stringify(QNUptoken));
 			if(QNUptoken.Status == 0) { //失败
 				mui.toast('获取上传凭证失败 ' + QNUptoken.Message);
 				//console.log('### ERROR ### 请求上传凭证失败' + QNUptoken.Message);
@@ -213,15 +213,20 @@ var UploadHeadImage = (function($, mod) {
 			} else {
 				CloudFileUtil.upload(fPath, QNUptoken.Data.Token, QNUptoken.Data.Key, function(upload, status) {
 					//上传任务完成的监听
-					console.log('上传任务完成:' + status);
+					//console.log('上传任务完成:' + status);
 					//console.log('上传任务完成:' + JSON.stringify(upload));
-					if(status == 200) { //上传任务成功
-						//头像类型,个人头像0，资料头像1，群头像2
+					if(status == 200) { //上传任务成功 //头像类型,个人头像0，资料头像1，群头像2
 						var thumb = QNUptoken.Data.OtherKey[configure.thumbKey]; //缩略图地址
 						var domain = QNUptoken.Data.Domain + QNUptoken.Data.Key; //文件地址
-						////console.log(thumb);
-						console.log('domain:'+domain);
-						setTimeout(function() {
+						console.log("缩略图:"+thumb);
+						console.log('上传domain:'+domain);
+						// 先本地更新
+						if(replaceHeadImg && (typeof replaceHeadImg === "function")) {
+							wd.close();
+							mui.toast('个人头像更新成功');
+							replaceHeadImg(fPath);
+						}
+						setTimeout(function(){
 							switch(imageType) {
 								case 0: //个人头像
 									changeHeadImge(wd, domain, thumb);
@@ -338,18 +343,25 @@ var UploadHeadImage = (function($, mod) {
 		//不需要加密的数据
 		var comData0 = {
 			uuid: publicParameter.uuid, //用户设备号
-//			utid: personal.utid, //用户ID
-			stuid: personal.utid,
 			type: 'uico', //修改类型，upw:密码, uico:头像
 			val: domain, //对应类型的值
 			utoken: personal.utoken, //用户令牌
 			appid: publicParameter.appid //系统所分配的应用ID
-		};
-		events.showWaiting();
+		}
+		var tempUrl = '';
+		if (personal.utp == 1) { //0老师，2学生，1家长
+			comData0.utid = personal.utid;
+			tempUrl = 'UpUserInfo';
+		} else{
+			comData0.stuid = personal.utid;
+			tempUrl = 'UpStuInfo';
+		}
+		// events.showWaiting();
 		//发送网络请求，data为网络返回值
-		postDataEncry('UpStuInfo', enData0, comData0, 0, function(data) {
-			console.log('UpUserInfo:' + JSON.stringify(data));
-			events.closeWaiting();
+		postDataEncry(tempUrl, enData0, comData0, 0, function(data) {
+			console.log(tempUrl + JSON.stringify(data));
+			// events.closeWaiting();
+			wd.close();
 			if(data.RspCode == 0) {
 				//成功的回调
 				successCallBack(imgeURL);

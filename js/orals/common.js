@@ -1,7 +1,11 @@
 
 //重新登录，flag：1关闭所有页面，退出登录；0仅返回登录页
 function reLogin(flag) {
-	plus.webview.open('../../html/index/login.html', "", {}, "fade-in", 150, function(){
+	plus.nativeUI.showWaiting();
+	var login = plus.webview.create('../../html/index/login.html');
+	login.onloaded = function(){
+		plus.nativeUI.closeWaiting();
+		login.show("fade-in");
 		var wvs = plus.webview.all();
 		for(var i = 0, len = wvs.length; i < len; i++) {
 			//关闭除login页面外的其他页面
@@ -10,8 +14,7 @@ function reLogin(flag) {
 			}
 			plus.webview.close(wvs[i], "none");
 		}
-	});
-	
+	}
 	if(flag==1) {
 		store.remove(window.storageKeyName.PERSONALINFO);
 	}

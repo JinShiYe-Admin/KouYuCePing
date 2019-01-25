@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 		<style type="text/css">
@@ -40,12 +40,12 @@
 						<p class="mui-ellipsis">头像</p>
 					</a>
 				</li>
-				<li class="mui-table-view-cell mui-media">
+				<!-- <li class="mui-table-view-cell mui-media">
 					<a href="javascript:;">
 						<p class="mui-ellipsis mui-pull-right headName" v-cloak>{{peoplePhone}}</p>
 						<p class="mui-ellipsis headName">手机号</p>
 					</a>
-				</li>
+				</li> -->
 				<li class="mui-table-view-cell mui-media">
 					<a href="javascript:;">
 						<p class="mui-ellipsis mui-pull-right headName" v-cloak>{{peopleName}}</p>
@@ -74,7 +74,7 @@
 		<script src="../../js/utils/utils.js"></script>
 		<script src='../../js/libs/crypto-js/require.js'></script>
 		<script src='../../js/utils/signHmacSHA1.js'></script>
-		<!--<script src='../../js/utils/sortSign.js'></script>-->
+		<script src='../../js/utils/sortSign.js'></script>
 		
 		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
@@ -84,13 +84,26 @@
 			mui.plusReady(function() {
 				personal = store.get(window.storageKeyName.PERSONALINFO);
 				console.log('personal:' + JSON.stringify(personal));
-
+		
 				peopleInfo.peopleHeadImg = setImg(personal.imgurl);
 				peopleInfo.peopleName = personal.utname;
 				peopleInfo.peoplePhone = '暂无手机号';
-
+				
+				if(personal.utp != 0) {
+					var img = document.getElementById("imgCell");
+					UploadHeadImage.addListener(img, 0, {
+						id: personal.utid, //utid
+						//name: data.studentName //资料名称
+					}, function(successCB) {
+						setHeadImg(successCB);
+					}, function(errorCB) {
+						//console.log('上传并修改个人头像，失败的回调' + JSON.stringify(errorCB));
+						mui.toast(errorCB.RspTxt);
+					});
+				}
+		
 			});
-
+		
 			var peopleInfo = new Vue({
 				el: "#peopleInfo",
 				data: {
@@ -99,37 +112,8 @@
 					peopleName: '',
 					peoplePhone: ''
 				},
-				mounted: function(){
-					if(personal.utp != 0) {
-						var img = document.getElementById("imgCell");
-						UploadHeadImage.addListener(img, 0, {
-							id: personal.utid, //utid
-							//name: data.studentName //资料名称
-						}, function(successCB) {
-							var wd = events.showWaiting('更新头像...');
-							//console.log('上传并修改个人头像，成功的回调' + JSON.stringify(successCB));
-							mui.toast('个人头像更新成功');
-							setTimeout(function() {
-								document.getElementById("img").src = successCB;
-								document.getElementById("img").onload = function() {
-									wd.close();
-								}
-							}, 2000);
-							// 设置头像
-							personal.imgurl = successCB;
-							store.set(window.storageKeyName.PERSONALINFO, personal);
-							mui.fire(plus.webview.currentWebview().opener(), 'mine_setHeadImg', {
-								imgurl: successCB
-							});
-						}, function(errorCB) {
-							//console.log('上传并修改个人头像，失败的回调' + JSON.stringify(errorCB));
-							mui.toast(errorCB.RspTxt);
-						});
-					}
-				},
 				methods: {
 					modifyImg: function() {
-						console.log("click")
 						if(chenkNetwork()) {
 							return;
 						}
@@ -189,11 +173,11 @@
 								}
 							});
 						}
-
+		
 					}
 				}
 			});
-
+		
 			//上传附件
 			function uploadFile(path, index) {
 				if(chenkNetwork()) {
@@ -215,9 +199,10 @@
 								//服务端返回的结果
 								var result = JSON.parse(t.responseText);
 								if(result.RspCode == '0000') {
-									console.log("result：" + t.responseText);
+									console.log("上传成功：" + t.responseText);
+									mui.toast('个人头像更新成功');
 									// 设置头像
-									setHeadImg(result);
+									setHeadImg('https://' + result.RspData);
 								} else {
 									console.log("上传失败 ：" + t.responseText);
 									wt.close();
@@ -242,9 +227,9 @@
 						});
 						task.start();
 					}
-				})
+				}, 'div');
 			}
-
+		
 			var chenkNetwork = function() {
 				if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
 					mui.toast('网络异常，请检查网络设置！');
@@ -252,15 +237,9 @@
 				}
 				return false;
 			}
-
+		
 			//上传成功设置主页和本业头像
-			function setHeadImg(result) {
-				var tempImg = '';
-				if(window.storageKeyName.key == 0) {
-					tempImg = 'http://' + result.RspData;
-				} else {
-					tempImg = 'https://' + result.RspData;
-				}
+			function setHeadImg(tempImg) {
 				peopleInfo.peopleHeadImg = tempImg;
 				personal.imgurl = tempImg;
 				store.set(window.storageKeyName.PERSONALINFO, personal);
@@ -269,7 +248,12 @@
 					imgurl: tempImg
 				});
 			}
-
+			function replaceHeadImg(tempImg) {
+				peopleInfo.peopleHeadImg = tempImg;
+				personal.imgurl = tempImg;
+				mui.fire(plus.webview.currentWebview().opener(), 'mine_setHeadImg', {imgurl: tempImg});
+			}
+		
 			//压缩图片
 			function _compressImage(filePath, successCallBack, errorCallBack) {
 				var options = {
@@ -281,7 +265,7 @@
 					width: "100px", //缩放图片的宽度
 					height: "100px"
 				}
-
+		
 				plus.zip.compressImage(options,
 					function(event) {
 						//图片压缩成功
@@ -300,7 +284,7 @@
 						errorCallBack(error);
 					}
 				);
-
+		
 			}
 		</script>
 	</body>

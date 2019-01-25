@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
@@ -23,9 +23,6 @@
 			    right: -30px;
 			    top: -15px;
 			    color: #7290A1;
-			}
-			.mui-content {
-				height: 100%;
 			}
 			#contentTitle {
 				font-size: 16px;
@@ -80,9 +77,9 @@
 		<header class="mui-bar mui-bar-nav orals-header">
 			<div class="mui-clearfix">
 				<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
-				<!--<a class="mui-icon mui-pull-left" style="padding: 6px 10px;">
+				<!-- <a class="mui-icon mui-pull-left" style="padding: 6px 10px;">
 					<img id="headImg" src="" class="head-img"/>
-				</a>-->
+				</a> -->
 				<a id="goRecord" class="mui-btn-link mui-pull-right">测评记录</a>
 			</div>
 		    <h1 class="mui-title">单词测评</h1>
@@ -584,7 +581,7 @@
 					});
 					
 					//打开个人中心
-					headImg.onclick = function() {
+					headImg.addEventListener("tap", function(){
 						if(!center) return;
 						center.show("slide-in-left", 150);
 						//主窗体开始侧滑；
@@ -595,10 +592,10 @@
 								duration: 150
 							}
 						});
-					}	
+					});
 					
 					//关闭登录页
-					self.opener().close("none");
+					self.opener()&&self.opener().close("none");
 				}
 				
 				//退出
