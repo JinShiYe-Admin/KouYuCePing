@@ -624,6 +624,59 @@ nav.mui-bar {
 /*以下为独立版额外样式，整合时可去掉*/
 
 /*订购页面*/
+.flex-between {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.flex-between .ul-btn {
+	flex-shrink: 0;
+}
+.mui-table-view img.mui-media-object {
+	object-fit: cover;
+}
+.mui-media-body .mui-ellipsis-title + .mui-ellipsis-2 {
+	margin-bottom: 5px;
+}
+.mui-media-body .flex-between > .mui-ellipsis-2 {
+	line-height: 1.2;
+}
+.btn-order, .btn-ordered {
+	line-height: 1;
+	padding: 5px 12px;
+}
+.mui-android .btn-order, .mui-android .btn-ordered {
+	padding: 5px 12px 4px;
+}
+.btn-order {
+	border: 1px solid #33CCFF;
+	color: #33CCFF;
+}
+.btn-order:enabled:active {
+	background-color: #FFFFFF;
+	opacity: 0.8;
+}
+.btn-ordered {
+	background: #33CCFF;
+	color: #fff;
+	border: none;
+}
+.btn-ordered:enabled:active {
+	background-color: #33CCFF;
+	opacity: 0.8;
+}
+.mui-media-body .mui-ellipsis-title {
+	font-size: 18px;
+	color: #000;
+	overflow: hidden;
+	word-break: break-all;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	white-space: normal;
+	height: 27px;
+	line-height: 27px;
+}
 .check label > a, .user-title-footer .ul-p, .user-title-footer .ul-p-right,
 .mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
 	color: #3C9DFB;
@@ -634,25 +687,6 @@ nav.mui-bar {
 .pay-btn {
     height: 50px;
 	border-radius: 0;
-}
-.btn-order {
-	padding: 2px 12px;
-	border: 1px solid #33CCFF;
-	color: #33CCFF;
-}
-.btn-order:enabled:active {
-	background-color: #FFFFFF;
-	opacity: 0.8;
-}
-.btn-ordered {
-	padding: 2px 12px;
-	background: #33CCFF;
-	color: #fff;
-	border: none;
-}
-.btn-ordered:enabled:active {
-	background-color: #33CCFF;
-	opacity: 0.8;
 }
 .bottom-row {
 	position: fixed;
@@ -675,18 +709,6 @@ nav.mui-bar {
     transform-origin: 0 90%;
     background-color: #c8c7cc;
 }
-.mui-ellipsis-title {
-	font-size: 18px;
-	color: #000;
-	overflow: hidden;
-	word-break: break-all;
-	display: -webkit-box;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	white-space: normal;
-	height: 27px;
-	line-height: 27px;
-}
 .mui-ellipsis-title .mark, .user-title .mark {
 	border: 1px solid #ffb964;
 	border-radius: 2px;
@@ -697,15 +719,7 @@ nav.mui-bar {
 	margin-right: 4px;
 	font-weight: normal;
 }
-.mui-ellipsis-title + .mui-ellipsis {
-	height: 34px;
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-	white-space: normal;
-	line-height: 17px;
-	margin-bottom: 5px;
-}
+/*订购页面-end*/
 
 /*头像*/
 .mui-bar-nav .head-img {

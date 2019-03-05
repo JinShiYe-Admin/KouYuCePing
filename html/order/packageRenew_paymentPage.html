@@ -5,59 +5,81 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 		<style type="text/css">
-			body {
+			body, .mui-content {
 				background: #F2F2F2;
 			}
-			
+			.mui-content::-webkit-scrollbar {
+				display: none;
+			}
+			#orderDetailData {
+				padding-bottom: 70px;
+			}
 			.mui-row {
 				background: #FFF;
+				margin-bottom: 5px;
 			}
-			
-			.mui-table-view .mui-media-object {
-				max-width: 100px;
+			.mui-row.mui-media {
+				padding: 10px 15px;
 			}
-			
-			.mui-table-view .mui-media-object.mui-pull-left {
+			.flex-between .mui-media-object {
+				width: 90px;
+				height: 90px;
 				margin-right: 5px;
+				flex-shrink: 0;
 			}
-			
-			.ul-btn {
-				display: inline;
-				vertical-align: middle;
-				float: right;
-				height: 24px;
-				padding: 2px 12px;
-				background: #33CCFF;
-				color: #fff;
-				border: none;
+			.flex-between .mui-media-body {
+				flex-grow: 1;
 			}
-			
-			.ul-p {
-				display: inline;
-				vertical-align: middle;
-				font-size: 12px;
-				line-height: 24px;
+			.mui-media-body .mui-ellipsis-title + .mui-ellipsis-2 {
+				height: 42px;
+				line-height: 21px;
 			}
-			
-			a {
-				text-decoration: none;
+			.mui-media-body .mui-ellipsis-title ~ .ul-p {
+				color: #FF6600;
+			}
+			.bottom-row {
+				position: fixed;
+				bottom: 0;
+				z-index: 3;
+				background: #FFFFFF;
+				width: 100%;
+				height: 50px;
+				margin-bottom: 0;
+			}
+			.mui-poppicker-header .mui-btn {
+				font-size: 100%;
+			}
+			.mui-row input[type="button"] {
+				width: 72%;
+				color: rgb(143, 143, 148);
+				border: 0px;
+				margin-top: 5px;
+				text-align: left;
+				padding-left: 0;
+			}
+			.mui-input-row .fee {
+				text-align: right; font-size: 15px;color: #666666;width: 100%;
+			}
+			.mui-input-row a {
+				display: block;
 				color: #000000;
 			}
-			
 			.mui-content-padded {
-				margin: 10px 10px 10px 16px;
+				margin-left: 16px;
 			}
-			
-			select {
-				color: #8f8f94;
+			.mui-input-row label {
+				width: 28%;
 			}
-			
+			.feem-list > label {
+				width: 100%;
+			}
 			.line:before {
 				position: absolute;
 				top: 0;
@@ -65,77 +87,52 @@
 				left: 15px;
 				height: 1px;
 				content: '';
-				-webkit-transform: scaleY(.2);
-				transform: scaleY(.2);
+				-webkit-transform: scaleY(.4);
+				transform: scaleY(.4);
 				background-color: #c8c7cc;
 			}
-			
-			.wxImg {
-				width: 30px;
+			.mui-btn:disabled, button:disabled {
+				opacity: .6;
+				background: #cccccc;
 			}
-			
-			.mui-checkbox input[type=checkbox]:before,
-			.mui-radio input[type=radio]:before {
-				font-size: 25px;
-			}
-			
-			.check {
-				text-align: left;
-				font-size: 15px;
-				margin: 10px 0 100px 0;
+			.pay-btn {
+				border: #00CFBD;
+				background: #00CFBD;
+				height: 50px;
 			}
 			.pay-btn-je {
 				height: 50px;
 				border: 0px;
 				text-align: left;
 			}
-			
 			input::-webkit-input-placeholder {
 				color: #8f8f94;
 			}
-			
-			
-			.mui-input-row label~select{
-				font-size: 14px;
-				margin-left: 13px;
+			.wxImg {
+				width: 30px;
+				vertical-align: middle;
 			}
-			
-			.mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea {
-			   float: left;
+			.mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before {
+				font-size: 25px;
 			}
-			
-			.mui-input-row label {
-			    width: 28%;
+			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
+				color: #00cfbd;
 			}
-			
-			.spanCheck {
-				width: 65%;
+			.check {
+				font-size: 15px;
 			}
-			
-			
-			.xyCheck input[type=checkbox]:before {
-			    content: '\e411';
+			.check > label {
+				padding-left: 45px;
+				margin-top: 8px;
 			}
-			.xyCheck input[type=checkbox]:checked:before {
-			    content: '\e442';
+			.check > label a {
+				color: #00CFBD;
 			}
-			.mui-input-row label~input {
-				margin-top: 5px;
-				text-align: left;
-			    float: left;
-			    font-size: 14px;
-			    margin-left: 14px;
+			#zfje-2 {
+				color: #FF6600; font-size: 20px;
 			}
-			
-			.mui-btn:disabled, button:disabled{
-			    opacity: .6;
-			    background: #cccccc;
-			}
-			.feem-list {
-				text-align: right; font-size: 15px;color: #666666;
-			}
-			.feem-list > label {
-				width: 100%;
+			#zffs {
+				font-size:10px;color: #8f8f94;
 			}
 		</style>
 	</head>
@@ -146,53 +143,49 @@
 			<h1 class="mui-title">套餐续订</h1>
 		</header>
 		<div class="mui-content">
+			
 			<div id='orderDetailData'>
-				<div class="mui-row">
-					<ul class="mui-table-view">
-						<li class="mui-table-view-cell mui-media">
-							<a href="javascript:;">
-								<img class="mui-media-object mui-pull-left" :src=orderDetail.busimg style="width: 90px;height:90px;">
-								<div class="mui-media-body" v-cloak>
-									<p class='mui-ellipsis-title'>{{orderDetail.cnname}}
-										<span v-for="pn in getPrdName(orderDetail.fext)" class="mark">{{pn}}</span>
-									</p>
-									<p class='mui-ellipsis'>{{orderDetail.busnote}}</p>
-									<p class="ul-p" style="color:#FF6600;margin-top: 5px;">缴费金额：{{orderDetail.feecode}}元/{{orderDetail.busmonth}}月</p>
-								</div>
-							</a>
-						</li>
-					</ul>
+				<div class="mui-row mui-media flex-between">
+					<img class="mui-media-object" :src="orderDetail.busimg" v-cloak>
+					<div class="mui-media-body" v-cloak>
+						<p class='mui-ellipsis-title'>{{orderDetail.cnname}}
+							<span v-for="pn in getPrdName(orderDetail.fext)" class="mark">{{pn}}</span>
+						</p>
+						<p class='mui-ellipsis-2'>{{orderDetail.busnote}}</p>
+						<p class="ul-p">缴费金额：{{orderPrice(orderDetail.feecode)}}元/{{orderDetail.busmonth}}月</p>
+					</div>
 				</div>
-				<div class="mui-row" style="margin-top: 5px;">
+				<div class="mui-row">
 						<h5 class="mui-content-padded">原订购信息</h5>
 						<div class="mui-input-row line">
 							<a class="">
 								<label>缴费金额</label>
-								<input  type="button" :value=orderDetail.feecode+'元/'+orderDetail.busmonth+'月' disabled/>
+								<input  type="button" :value="orderDetail.feecode+'元/'+orderDetail.busmonth+'月'" disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
 							<a class="">
 								<label>订购时间</label>
-								<input  type="button" :value=orderDetail.stime disabled/>
+								<input  type="button" :value="orderDetail.stime" disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
 							<a class="">
 								<label>结束时间</label>
-								<input type="button" :value=orderDetail.etime disabled/>
+								<input type="button" :value="orderDetail.etime" disabled/>
 							</a>
 						</div> 
 				</div>
 				<form id="orderForm">
-					<div class="mui-row" style="margin-top: 5px;">
-						<div class="mui-input-row" style="margin-top: 5px;">
+					<div class="mui-row">
+						<div class="mui-input-row">
 							<a class="mui-navigate-right">
 								<label>时长</label> 
-								<select name="sc" class="mui-btn-block" @change="gradeChange($event)">
+								<input name="sc" type="button" class="mui-btn-block" :value="servm?servm+'个月':'请选择时长'" @tap.stop="gradeChange">
+								<!-- <select name="sc" class="mui-btn-block" @change="gradeChange($event)">
 									<option value="" disabled selected>请选择时长</option>
 									<option :value=index+1 v-for="(item,index) in monthList" :monthnum=item>{{item}}个月</option>
-								</select>
+								</select> -->
 							</a>
 						</div>
 						<div class="mui-input-row line feem-list" v-cloak>
@@ -202,8 +195,8 @@
 							<label v-else>新结束时间：{{newEtime}}</label>
 						</div>
 					</div>
-
-					<div class="mui-row" style="margin-top: 5px;">
+		
+					<div class="mui-row">
 						<h5 class="mui-content-padded">请选择支付方式</h5>
 						<div class="mui-input-row mui-radio line" @click="radioClick">
 							<label style="width: 100%;">
@@ -213,19 +206,19 @@
 							<input name="" type="radio" style="margin-top: 10px;" :checked="radioChecked">
 						</div>
 					</div>
-
+		
 					<div class="check mui-checkbox mui-left">
-						<label for="checkBox" style="padding-left:45px;margin-top: 10px;">我已阅读并接受<a href="javascript:;;">《支付协议》</a></label>
-						<input @click="checkboxClick" id="checkBox" name="" type="checkbox" style="left: 15px;" />
+						<label for="checkBox">我已阅读并接受<a href="javascript:;;">《支付协议》</a></label>
+						<input @click="checkboxClick" id="checkBox" name="" type="checkbox"/>
 					</div>
 				</form>
 				
 				<div class="mui-row bottom-row">
 					<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
-	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;" v-cloak>{{feem}}</span>元
-	    				<span id="zffs" style="font-size:10px;color: #8f8f94;"></span>
-	    			</button>
-					<button class="mui-btn btn-theme mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>
+						¥ <span id="zfje-2" v-cloak>{{feem}}</span>元
+						<span id="zffs"></span>
+					</button>
+					<button class="mui-btn mui-btn-success mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>
 				</div>
 			</div>
 		</div>
@@ -251,94 +244,108 @@
 		<script src="../../js/utils/events.js"></script>
 		<script src="../../js/utils/payUtil.js"></script>
 		
+		<script src="../../js/utils/mui.picker.min.js"></script>
 		<script src="../../js/orals/common.js"></script>
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
-//			console.log('personal********:' + JSON.stringify(personal));
 			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 			mui.init();
 
-			var curPageData;
-			var orderDetailData;
+			var timePicker;//时长选择器
 			var univlent;//单价
 			var monthList=[];//月份集合
 			var nowDate=getNowFormatDate();
-			mui.plusReady(function() {
-				orderDetailData = new Vue({
-					el: '#orderDetailData',
-					data: {
-						nowDate:nowDate,
-						newEtime:'',
-						orderDetail: {},
-						radioChecked: false,//是否选择支付方式
-						chekcboxChecked: false,//注册协议是否阅读
-						isDisabled: true,//支付按钮是否关闭
-						sysfuncList: [], //附加信息
-						monthList: monthList,
-						servm:0,//订购套餐总月数
-						feem:0//订购套餐总费用
+			
+			var orderDetailData = new Vue({
+				el: '#orderDetailData',
+				data: {
+					nowDate:nowDate,
+					newEtime:'',
+					orderDetail: {},
+					radioChecked: false,//是否选择支付方式
+					chekcboxChecked: false,//注册协议是否阅读
+					isDisabled: true,//支付按钮是否关闭
+					sysfuncList: [], //附加信息
+					monthList: monthList,
+					servm:0,//订购套餐总月数
+					feem:0//订购套餐总费用
+				},
+				methods: {
+					orderPrice: orderPrice,
+					getPrdName: getPrdName,
+					radioClick: function() {
+						this.radioChecked = !this.radioChecked
+						if(this.radioChecked == true)
+							$('#zffs').html('&ensp;|&ensp;微信支付');
+						if(this.radioChecked == false){
+							this.isDisabled = true
+							$('#zffs').html('');
+						}else if(this.radioChecked == true && this.chekcboxChecked == true)
+							this.isDisabled = false
 					},
-					methods: {
-						getPrdName: getPrdName,
-						radioClick: function() {
-							this.radioChecked = !this.radioChecked
-							if(this.radioChecked == true)
-								$('#zffs').html('&ensp;|&ensp;微信支付');
-							if(this.radioChecked == false){
-								this.isDisabled = true
-								$('#zffs').html('');
-							}else if(this.radioChecked == true && this.chekcboxChecked == true)
-								this.isDisabled = false
-						},
-						checkboxClick: function() {
-							this.chekcboxChecked = !this.chekcboxChecked
-							if(this.chekcboxChecked == false)
-								this.isDisabled = true
-							else if(this.chekcboxChecked == true && this.radioChecked == true)
-								this.isDisabled = false
-						},
-						gradeChange:function(e){//月份下拉选选中事件
-							 var domDiv=e.target;
-							 var selectTime=$(domDiv).val();
-							 this.servm=$(domDiv).find("option:selected").attr('monthnum');
-							 this.feem=(selectTime*1*univlent*1).toFixed(2);
-							 appPay.feem=this.feem;
-							 this.newEtime=addMonths(this.orderDetail.etime,this.servm);
-						},
-						payAction:function(){//支付
-							var parent=this;
-							if(this.servm==0){
-								mui.toast('您还没有选择时长')
+					checkboxClick: function() {
+						this.chekcboxChecked = !this.chekcboxChecked
+						if(this.chekcboxChecked == false)
+							this.isDisabled = true
+						else if(this.chekcboxChecked == true && this.radioChecked == true)
+							this.isDisabled = false
+					},
+					gradeChange:function(e){//月份下拉选选中事件
+// 						 var domDiv=e.target;
+// 						 var selectTime=$(domDiv).val();
+// 						 this.servm=$(domDiv).find("option:selected").attr('monthnum');
+// 						 this.feem=(selectTime*1*univlent*1).toFixed(2);
+// 						 appPay.feem=this.feem;
+// 						 this.newEtime=addMonths(this.orderDetail.etime,this.servm);
+						 var _this = this;
+						 timePicker.show(function(items){
+							_this.servm = items[0].value;
+							_this.feem = (items[0].value * 1 * univlent * 1).toFixed(2);
+							appPay.feem = _this.feem;
+							_this.newEtime=addMonths(_this.orderDetail.etime,_this.servm);
+						 });
+					},
+					payAction:function(){//支付
+						var parent=this;
+						if(this.servm==0){
+							mui.toast('您还没有选择时长')
+						}else{
+							//如果是0元套餐，直接走订购
+							if(this.feem==0){
+								order();
 							}else{
-								//如果是0元套餐，直接走订购
-								if(this.feem==0){
-									order();
-								}else{
-									appPay.payCode=true;
-									//调起支付
-									appPay.pay(appPay.wxpay,function success(){
-									},function fail(code,err){
-										
-									});
-								}
+								appPay.payCode=true;
+								//调起支付
+								appPay.pay(appPay.wxpay,function success(){
+								},function fail(code,err){
+									
+								});
 							}
 						}
 					}
-				});
+				}
+			});
+			
+			mui.plusReady(function() {
 				
 				// 获取支付通道
 				appPay.getChannels();
 				
 				var _data=utils.getDataFromUrl(window.location.href);
+				console.log("传来的订单信息：");
+				console.log(_data);
 				orderDetailData.orderDetail = _data;
 				orderDetailData.orderDetail.imgUrl = setImg(orderDetailData.orderDetail.imgUrl,1);
+				
 				//计算可以订购的时长  为月份数组 start
-				univlent=_data.feecode;
-				var month=_data.busmonth;
-				var num =36/month;
-				for(var i=1;i<=num;i++){ 
-					monthList.push(month*i) 
+				timePicker = new mui.PopPicker();
+				univlent = _data.feecode;
+				var month = _data.busmonth;
+				var num = 36 / month;
+				for (var i = 1; i <= num; i++) {
+					monthList.push({value: month * i, text: month * i+"个月"});
 				}
+				timePicker.setData(monthList);
 				//end
 				
 				//添加支付返回APP时的监听
@@ -394,12 +401,12 @@
 			//年月日加减
 			var addMonths = function(date,months) {
 			   var nd=date.split(".").join("/");
-		       var d=new Date(nd);
-		       d.setMonth(parseInt(d.getMonth())+parseInt(months)); 
-		       var y=d.getFullYear()
-		       var m=d.getMonth()+1; 
-		       var d=d.getDate(); 
-		       return getNowFormatDate(y,m,d); 
+			   var d=new Date(nd);
+			   d.setMonth(parseInt(d.getMonth())+parseInt(months)); 
+			   var y=d.getFullYear()
+			   var m=d.getMonth()+1; 
+			   var d=d.getDate(); 
+			   return getNowFormatDate(y,m,d); 
 			}
 
 			//获取当前日期
@@ -410,25 +417,25 @@
 				  var month ='';
 				  var strDate ='';
 				  if(years==undefined)
-				    year=date.getFullYear();
+					year=date.getFullYear();
 				  else
-				    year=years*1
-				    
+					year=years*1
+					
 				  if(months==undefined)
-				  	month=date.getMonth() + 1;
+					month=date.getMonth() + 1;
 				  else
-				  	month =months;
-				  	
+					month =months;
+					
 				  if(days==undefined)
-				  	strDate=date.getDate();
+					strDate=date.getDate();
 				  else
-				  	strDate=days;
+					strDate=days;
 				  
 				  if (month >= 1 && month <= 9) 
-				    month = "0" + month;
+					month = "0" + month;
 				  
 				  if (strDate >= 0 && strDate <= 9) 
-				    strDate = "0" + strDate;
+					strDate = "0" + strDate;
 				  
 				  var currentdate = year + seperator1 + month + seperator1 + strDate;
 				  return currentdate;

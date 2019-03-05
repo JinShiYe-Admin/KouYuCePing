@@ -86,7 +86,8 @@
         "NativeObj" : {
             "description" : "原生对象"
         },
-        "Speech" : {}
+        "Speech" : {},
+        "Payment" : {}
     },
     "plus" : {
         "statusbar" : {
@@ -106,6 +107,11 @@
                 "push" : {},
                 "speech" : {
                     "ifly" : {}
+                },
+                "payment" : {
+                    "weixin" : {
+                        "appid" : "wx272c9b4a4ac2e9ac"
+                    }
                 }
             },
             "apple" : {
@@ -131,18 +137,18 @@
                 "aliasname" : "", /*Android应用打包使用密钥库中证书的别名*/
                 "ImmersedStatusbar" : true,
                 "permissions" : [
-                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
-                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
-                    "<uses-permission android:name=\"android.permission.INTERNET\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    "<uses-permission  android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CAMERA\"/>"
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+                    "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>"
                 ]
             },
             /*使用Native.js调用原生安卓API需要使用到的系统权限*/

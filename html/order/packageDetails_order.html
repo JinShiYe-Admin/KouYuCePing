@@ -5,7 +5,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../../css/mui.min.css">
@@ -46,32 +46,19 @@
 			
 			.user-title-footer {
 				text-align: left;
-				margin: 10px 10px 0;
-			}
-			
-			.ul-btn {
-				display: inline;
-				vertical-align: middle;
-				float: right;
-				height: 24px;
-				padding: 2px 12px;
-				background: #33CCFF;
-				color: #fff;
-				border: none;
+				margin: 15px 10px 0;
 			}
 			
 			.ul-p {
-				width: 30%;
-				/*color: #00CFBD;*/
 				display: inline;
 				vertical-align: middle;
-				font-size: 13px;
+				font-size: 14px;
+				margin-bottom: 0;
 			}
 			
 			.ul-p-right {
 				width: 15%;
 				display: inline;
-				/*color: #00CFBD;*/
 				float: right;
 				vertical-align: middle;
 				font-size: 13px;
@@ -92,9 +79,9 @@
 						<span v-for="pn in getPrdName(orderDetail.fext)" class="mark">{{pn}}</span>
 					</p>
 					<p v-cloak class="user-title-body">{{orderDetail.busnote}}</p>
-					<div v-cloak class="user-title-footer">
+					<div v-cloak class="user-title-footer flex-between">
 						<p class="ul-p">资费金额：{{orderDetail.feecode}}元/{{orderDetail.busmonth}}月</p>
-						<button class="ul-btn btn-order mui-btn-mini" onclick="placeOrder()">立即订购</button>
+						<button class="btn-ordered mui-btn-mini" onclick="placeOrder()">立即订购</button>
 					</div>
 				</div>
 			</div>
@@ -123,7 +110,7 @@
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			console.log('personal********:' + JSON.stringify(personal));
-
+		
 			mui.init();
 			var orders;
 			var curPageData;
@@ -131,7 +118,7 @@
 				orders.orderDetail = utils.getDataFromUrl(window.location.href);
 				orders.orderDetail.imgUrl = setImg(orders.orderDetail.imgUrl,1);
 			});
-
+		
 			var orders = new Vue({
 				el: '#orders',
 				data: {
@@ -141,7 +128,7 @@
 					getPrdName: getPrdName
 				}
 			});
-
+		
 			//套餐订购
 			function placeOrder() {
 				utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", orders.orderDetail);

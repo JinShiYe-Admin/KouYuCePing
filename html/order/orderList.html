@@ -4,30 +4,30 @@
 	<head>
 		<meta charset="utf-8">
 		<title>我的订购：订单列表</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../../css/mui.min.css">
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 		<style type="text/css">
 			.mui-table-view .mui-media-object {
-				max-width: 100px;
+				width: 90px;
+				height: 90px;
+				max-width: 90px;
 			}
 			.mui-table-view .mui-media-object.mui-pull-left {
 				margin-right: 5px;
 			}
-			.ul-btn {
-				float: right;
-				height: 24px;
+			.mui-content > .mui-content {
+				position: relative;
 			}
-			.ul-p {
-				line-height: 24px;
-				float: left;
+			.mui-bar-nav~.mui-content .mui-content .mui-pull-top-pocket {
+				top: 0;
+				visibility: visible;
 			}
-			@media only screen and (max-width: 375px) {
-				.ul-p, .ul-btn {
-					font-size: 0.28rem;
-				}
+			#orders .mui-media-body .mui-ellipsis-title + .mui-ellipsis-2 {
+				height: 34px;
+				line-height: 17px;
 			}
 		</style>
 	</head>
@@ -39,29 +39,37 @@
 		</header>
 		
 		<div class="mui-content">
-			<div id='scroll'>
-				<div id='orders' v-cloak class="mui-scroll">
-					<ul class="mui-table-view">
-						<li v-for="item in orderList" @click.stop="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
-							<a href="javascript:;">
-								<img class="mui-media-object mui-pull-left" :src=item.busimg style="width: 90px;height:90px;">
-								<div class="mui-media-body">
-									<p class='mui-ellipsis-title'>{{item.cnname}}
-										<span v-for="pn in getPrdName(item.fext)" class="mark">{{pn}}</span>
-									</p>
-									<p class='mui-ellipsis'>{{item.busnote}}</p>
-									<div v-if="item.orderFlag==1" class="mui-clearfix">
-										<p class="ul-p">结束时间：{{item.etime}}</p>
-										<button class="ul-btn btn-ordered" class="mui-btn mui-btn-mini">套餐续费</button>
+			<div class="mui-content">
+				<div id='scroll' class="mui-scroll-wrapper">
+					<div class="mui-pull-top-pocket mui-block mui-hidden">
+						<div class="mui-pull">
+							<div class="mui-pull-loading mui-icon mui-icon-pulldown" style="transition: -webkit-transform 0.3s ease-in 0s; transform: rotate(0deg);"></div>
+							<div class="mui-pull-caption">下拉可以刷新</div>
+						</div>
+					</div>
+					<div id='orders' class="mui-scroll">
+						<ul class="mui-table-view">
+							<li v-for="item in orderList" @click.stop="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
+								<a href="javascript:;" v-cloak>
+									<img class="mui-media-object mui-pull-left" :src="item.busimg">
+									<div class="mui-media-body">
+										<p class='mui-ellipsis-title'>{{item.cnname}}
+											<span v-for="pn in getPrdName(item.fext)" class="mark">{{pn}}</span>
+										</p>
+										<p class='mui-ellipsis-2'>{{item.busnote}}</p>
+										<div v-if="item.orderFlag==1" class="flex-between">
+											<p class="mui-ellipsis-2">结束时间：{{item.etime}}</p>
+											<button class="ul-btn btn-ordered" class="mui-btn mui-btn-mini">套餐续费</button>
+										</div>
+										<div v-else class="flex-between">
+											<p class="mui-ellipsis-2" style="color: #3C9DFB;">{{orderPrice(item.feecode)}}元/{{item.busmonth}}月</p>
+											<button class="ul-btn btn-order" class="mui-btn mui-btn-mini">立即订购</button>
+										</div>
 									</div>
-									<div v-else class="mui-clearfix">
-										<p class="ul-p" style="color: #3C9DFB;">{{item.feecode}}元/{{item.busmonth}}月</p>
-										<button class="ul-btn btn-order" class="mui-btn mui-btn-mini">立即订购</button>
-									</div>
-								</div>
-							</a>
-						</li>
-					</ul>
+								</a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -87,46 +95,41 @@
 		
 		<script src="../../js/orals/common.js"></script>
 		<script>
-			var self;
+			var self, isLoading, rendered;
 			
 			mui.init({
-//				pullRefresh: {
-//					container: '#scroll',
-//					down: {
-//						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-//						color: '#3C9DFB', //可选，默认“#2BD009” 下拉刷新控件颜色
-//						height: '50px', //可选,默认50px.下拉刷新控件的高度,
-//						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
-//						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
-//						auto: false, //可选,默认false.首次加载自动上拉刷新一次
-//						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-//					}
-//				},
 				beforeback: function() {
 					mui.fire(self.opener(), 'refush_count', {});
 				}
 			});
-
-//			下拉刷新
-//			function pulldownRefresh() {
-//				getOrderList();
-//			}
+			
 			window.addEventListener('refreshList', function(data) {
 				getOrderList();
 			});		
 			
-			var personal;
-			var publicParameter;
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			var functypes = window.storageKeyName.FUNCTYPES;
+
 			mui.plusReady(function() {
 				self = plus.webview.currentWebview();
-				//获取个人信息
-				personal = store.get(window.storageKeyName.PERSONALINFO);
-//				console.log('personal:' + JSON.stringify(personal));
-				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+
 				//获取套餐表
 				getOrderList();
+				
+				// 滚动区域
+				mui('.mui-scroll-wrapper').scroll({
+					indicators: false
+				});
+				document.querySelector('.mui-scroll-wrapper').addEventListener("scroll", function(e){
+					var translateY = $('#orders.mui-scroll').css('transform').replace(/[^0-9\-\.,]/g,'').split(',').pop();
+					if(translateY>95 && !isLoading) {
+						console.log("刷新");
+						getOrderList();
+					}
+				});
 			});
-
+			
 			var orders = new Vue({
 				el: '#orders',
 				data: {
@@ -154,12 +157,14 @@
 							utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
 					},
 					getPrdName: getPrdName,
+					orderPrice: orderPrice
 				}
 			});
 
 
 			//3.12.获取套餐表
 			function getOrderList() {
+				isLoading = true;
 				var enData1 = {};
 				//不需要加密的数据
 				var comData1 = {
@@ -167,14 +172,15 @@
 					bustp: '0', //套餐类型,0全部,1基本套餐,2CP套餐
 					utoken: personal.utoken, //用户令牌
 					appid: publicParameter.appid, //系统所分配的应用ID
-					functypes: "YCYXZS",
-//					functypes: "ycyx"
+					// functypes: "YCYXZS",
+					functypes: functypes
 				};
-				var ycyx_fcodes = [];
+				var ycyx_fcodes = []; //益测益学套餐功能代码串
 				events.showWaiting();
-				//获取验证码
-				//发送网络请求，data为网络返回值
+				//根据餐表类型获取套餐表
 				postDataEncry('SysBusType', enData1, comData1, 0, function(data1) {
+					console.log("获取套餐表：");
+					console.log(data1)
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						//主动添加是否订购字段
@@ -182,44 +188,27 @@
 							var tempModel = data1.RspData.sysbus[i];
 							tempModel.orderFlag = 0;
 							tempModel.busimg = setImg(tempModel.busimg,1);
+							// 获取益测益学套餐功能代码串
 							tempModel.funcs.forEach(function(v){
-								if(v.ftype=="YCYXZS") {
+								if(v.ftype==functypes) {
 									ycyx_fcodes.push(v.fcode);
 								}
 							});
 						}
 						orders.orderList = [].concat(data1.RspData.sysbus);
-						var comData2 = {
-							uuid: publicParameter.uuid, //用户设备号
-							fcodes: ycyx_fcodes.join(), //功能代码串,留空为全部,多个用逗号隔开
-							utoken: personal.utoken, //用户令牌
-							appid: publicParameter.appid //系统所分配的应用ID
-						};
-						postDataEncry('SysBusFunc', {}, comData2, 0, function(data2) {
-							console.log(data2);
-							if(data2.RspCode == 0) {
-								for(var i = 0; i < orders.orderList.length; i++) {
-									var orderModel = orders.orderList[i];
-									orderModel.fext = [];
-									for(var a = 0; a < data2.RspData.sysfunc.length; a++) {
-										var sysFuncModel = data2.RspData.sysfunc[a];
-										if(orderModel.fcodes.indexOf(sysFuncModel.fcode) != -1) {
-											orderModel.fext=sysFuncModel.fext;
-										}
-									}
-								}
-								getUserBusFunc();
-							} else {
-								mui.toast(data2.RspTxt);
-							}
-						});
 						//用户已订购套餐及功能扩展栏目
-//						getUserBusFunc();
+						getUserBusFunc();
+						
+						// 根据功能获取套餐功能及扩展栏目
+						// getSysBusFunc(ycyx_fcodes.join());
+						
 					} else {
 						mui.toast(data1.RspTxt);
+						isLoading = false;
 					}
 				});
 			}
+			
 			//4.1.用户已订购套餐及功能扩展栏目
 			function getUserBusFunc() {
 				var enData1 = {};
@@ -231,19 +220,20 @@
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
 				events.showWaiting();
-				//获取验证码
 				//发送网络请求，data为网络返回值
 				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+					console.log("用户已订购套餐: ");
+					console.log(data1);
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						if(data1.RspData) {
-							//循环找到对应的套餐代码数据，合并
-							var bus = [];
+							//循环当前套餐列表
 							for(var i = 0; i < orders.orderList.length; i++) {
 								var orderModel = orders.orderList[i];
+								// 循环用户订购套餐
 								for(var a = 0; a < data1.RspData.userbus.length; a++) {
 									var userBusModel = data1.RspData.userbus[a];
-									//已订购
+									//当前已订购套餐
 									if(orderModel.serviceid == userBusModel.servid) {
 										orderModel = $.extend(orderModel, userBusModel);
 										orderModel.orderFlag = 1;
@@ -251,18 +241,64 @@
 									}
 								}
 							}
-							orders.orderList.sort(function(a,b){
-								return b.orderFlag-a.orderFlag;
-							});
-							console.log('GetUserBusFunc合并后:' + JSON.stringify(orders.orderList));
+						}
+						// 已订购的排前面
+						orders.orderList.sort(function(a,b){
+							return b.orderFlag-a.orderFlag;
+						});
+						console.log('GetUserBusFunc合并后:' + JSON.stringify(orders.orderList));
+						if(!rendered){
+							document.querySelector('.mui-pull-top-pocket').classList.remove('mui-hidden');
+							rendered = true;
 						}
 					} else {
 						mui.toast(data1.RspTxt);
 					}
-//					mui('#scroll').pullRefresh().endPulldownToRefresh(); //参数为true代表没有更多数据了。
+					isLoading = false;
 				});
 			}
-//			orders.orderList = [{"funcs":[{"fcode":"ycyx04","itemcode":null,"itemsons":null}],"serviceid":"tcycyx04","feecode":"10","cnname":"益测益学（小初）","fcodes":"ycyx04","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小初）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":1,"busext":[{"forid":106,"fcode":"ycyx04","itemcode":"prd","itemsons":"2|小学"}],"forid":106,"uid":"ceshi01","utname":null,"servid":"tcycyx04","servtype":1,"cname":"益测益学（小初）","stime":"2018.11.14","etime":"2018.12.14","frmtype":0,"serstat":1},{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX02","ftype":"YCYXZS","fname":"益测益学（初中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx02","feecode":"10","cnname":"益测益学（初中）","fcodes":"YCYX02","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（初中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},{"funcs":[{"fext":null,"fid":0,"fcode":"ycyx01","ftype":"YCYXZS","fname":"益测益学（小学）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx01","feecode":"10","cnname":"益测益学（小学）","fcodes":"ycyx01","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小学）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0}];
+			
+			// 3.19:套餐功能及扩展栏目
+			function getSysBusFunc(fcodes) {
+				var comData2 = {
+					uuid: publicParameter.uuid, //用户设备号
+					fcodes: fcodes, //功能代码串,留空为全部,多个用逗号隔开
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				postDataEncry('SysBusFunc', {}, comData2, 0, function(data2) {
+					console.log("套餐功能: ");
+					console.log(data2);
+					if(data2.RspCode == 0) {
+						//循环当前套餐列表
+						for(var i = 0; i < orders.orderList.length; i++) {
+							var orderModel = orders.orderList[i];
+							orderModel.fext = []; //功能附加栏目表
+							// 循环相关功能套餐
+							for(var a = 0; a < data2.RspData.sysfunc.length; a++) {
+								var sysFuncModel = data2.RspData.sysfunc[a];
+								//当前套餐的功能栏目
+								if(orderModel.fcodes.indexOf(sysFuncModel.fcode) != -1) {
+									orderModel.fext=sysFuncModel.fext;
+								}
+							}
+						}
+					} else {
+						mui.toast(data2.RspTxt);
+					}
+				});
+			}
+			
+// 			orders.orderList = [
+// 				{"funcs":[{"fcode":"ycyx04","itemcode":null,"itemsons":null}],"serviceid":"tcycyx04","feecode":"10","cnname":"益测益学（小初）","fcodes":"ycyx04","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小初）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":1,"busext":[{"forid":106,"fcode":"ycyx04","itemcode":"prd","itemsons":"2|小学"}],"forid":106,"uid":"ceshi01","utname":null,"servid":"tcycyx04","servtype":1,"cname":"益测益学（小初）","stime":"2018.11.14","etime":"2018.12.14","frmtype":0,"serstat":1},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX02","ftype":"YCYXZS","fname":"益测益学（初中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx02","feecode":"10","cnname":"益测益学（初中）","fcodes":"YCYX02","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（初中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"ycyx01","ftype":"YCYXZS","fname":"益测益学（小学）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx01","feecode":"10","cnname":"益测益学（小学）","fcodes":"ycyx01","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小学）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0}
+// 			];
 		</script>
 	</body>
 

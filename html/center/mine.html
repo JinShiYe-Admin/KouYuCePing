@@ -102,13 +102,13 @@
 						tempID: 0,
 						cls: 'mui-icon mui-icon-locked',
 						qx:"0,1,2"
-//					}, {
-//						name: "我的订购",
-//						icon: "",
-//						href: "",
-//						tempID: 1,
-//						cls: 'mui-icon-extra mui-icon-extra-cart',
-//						qx:"0,1,2"
+					}, {
+						name: "我的订购",
+						icon: "",
+						href: "",
+						tempID: 1,
+						cls: 'mui-icon-extra mui-icon-extra-cart',
+						qx:"0,1,2"
 					}, {
 						name: "关于我们",
 						icon: "",
@@ -131,9 +131,7 @@
 							utils.mOpenWithData("../../html/index/modifyPassword.html", {flag: 0});
 						}else if(setting.tempID == 1){
 							//我的订购
-							mui.toast('功能暂未开放');
-							return;
-//							mui.openWindow("../../html/order/orderList.html");
+							mui.openWindow("../../html/order/orderList.html");
 						}else if(setting.tempID == 2){
 							//关于我们
 							mui.openWindow({url: "about.html"});

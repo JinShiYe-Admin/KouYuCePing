@@ -156,7 +156,7 @@ var UploadHeadImage = (function($, mod) {
 						//console.log('未选取图片:' + JSON.stringify(error));
 					}
 				}
-			},{multiple:false,maximum:1});
+			});
 		} catch(e) {
 			alert('### ERROR ### 调用系统相册异常 name:' + e.name + " message:" + e.message);
 			errorCB({
@@ -220,12 +220,6 @@ var UploadHeadImage = (function($, mod) {
 						var domain = QNUptoken.Data.Domain + QNUptoken.Data.Key; //文件地址
 						console.log("缩略图:"+thumb);
 						console.log('上传domain:'+domain);
-						// 先本地更新
-						if(replaceHeadImg && (typeof replaceHeadImg === "function")) {
-							wd.close();
-							mui.toast('个人头像更新成功');
-							replaceHeadImg(fPath);
-						}
 						setTimeout(function(){
 							switch(imageType) {
 								case 0: //个人头像
@@ -239,7 +233,7 @@ var UploadHeadImage = (function($, mod) {
 								default:
 									break;
 							}
-						}, 2000);
+						}, 500);
 					} else { //上传失败
 						errorCallBack(upload.responseText);
 						wd.close();

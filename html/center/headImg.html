@@ -34,9 +34,7 @@
 				<li class="mui-table-view-cell mui-media" @click.prevent.stop="modifyImg()" id="imgCell">
 					<a href="javascript:;">
 						<img v-if="peopleHeadImg" class="mui-media-object mui-pull-right" id="img" :src=peopleHeadImg style="border-radius:50%;">
-						<svg v-else class="svg-icon mui-media-object mui-pull-right" aria-hidden="true">
-				            <use xlink:href="#mine" />
-				       	</svg>
+						<p v-else class="mui-ellipsis mui-pull-right headName" v-cloak>暂无头像</p>
 						<p class="mui-ellipsis">头像</p>
 					</a>
 				</li>
@@ -84,7 +82,7 @@
 			mui.plusReady(function() {
 				personal = store.get(window.storageKeyName.PERSONALINFO);
 				console.log('personal:' + JSON.stringify(personal));
-		
+					
 				peopleInfo.peopleHeadImg = setImg(personal.imgurl);
 				peopleInfo.peopleName = personal.utname;
 				peopleInfo.peoplePhone = '暂无手机号';
@@ -95,15 +93,15 @@
 						id: personal.utid, //utid
 						//name: data.studentName //资料名称
 					}, function(successCB) {
-						setHeadImg(successCB);
+						updateHeadImg(successCB);
 					}, function(errorCB) {
 						//console.log('上传并修改个人头像，失败的回调' + JSON.stringify(errorCB));
 						mui.toast(errorCB.RspTxt);
 					});
 				}
-		
+					
 			});
-		
+					
 			var peopleInfo = new Vue({
 				el: "#peopleInfo",
 				data: {
@@ -173,11 +171,11 @@
 								}
 							});
 						}
-		
+					
 					}
 				}
 			});
-		
+					
 			//上传附件
 			function uploadFile(path, index) {
 				if(chenkNetwork()) {
@@ -200,9 +198,9 @@
 								var result = JSON.parse(t.responseText);
 								if(result.RspCode == '0000') {
 									console.log("上传成功：" + t.responseText);
-									mui.toast('个人头像更新成功');
 									// 设置头像
-									setHeadImg('https://' + result.RspData);
+									mui.toast('个人头像更新成功');
+									replaceHeadImg('https://' + result.RspData);
 								} else {
 									console.log("上传失败 ：" + t.responseText);
 									wt.close();
@@ -229,7 +227,7 @@
 					}
 				}, 'div');
 			}
-		
+					
 			var chenkNetwork = function() {
 				if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
 					mui.toast('网络异常，请检查网络设置！');
@@ -237,23 +235,29 @@
 				}
 				return false;
 			}
-		
+					
 			//上传成功设置主页和本业头像
-			function setHeadImg(tempImg) {
-				peopleInfo.peopleHeadImg = tempImg;
-				personal.imgurl = tempImg;
-				store.set(window.storageKeyName.PERSONALINFO, personal);
-				
-				mui.fire(plus.webview.currentWebview().opener(), 'mine_setHeadImg', {
-					imgurl: tempImg
-				});
+			function updateHeadImg(tempImg) {
+				var baseUrl = tempImg.split("?")[0];
+				mui.toast('个人头像更新成功',{ duration:'long', type:'div' });
+				var times = 0;
+				var timer = setInterval(function(){
+					var myDate = new Date();
+					var imgeURL = baseUrl + '?' + myDate.getTime();
+					console.log(imgeURL);
+					replaceHeadImg(imgeURL);
+					times++;
+					times>3 && clearInterval(timer);
+				}, 500);
 			}
 			function replaceHeadImg(tempImg) {
 				peopleInfo.peopleHeadImg = tempImg;
 				personal.imgurl = tempImg;
+				store.set(window.storageKeyName.PERSONALINFO, personal);
+				// 更新上一页头像
 				mui.fire(plus.webview.currentWebview().opener(), 'mine_setHeadImg', {imgurl: tempImg});
 			}
-		
+					
 			//压缩图片
 			function _compressImage(filePath, successCallBack, errorCallBack) {
 				var options = {
@@ -265,7 +269,7 @@
 					width: "100px", //缩放图片的宽度
 					height: "100px"
 				}
-		
+					
 				plus.zip.compressImage(options,
 					function(event) {
 						//图片压缩成功
@@ -284,7 +288,7 @@
 						errorCallBack(error);
 					}
 				);
-		
+					
 			}
 		</script>
 	</body>

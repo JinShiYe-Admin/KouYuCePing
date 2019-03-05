@@ -5,86 +5,46 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 		<style type="text/css">
-			body {
+			body, .mui-content {
 				background: #F2F2F2;
 			}
-			
+			.mui-content::-webkit-scrollbar {
+				display: none;
+			}
 			.mui-row {
 				background: #FFF;
+				margin-bottom: 5px;
 			}
-			
-			.mui-table-view .mui-media-object {
-				max-width: 100px;
+			.mui-row.mui-media {
+				padding: 10px 15px;
 			}
-			
-			.mui-table-view .mui-media-object.mui-pull-left {
+			#orderData {
+				padding-top: 5px;
+				padding-bottom: 60px;
+			}
+			.flex-between .mui-media-object {
+				width: 90px;
+				height: 90px;
 				margin-right: 5px;
+				flex-shrink: 0;
 			}
-
-			.ul-btn {
-				display: inline;
-				vertical-align: middle;
-				float: right;
-				height: 24px;
-				padding: 2px 12px;
-				background: #33CCFF;
-				color: #fff;
-				border: none;
+			.flex-between .mui-media-body {
+				flex-grow: 1;
 			}
-			
-			.ul-p {
-				display: inline;
-				vertical-align: middle;
-				font-size: 12px;
-				line-height: 24px;
+			.mui-media-body .mui-ellipsis-title + .mui-ellipsis-2 {
+				height: 42px;
+				line-height: 21px;
 			}
-			
-			a {
-				text-decoration: none;
-				color: #000000;
+			.mui-media-body .mui-ellipsis-title ~ .ul-p {
+				color: #FF6600;
 			}
-			
-			.mui-content-padded {
-				margin: 10px 10px 10px 16px;
-			}
-			
-			select {
-				color: #8f8f94;
-			}
-			
-			.line:before {
-				position: absolute;
-				top: 0;
-				right: 0;
-				left: 15px;
-				height: 1px;
-				content: '';
-				-webkit-transform: scaleY(.2);
-				transform: scaleY(.2);
-				background-color: #c8c7cc;
-			}
-			
-			.wxImg {
-				width: 30px;
-			}
-			
-			.mui-checkbox input[type=checkbox]:before,
-			.mui-radio input[type=radio]:before {
-				font-size: 25px;
-			}
-			
-			.check {
-				text-align: left;
-				font-size: 15px;
-				margin: 10px 0 100px 0;
-			}
-			
 			.bottom-row {
 				position: fixed;
 				bottom: 0;
@@ -92,56 +52,126 @@
 				background: #FFFFFF;
 				width: 100%;
 				height: 50px;
+				margin-bottom: 0;
 			}
-			
+			.mui-poppicker-header .mui-btn {
+				font-size: 100%;
+			}
+			.mui-row input[type="button"] {
+				width: 72%;
+				color: rgb(143, 143, 148);
+				border: 0px;
+				margin-top: 5px;
+				text-align: left;
+				padding-left: 0;
+			}
+			.mui-input-row .fee {
+				text-align: right; font-size: 15px;color: #666666;width: 100%;
+			}
+			.mui-input-row a {
+				display: block;
+				color: #000000;
+			}
+			.mui-content-padded {
+				margin-left: 16px;
+			}
+			.mui-popover-arrow {
+				display: none;
+			}
+			.mui-input-row label {
+				width: 28%;
+			}
+			.line:before {
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 15px;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.4);
+				transform: scaleY(.4);
+				background-color: #c8c7cc;
+			}
+			.mui-popover {
+				padding-bottom: 60px;
+				max-height: 80%;
+			}
+			.mui-popover .mui-scroll-wrapper {
+				bottom: 60px;
+				margin: 0;
+			}
+			.mui-popover .label-name {
+				padding: 5px 15px;
+				color: #ff6600;
+			}
+			.mui-popover .mui-table-view {
+				background: #393D49;
+				color: #fff;
+				padding-top: 5px;
+			}
+			.mui-popover .bottom-box {
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				padding: 10px;
+			}
+			.mui-popover .mui-table-view-cell {
+				padding: 0;
+			}
+			.mui-popover .mui-table-view-cell.mui-active {
+				background: transparent;
+			}
+			.mui-popover .mui-table-view-cell .mui-input-row + .label-name {
+				padding-left: 30px;
+			}
+			.mui-popover .mui-table-view-cell .mui-input-row + .label-name + .mui-table-view {
+				padding-left: 15px;
+			}
+			.mui-popover .mui-table-view-cell .mui-input-row label {
+				width: 100%;
+			}
+			.mui-btn:disabled, button:disabled {
+				opacity: .6;
+				background: #cccccc;
+			}
+			.pay-btn {
+				border: #00CFBD;
+				background: #00CFBD;
+				height: 50px;
+			}
 			.pay-btn-je {
 				height: 50px;
 				border: 0px;
 				text-align: left;
 			}
-			
 			input::-webkit-input-placeholder {
 				color: #8f8f94;
 			}
-			
-			.mui-input-row label~select {
-				font-size: 14px;
-				margin-left: 13px;
+			.wxImg {
+				width: 30px;
+				vertical-align: middle;
 			}
-			
-			.mui-input-row label~input,
-			.mui-input-row label~select,
-			.mui-input-row label~textarea {
-				float: left;
+			.mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before {
+				font-size: 25px;
 			}
-			
-			.mui-input-row label {
-				width: 28%;
+			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
+				color: #00cfbd;
 			}
-			
-			.spanCheck {
-				width: 65%;
+			.check {
+				font-size: 15px;
 			}
-			
-			.xyCheck input[type=checkbox]:before {
-				content: '\e411';
+			.check > label {
+				padding-left: 45px;
+				margin-top: 8px;
 			}
-			
-			.xyCheck input[type=checkbox]:checked:before {
-				content: '\e442';
+			.check > label a {
+				color: #00CFBD;
 			}
-			
-			.mui-table-view-cell.mui-active {
-				background-color: #393D49;
+			#zfje-2 {
+				color: #FF6600; font-size: 20px;
 			}
-			
-			.mui-popover-arrow {
-				display: none;
-			}
-			
-			.mui-btn:disabled, button:disabled{
-			    opacity: .6;
-			    background: #cccccc;
+			#zffs {
+				font-size:10px;color: #8f8f94;
 			}
 		</style>
 	</head>
@@ -152,161 +182,150 @@
 			<h1 class="mui-title">套餐订购</h1>
 		</header>
 		<div class="mui-content">
-			<div id='orderDetailData'>
-				<div class="mui-row">
-					<ul class="mui-table-view">
-						<li class="mui-table-view-cell mui-media">
-							<a href="javascript:;">
-								<img class="mui-media-object mui-pull-left" v-cloak :src=orderDetail.busimg style="width: 90px;height:90px;">
-								<div class="mui-media-body">
-									<p class='mui-ellipsis-title' v-cloak>{{orderDetail.cnname}}
-										<span v-for="pn in getPrdName(orderDetail.fext)" class="mark">{{pn}}</span>
-									</p>
-									<p class='mui-ellipsis' v-cloak>{{orderDetail.busnote}}</p>
-									<p class="ul-p" style="color:#FF6600" v-cloak>缴费金额：{{orderDetail.feecode}}元/{{orderDetail.busmonth}}月</p>
-								</div>
-							</a>
-						</li>
-					</ul>
+			
+			<div id='orderDetailData' class="mui-row mui-media flex-between">
+				<img class="mui-media-object" :src="orderDetail.busimg" v-cloak>
+				<div class="mui-media-body" v-cloak>
+					<p class='mui-ellipsis-title'>{{orderDetail.cnname}}</p>
+					<p class='mui-ellipsis-2'>{{orderDetail.busnote}}</p>
+					<p class="ul-p">缴费金额：{{orderPrice(orderDetail.feecode)}}元/{{orderDetail.busmonth}}月</p>
 				</div>
 			</div>
+			
 			<div id='orderData'>
 				<form id="orderForm">
-					<!--<div class="mui-row" style="margin-top: 5px;" v-for="(sysfuncModel,index1) in sysfuncList">
-						<h5 class="mui-content-padded">功能{{index1+1}}附加信息</h5>
+					
+					<div class="mui-row" v-for="(sysfuncModel,index1) in sysfuncList">
+						<h5 class="mui-content-padded">{{sysfuncModel.fname}}</h5>
 						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext">
-							<a v-if="fextModel.itemcode=='prd'">
+							<!-- 学段 选项 -->
+							<a v-if="fextModel.itemcode=='prd'" :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2" class="mui-clearfix">
+								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
+								<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="fextModel.labelName"/>
+								<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name="fextModel.itemcode" />
+							</a>
+							<!-- 年级 -->
+							<a v-else-if="fextModel.itemcode=='grd'" style="display: none;" :id="sysfuncModel.fid+fextModel.itemcode+index2+'grd'" class="mui-clearfix">
 								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
 								<template v-if="fextModel.itemsonsc>0">
 									<a :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2">
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="fextModel.labelName" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name=fextModel.itemcode />
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="fextModel.labelName"/>
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name="fextModel.itemcode" />
 									</a>
 								</template>
 								<template v-else>
-									<a href="javaScript:">
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="getItemsons(fextModel.itemsons)" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name=fextModel.itemcode />
+									<a href="javaScript:;">
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="getItemsons(fextModel.itemsons)"/>
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name="fextModel.itemcode" />
 									</a>
 								</template>
 							</a>
-							<a v-else-if="fextModel.itemcode=='grd'" style="display: none;" :id="sysfuncModel.fid+fextModel.itemcode+index2+'grd'">
+							<a v-else class="mui-clearfix">
 								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
 								<template v-if="fextModel.itemsonsc>0">
 									<a :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2">
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="fextModel.labelName" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name=fextModel.itemcode />
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="fextModel.labelName"/>
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name="fextModel.itemcode" />
 									</a>
 								</template>
 								<template v-else>
-									<a href="javaScript:">
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="getItemsons(fextModel.itemsons)" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name=fextModel.itemcode />
-									</a>
-								</template>
-							</a>
-							<a v-else>
-								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
-								<template v-if="fextModel.itemsonsc>0">
-									<a :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2">
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="fextModel.labelName" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name=fextModel.itemcode />
-									</a>
-								</template>
-								<template v-else>
-									<a href="javaScript:">
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="getItemsons(fextModel.itemsons)" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name=fextModel.itemcode />
+									<a href="javaScript:;">
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="getItemsons(fextModel.itemsons)"/>
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name="fextModel.itemcode" />
 									</a>
 								</template>
 							</a>
 						</div>
-					</div>-->
-
-					<div class="mui-row" style="margin-top: 5px;">
-						<div class="mui-input-row" style="margin-top: 5px;">
+					</div>
+		
+					<div class="mui-row">
+						<div class="mui-input-row">
 							<a class="mui-navigate-right">
 								<label>时长</label>
-								<select name="sc" class="mui-btn-block" @change="gradeChange($event)">
-									<option value="" disabled selected>请选择时长</option>
-									<option :value=index+1 v-for="(item,index) in monthList" :monthnum=item>{{item}}个月</option>
-								</select>
+								<input name="sc" type="button" class="mui-btn-block" :value="servm?servm+'个月':'请选择时长'" @tap.stop="gradeChange">
 							</a>
 						</div>
 						<div class="mui-input-row line">
-							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费金额：<span id="zfje-1">{{feem}}</span>元</label>
+							<label class="fee">缴费金额：<span id="zfje-1">{{orderPrice(feem)}}</span>元</label>
 						</div>
 					</div>
-
-					<div class="mui-row" style="margin-top: 5px;">
+		
+					<div class="mui-row">
 						<h5 class="mui-content-padded">请选择支付方式</h5>
 						<div class="mui-input-row mui-radio line" @click="radioClick">
 							<label style="width: 100%;">
-									<img src="../../img/wxpay.png" class="wxImg" style="vertical-align: middle;"/>
-									<span  style="vertical-align: middle;">微信支付</span>
-								</label>
+								<img src="../../img/wxpay.png" class="wxImg"/>
+								<span style="vertical-align: middle;">微信支付</span>
+							</label>
 							<input name="" type="radio" style="margin-top: 10px;" :checked="radioChecked">
 						</div>
 					</div>
-
+		
 					<div class="check mui-checkbox mui-left">
-						<label for="checkBox" style="padding-left:45px;margin-top: 10px;">我已阅读并接受<a href="javascript:;;">《支付协议》</a></label>
+						<label for="checkBox">我已阅读并接受<a href="javascript:;;">《支付协议》</a></label>
 						<input @click="checkboxClick" id="checkBox" name="" type="checkbox" style="left: 15px;" />
 					</div>
-
+		
 				</form>
-				<div class="mui-row bottom-row">
-					<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
-	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;">{{feem}}</span>元
-	    				<span id="zffs" style="font-size:10px;color: #8f8f94;"></span>
-	    			</button>
-					<button class="mui-btn btn-theme mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>
-				</div>
-
-				<!--用户类型多选列表-->
-				<div v-for="(sysfuncModel,index) in sysfuncList" class="sysfunc-list">
-					<div v-for="(fextModel,index2) in sysfuncModel.fext">
-						<div :id="sysfuncModel.fid+fextModel.itemcode+index2" :fid="sysfuncModel.fid" class="mui-popover" ref="scrollBox" style="height: 300px;">
-							<div class="mui-popover-arrow" style="display: none;"></div>
-							<div class='mui-scroll-wrapper' style="margin: 7px 0 45px 0;">
-								<div class="mui-scroll">
-									<form>
-										<template v-if="fextModel.itemcode=='prd'">
-											<div style="margin-left: 15px;color: #FF6600;line-height: 1.5;">{{fextModel.labelName}}</div>
-										</template>
-										<ul class="mui-table-view" style="background: #393D49;color: #fff;" :maxCheck=fextModel.itemsonsc>
-											<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in fextModel.itemsons" >
-												<div class="mui-input-row mui-checkbox mui-right" @tap="childCheckAll($event)">
-													<label  name="parentLabel" style="width: 100%;">{{getValue(item)}}</label>
-													<input name="parent" :value=item type="checkbox">
-												</div>
-												<!--<template v-if="fextModel.itemcode=='prd' && grdItem.itemcode=='grd' && grdItem.gid==getId(item)" v-for="(grdItem,index) in sysfuncModel.fext">
-													<div style="margin-left: 40px;color:#FF6600;">{{grdItem.labelName}}</div>
-													<ul class="mui-table-view" style="margin-left: 25px;background: #393D49;color: #fff;" :maxCheck2=grdItem.itemsonsc>
-														<li class="mui-table-view-cell" style="padding: 0;" v-for="(item2,index2) in grdItem.itemsons" >
-															<div class="mui-input-row mui-checkbox mui-right" @tap="checkXd($event)">
-																<label style="width: 100%;">{{getValue(item2)}}</label>
-																<input :name=index2 :value=item2 type="checkbox">
-															</div>
-														</li>
-													</ul>
-												</template>-->
-											</li>
-										</ul>
-									</form>
-								</div>
-							</div>
-							<div class="mui-input-row" style=";height:45px;top:255px;border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; z-index: 20180704;background: #fff;">
-								<button class="mui-btn btn-theme" style="display: block;margin:5px auto 0;float: none; width: 25%;border: 0px;" @click="hidePop($event,fextModel,sysfuncModel.fext)">确定</button>
-							</div>
-						</div>
-					</div>
-				</div>
+		
 			</div>
 		</div>
+		
+		<div class="mui-row bottom-row">
+			<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
+				¥ <span id="zfje-2">0</span> 元
+				<span id="zffs"></span>
+			</button>
+			<button id="payBtn" class="mui-btn mui-btn-success mui-col-xs-4 mui-col-sm-4 pay-btn" disabled>确认支付</button>
+		</div>
+		
+		<div id="funcPopover">
+			<!--用户类型多选列表-->
+			<template v-for="(sysfuncModel,index) in sysfuncList">
+				<div class="mui-popover" v-for="(fextModel,index2) in sysfuncModel.fext" 
+				:id="sysfuncModel.fid+fextModel.itemcode+index2" 
+				:style="'height:'+itemLength(sysfuncModel,index2)+'px;'"
+				:fid="sysfuncModel.fid">
+					<div class='mui-scroll-wrapper'>
+						<div class="mui-scroll">
+							<form>
+								<ul class="mui-table-view" :maxCheck="fextModel.itemsonsc">
+									<li class="mui-table-view-cell" v-if="fextModel.itemcode=='prd'">
+										<div class="label-name mui-ellipsis">{{fextModel.labelName}}</div>
+									</li>
+									<li class="mui-table-view-cell" v-for="(item,index) in fextModel.itemsons">
+										<div class="mui-input-row mui-checkbox mui-right" @tap="childCheckAll($event)">
+											<label name="parentLabel">{{getValue(item)}}</label>
+											<input v-if="fextModel.itemsonsc==0" name="parent" :value="item" type="checkbox" disabled checked>
+											<input v-else name="parent" :value="item" type="checkbox">
+										</div>
+										<template v-for="(grdItem,index) in sysfuncModel.fext" v-if="fextModel.itemcode=='prd' && grdItem.itemcode=='grd' && grdItem.gid==getId(item)">
+											<div class="label-name mui-ellipsis">{{grdItem.labelName}}</div>
+											<ul class="mui-table-view" :maxCheck2="grdItem.itemsonsc">
+												<li class="mui-table-view-cell" v-for="(item2,index2) in grdItem.itemsons">
+													<div class="mui-input-row mui-checkbox mui-right" @tap="checkXd($event)">
+														<label>{{getValue(item2)}}</label>
+														<input v-if="grdItem.itemsonsc==0" :name="index2" :value="item2" type="checkbox" disabled checked>
+														<input v-else :name="index2" :value="item2" type="checkbox">
+													</div>
+												</li>
+											</ul>
+										</template>
+									</li>
+								</ul>
+							</form>
+						</div>
+					</div>
+					<div class="mui-text-center bottom-box">
+						<button class="mui-btn mui-btn-success" @click="hidePop($event,fextModel,sysfuncModel.fext)">确定</button>
+					</div>
+				</div>
+			</template>
+		</div>
+		
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src='../../js/utils/vconsole.min.js'></script>
+		<!-- <script src='../../js/utils/vconsole.min.js'></script> -->
 		<script src='../../js/libs/jquery.js'></script>
 		<!--加密-->
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
@@ -325,75 +344,90 @@
 		<script src="../../js/utils/events.js"></script>
 		<script src="../../js/utils/payUtil.js"></script>
 		
+		<script src="../../js/utils/mui.picker.min.js"></script>
 		<script src="../../js/orals/common.js"></script>
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
-//			console.log('personal********:' + JSON.stringify(personal));
 			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			var functypes = window.storageKeyName.FUNCTYPES;
 			mui.init();
 
+			var timePicker;//时长选择器
 			var univlent; //单价
 			var monthList = []; //月份集合
+			
+			// 支付按钮
+			var payBtn = document.getElementById("payBtn");
+			payBtn.addEventListener("tap", function(){
+				orderData.payAction();
+			});
+			var pay_feem = document.getElementById("zfje-2");
+			
 			mui.plusReady(function() {
-				//获取套餐信息
+
 				var _data = utils.getDataFromUrl(window.location.href);
+				console.log("传来的订单信息：");
+				console.log(_data);
 				orderDetailData.orderDetail = _data;
-				console.log(orderDetailData.orderDetail)
-				orderDetailData.orderDetail.imgUrl = setImg(orderDetailData.orderDetail.imgUrl,1);
+				orderDetailData.orderDetail.imgUrl = setImg(orderDetailData.orderDetail.imgUrl, 1);
 				
 				//计算可以订购的时长  为月份数组 start
+				timePicker = new mui.PopPicker();
 				univlent = _data.feecode;
 				var month = _data.busmonth;
 				var num = 36 / month;
-				for(var i = 1; i <= num; i++) {
-					monthList.push(month * i)
+				for (var i = 1; i <= num; i++) {
+					monthList.push({value: month * i, text: month * i+"个月"});
 				}
+				timePicker.setData(monthList);
 				//end
 				
 				//套餐功能及扩展栏目
 				getSysBusFunc();
+				
 				// 获取支付通道
 				appPay.getChannels();
-				
-				//添加支付返回APP时的监听
-				//第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
-				appPay.addListener(function(){//查询成功
+
+				//添加支付返回APP时的监听, 第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
+				appPay.addListener(function() { //查询成功
 					order();
-				},function(e){//查询失败
-//					mui.toast(e);
+				}, function(e) { //查询失败
+					console.log(e);
 					var btnArray = ['否', '是'];
-					mui.confirm(e+'! 是否重新查询？', '益测益学', btnArray, function(e) {
+					mui.confirm(e + '! 是否重新查询？', '提示', btnArray, function(e) {
 						if (e.index == 1) {
 							reCheck();
-						} 
-					})
-				},function(e){//查询超时
+						}
+					});
+				}, function(e) { //查询超时
 					reCheck();
-				})
+				});
+				
 			});
-			
-			//尝试重新查询
-			function reCheck(){
-				appPay.payResult(function(){//查询成功
-						order();
-					},function(e){//查询失败
-							mui.toast(e);
-					},function(e){//查询超时
-							mui.toast(e);
-					},'正尝试重新查询...',10000);
-			}
-			
 
+			//尝试重新查询
+			function reCheck() {
+				appPay.payResult(function() { //查询成功
+					order();
+				}, function(e) { //查询失败
+					mui.toast(e);
+				}, function(e) { //查询超时
+					mui.toast(e);
+				}, '正尝试重新查询...', 10000);
+			}
+
+			// 套餐详情
 			var orderDetailData = new Vue({
 				el: '#orderDetailData',
 				data: {
 					orderDetail: {}
 				},
 				methods: {
-					getPrdName: getPrdName
+					orderPrice: orderPrice
 				}
 			});
-
+			
+			// 订单详情
 			var orderData = new Vue({
 				el: '#orderData',
 				data: {
@@ -401,268 +435,351 @@
 					chekcboxChecked: false, //注册协议是否阅读
 					isDisabled: true, //支付按钮是否关闭
 					sysfuncList: [], //附加信息
-					monthList: monthList,
 					servm: 0, //订购套餐总月数
 					feem: 0 //订购套餐总费用
 				},
+				watch: {
+					'feem': function(v) {
+						pay_feem.innerHTML = this.orderPrice(v);
+					},
+					'isDisabled': function(v, ov) {
+						if(v) {
+							payBtn.setAttribute("disabled", true);
+						}else{
+							payBtn.removeAttribute("disabled");
+						}
+					}
+				},
 				methods: {
+					orderPrice: orderPrice,
 					radioClick: function() {
 						this.radioChecked = !this.radioChecked
-						if(this.radioChecked == true)
+						if (this.radioChecked == true)
 							$('#zffs').html('&ensp;|&ensp;微信支付');
-						if(this.radioChecked == false) {
+						if (this.radioChecked == false) {
 							this.isDisabled = true
 							$('#zffs').html('');
-						} else if(this.radioChecked == true && this.chekcboxChecked == true)
+						} else if (this.radioChecked == true && this.chekcboxChecked == true)
 							this.isDisabled = false
 					},
 					checkboxClick: function() {
 						this.chekcboxChecked = !this.chekcboxChecked
-						if(this.chekcboxChecked == false)
+						if (this.chekcboxChecked == false)
 							this.isDisabled = true
-						else if(this.chekcboxChecked == true && this.radioChecked == true)
+						else if (this.chekcboxChecked == true && this.radioChecked == true)
 							this.isDisabled = false
 					},
-					childCheckAll:function(e){//如果选中了学段，那么学段下的年级将全选
-						var domDiv = e.target;
-						$(domDiv).parent().find("input[type='checkbox']").each(function() {
-							var isChecked=$(this).prop("checked");//为啥会反着？这里获取到的checkbox的值跟平时正好相反，不知道为啥
-							if(!isChecked){
-								$(domDiv).parent().parent().find('ul').find("input[type='checkbox']").each(function() {
-									$(this).prop("checked",true);
-								});
-							}else{
-								$(domDiv).parent().parent().find('ul').find("input[type='checkbox']").each(function() {
-									$(this).prop("checked",false);
-								});
-							}
+					childCheckAll: function(e) { //如果选中了学段，那么学段下的年级将全选
+						var domDiv = e.target; //事件穿透,当前元素下的input或label元素
+						var checkbox = $(domDiv).parent().find("input[type='checkbox']");//父级checkbox
+						var isDisabled = false;
+						// 判断父级checkbox是否可选
+						checkbox.each(function() {
+							var dis = $(this).attr("disabled");
+							if (dis == 'disabled') { isDisabled = true; }
 						});
-					},
-					checkXd:function(e){//如果选择了学段下的所以年级，那么学段将设置为选中
-						var domDiv = e.target;
-						var isAllCheck=false;
-						var allCheck=[];
-						setTimeout(function(){
-							$(domDiv).parent().parent().parent().find("input[type='checkbox']").each(function() {
-								var isChecked=$(this).prop("checked"); 
-								allCheck.push(isChecked);
+						if (!isDisabled) {
+							var child_checkbox = $(domDiv).parent().parent().find('ul').find("input[type='checkbox']"); //子级checkbox
+							checkbox.each(function() {
+								var isChecked = $(this).prop("checked");
+								if (!isChecked) {
+									child_checkbox.each(function() {
+										$(this).prop("checked", true);
+									});
+								} else {
+									child_checkbox.each(function() {
+										var dis = $(this).attr("disabled");
+										var che = $(this).attr("checked");
+										if (dis == 'disabled' && che == 'checked') {
+											$(this).prop("checked", true);
+										} else {
+											$(this).prop("checked", false);
+										}
+									});
+								}
 							});
-							if(JSON.stringify(allCheck).indexOf("true")==-1){
-								$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
-									$(this).prop("checked",false);
-								});
-							}else{
-								$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
-									$(this).prop("checked",true);
-								});
-							}
-						},300);
+						}
 					},
-					hidePop: function(e,fextModel,fext) { //隐藏弹窗
+					checkXd: function(e) { //如果选择了学段下的所以年级，那么学段将设置为选中
+						var domDiv = e.target;//事件穿透,当前元素下的input或label元素
+						var allCheck = [];
+						var isDisabled = false;
+						$(domDiv).parent().find("input[type='checkbox']").each(function() {
+							var dis = $(this).attr("disabled");
+							if (dis == 'disabled') { isDisabled = true; }
+						});
+						if (!isDisabled) {
+							setTimeout(function() {
+								$(domDiv).parent().parent().parent().find("input[type='checkbox']").each(function() {
+									var isChecked = $(this).prop("checked");
+									allCheck.push(isChecked);
+								});
+								console.log(allCheck);
+								if (JSON.stringify(allCheck).indexOf("true") == -1) {
+									$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
+										$(this).prop("checked", false);
+									});
+								} else {
+									$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
+										$(this).prop("checked", true);
+									});
+								}
+							}, 10);
+						}
+					},
+					hidePop: function(e, fextModel, fext) { //隐藏弹窗
 						var domDiv = e.target;
 						//遍历已勾选的input的key 和value
 						var name = [];
 						var value = [];
 						var name_nj = [];
 						var value_nj = [];
-						var max = $(domDiv).parent().parent().find('ul').first().attr('maxCheck');
-						var max2 =0;
-						$(domDiv).parent().parent().find('ul').first().children('li').each(function() {
-							var parent_input = $(this).find('input[name="parent"]').first();
-							if(parent_input.prop("checked")) {
+						var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
+						var max2 = 0;
+						$(domDiv).parent().parent().find('li').each(function() {
+							if ($(this).find('input[name="parent"]').prop("checked")) {
 								var textValue = $(this).find('label[name="parentLabel"]').text();
-								var values = parent_input.val();
-								if(values.indexOf("|")!=-1){
-									var _value=values.split("|")[0];
+								var values = $(this).find('input').val();
+								if (values.indexOf("|") != -1) {
+									var _value = values.split("|")[0];
 									name.push(textValue);
 									value.push(_value);
-								}else{
-									name.push(parent_input.siblings('label').text());
-									value.push(values);
+								} else {
+									name.push($(this).find('label').text());
+									value.push($(this).find('input').val());
 								}
 
-								var num =$(this).find('ul').attr('maxCheck2');
-								if(num!=undefined){
-									max2=num;
+								var num = $(this).find('ul').attr('maxCheck2');
+								if (num != undefined) {
+									max2 = num;
 								}
-								
+
 								$(this).find('ul').find("li").each(function() {
-									if($(this).find('input').prop("checked")) {
-										var textValue=$(this).find('label').text();
-										var values=$(this).find('input').val();
-										if(values.indexOf("|")!=-1){
-											var _value=values.split("|")[0];
+									if ($(this).find('input').prop("checked")) {
+										var textValue = $(this).find('label').text();
+										var values = $(this).find('input').val();
+										if (values.indexOf("|") != -1) {
+											var _value = values.split("|")[0];
 											name_nj.push(textValue);
 											value_nj.push(_value);
-										}else{
+										} else {
 											name_nj.push($(this).find('label').text());
 											value_nj.push($(this).find('input').val());
 										}
 									}
 								});
 							}
-							
 						})
-						
-						var itemcode=fextModel.itemcode;
-						if(itemcode=='prd'){
-							if(value.length > max) {
+						//						console.log("max===="+max);
+						//						console.log("max2===="+max2);
+						//						console.log("name========"+name);
+						//						console.log("value========"+value);
+						//						console.log("name_nj====="+name_nj);
+						//						console.log("value_nj========="+value_nj);
+						var itemcode = fextModel.itemcode;
+						if (itemcode == 'prd') {
+							if (max == 0 && value.length > 1) {
+								mui.toast('学段最多选1个');
+								return;
+							} else if (max > 0 && value.length > max) {
 								mui.toast('学段最多选' + max + '个');
 								return;
+							} else if (value.length == 0) {
+								mui.toast('请选择学段');
+								return;
 							}
-							
-							for(var z=0;z<value.length;z++){
-								var pid=value[z];
-								var pname=name[z];
-								var sz=[];
-								for(var i=0;i<value_nj.length;i++){
-									var gid=value_nj[i];
-									if(gid.startWith(pid)){
+
+							for (var z = 0; z < value.length; z++) {
+								var pid = value[z];
+								var pname = name[z];
+								var sz = [];
+								for (var i = 0; i < value_nj.length; i++) {
+									var gid = value_nj[i];
+									if (gid.startWith(pid)) {
 										sz.push(gid);
 									}
 								}
-								if(sz.length > max2) {
-									mui.toast(pname+'年级最多选' + max2 + '个');
+								if (max2 == 0 && sz.length > 1) {
+									mui.toast(pname + '年级最多选1个');
+									return;
+								} else if (max2 > 0 && sz.length > max2) {
+									mui.toast(pname + '年级最多选' + max2 + '个');
+									return;
+								} else if (sz.length == 0) {
+									mui.toast('请选择' + pname + '年级');
 									return;
 								}
 							}
-						}else{
-							if(value.length > max) {
+						} else {
+							if (value.length > max) {
 								mui.toast('最多选' + max + '个');
 								return;
 							}
 						}
-						
+
 						var id = $(domDiv).parent().parent().attr("id");
-						if(name.length == 0 || value.length == 0) {
+						if (name.length == 0 || value.length == 0) {
 							var label = $('#' + id + 'label').html();
-							document.getElementById(id + 'input0').value = label+'(最多可选'+fextModel.itemsonsc+'个)';
+							document.getElementById(id + 'input0').value = label + '(最多可选' + fextModel.itemsonsc + '个)';
 							document.getElementById(id + 'input1').value = [];
 							fextModel.checked = '';
 							Vue.delete(fextModel, 'checked');
-						} 
-						else {
-							for(var z=0;z<fext.length;z++){
-								var fexM=fext[z];
-								var itemcode=fexM.itemcode;
-								if(itemcode=='grd'){//遍历fex数组并找到itemcode为grd的对象
-									var gid=fexM.gid;
-									if(value.indexOf(gid)!=-1){
-										var sz=[];
-										for(var j=0;j<value_nj.length;j++){
-											var njId=value_nj[j];
-											if(njId.startWith(gid)){
+						} else {
+							for (var z = 0; z < fext.length; z++) {
+								var fexM = fext[z];
+								var itemcode = fexM.itemcode;
+								if (itemcode == 'grd') { //遍历fex数组并找到itemcode为grd的对象
+									var gid = fexM.gid;
+									if (value.indexOf(gid) != -1) {
+										var sz = [];
+										for (var j = 0; j < value_nj.length; j++) {
+											var njId = value_nj[j];
+											if (njId.startWith(gid)) {
 												sz.push(njId);
 											}
 										}
-										fexM.checked=sz.join(",");
-									}else{
-										fexM.checked="";
+										fexM.checked = sz.join(",");
+									} else {
+										fexM.checked = "";
 									}
 								}
 							}
 							document.getElementById(id + 'input0').value = name;
 							document.getElementById(id + 'input1').value = value;
-							
 							fextModel.checked = value.join(',');
 						}
+						console.log("SYSFUNCLIST:" + JSON.stringify(orderData.sysfuncList));
 						mui('#' + id).popover('toggle');
 					},
-					 getValue: function(item) {
-						var values=item.split("|");
-						var newValue='';
-						for(var i=1;i<values.length;i++){
-							newValue+=values[i];
+					getValue: function(item) {
+						var values = item.split("|");
+						var newValue = '';
+						for (var i = 1; i < values.length; i++) {
+							newValue += values[i];
 						}
-					    return  newValue||"未命名";
+						return newValue;
 					},
-					 getId: function(item) {
-						var values=item.split("|");
-					    return  values[0];
+					getId: function(item) {
+						var values = item.split("|");
+						return values[0];
 					},
-					 getItemsons: function(item) {
-						var values=item[0].split("|");
-						var newValue='';
-						for(var i=1;i<values.length;i++){
-							newValue+=values[i];
+					getItemsons: function(item) {
+						var values = item[0].split("|");
+						var newValue = '';
+						for (var i = 1; i < values.length; i++) {
+							newValue += values[i];
 						}
-					    return  newValue;
+						return newValue;
 					},
 					gradeChange: function(e) { //月份下拉选选中事件
-						var domDiv = e.target;
-						var selectTime = $(domDiv).val();
-						this.servm = $(domDiv).find("option:selected").attr('monthnum');
-						this.feem = (selectTime * 1 * univlent * 1).toFixed(2);
-						appPay.feem=this.feem;
+						var _this = this;
+						timePicker.show(function(items){
+							_this.servm = items[0].value;
+							_this.feem = (items[0].value * 1 * univlent * 1);
+							appPay.feem = _this.feem*1;
+						});
 					},
 					payAction: function() { //支付
-						if(this.servm == 0) {
-							mui.toast('您还没有选择时长')
+						if (this.servm == 0) {
+							mui.toast('您还没有选择时长');
 						} else {
 							//判断必选项大于0的是否都选择了
-//							var strs=[];
-//							var prdModel;
-//							for(var i = 0; i < orderData.sysfuncList.length; i++) {
-//								var sysfuncModel = orderData.sysfuncList[i];
-//								for(var j=0;j<sysfuncModel.fext.length;j++){
-//									var model = sysfuncModel.fext[j];
-//									//只针对学段
-//									if(model.itemsonsc>0 && model.itemcode=="prd"){
-//										if(model.checked==undefined){
-//											strs.push(model.itemname);
-//										}
-//									}
-//								}
-//							}
-//							if(strs.length>0){
-//								mui.toast("功能："+strs.join(",")+'为必选项')
-//							}else{
+							var strs = [];
+							var prdModel;
+							for (var i = 0; i < orderData.sysfuncList.length; i++) {
+								var sysfuncModel = orderData.sysfuncList[i];
+								for (var j = 0; j < sysfuncModel.fext.length; j++) {
+									var model = sysfuncModel.fext[j];
+									if (model.itemcode == 'prd') {
+										_gid = model.checked;
+									}
+									if (model.itemsonsc > 0) {
+										//										console.log(model.itemname+","+model.checked)
+										if (model.checked == undefined) {
+											strs.push(model.itemname);
+										}
+
+									}
+								}
+							}
+							if (strs.length > 0) {
+								//								mui.toast("功能："+strs.join(",")+'为必选项')
+								mui.toast("您选择的信息不完整")
+							} else {
 								//如果是0元套餐，直接走订购
-								if(this.feem==0){
+								if (this.feem == 0) {
 									order();
-								}else{
-//										order();
-									appPay.payCode=true;
+								} else {
+									//										order();
+									appPay.payCode = true;
 									//调起支付
-									appPay.pay(appPay.wxpay,function success(){
+									appPay.pay(appPay.wxpay, function success() {
 										console.log("支付成功");
-									},function fail(code,err){
-										
+									}, function fail(code, err) {
+										plus.nativeUI.alert("支付失败");
 									});
 								}
-								
-//							}
+
+							}
 						}
-					}
-				},
-				watch: {
-					sysfuncList: function() {
-						mui('.mui-scroll-wrapper').scroll();
-						setTimeout(function() {
-							mui('.mui-scroll-wrapper').scroll();
-						}, 2000);
 					}
 				}
 			});
+			
+			// 功能选择框
+			var funcPopover = new Vue({
+				el: "#funcPopover",
+				data: {
+					sysfuncList: []
+				},
+				watch: {
+					'sysfuncList': function(v) {
+						v.length && this.$nextTick(function () {
+							// 设置滚动
+							mui('.mui-scroll-wrapper').scroll({
+								indicators: false
+							});
+						});
+					}
+				},
+				methods: {
+					childCheckAll: orderData.childCheckAll,
+					checkXd: orderData.checkXd,
+					hidePop: orderData.hidePop,
+					getValue: orderData.getValue,
+					getId: orderData.getId,
+					itemLength: function(model,i) {
+						var item = model.fext[i];
+						var l = 65 + item.itemsons.length*40;
+						if(item.itemcode=="prd"){
+							var grd = model.fext.filter(function(v){return v.itemcode=="grd";});
+							l = l + grd.length*60 + 50;
+						}
+						return l;
+					}
+				}
+			});
+			funcPopover.sysfuncList = orderData.sysfuncList;
 
 			//4.用户订购套餐
 			var order = function() {
 				//循环得到附加信息
 				var funcArray = [];
-				for(var i = 0; i < orderData.sysfuncList.length; i++) {
+				for (var i = 0; i < orderData.sysfuncList.length; i++) {
 					var sysfuncModel = orderData.sysfuncList[i];
-					for(var a = 0; a < sysfuncModel.fext.length; a++) {
+					for (var a = 0; a < sysfuncModel.fext.length; a++) {
 						var fextModel = sysfuncModel.fext[a];
-						if(fextModel.checked && fextModel.checked.length > 0) {
+						console.log("fextModel:" + fextModel.checked);
+						if (fextModel.checked != '' && fextModel.checked != undefined) {
 							var tempModel = {
 								fcode: sysfuncModel.fcode, //功能代码
 								itemcode: fextModel.itemcode, //栏目代码
 								itemsons: fextModel.checked //栏目选择子集
 							}
 							funcArray.push(tempModel);
-						}else if(fextModel.itemsonsc==0){//最多选0个时
-							var sons=fextModel.itemsons[0];
-							var checked=sons.split("|")[0];
+						} else if (fextModel.itemcode != 'prd' && fextModel.itemcode != 'grd' && fextModel.itemsonsc == 0) {
+							var sons = fextModel.itemsons[0];
+							var checked = sons.split("|")[0];
 							var tempModel = {
 								fcode: sysfuncModel.fcode, //功能代码
 								itemcode: fextModel.itemcode, //栏目代码
@@ -672,85 +789,97 @@
 						}
 					}
 				}
-				var data={
-					servid:orderDetailData.orderDetail.serviceid,//套餐代码
-					servm:orderData.servm*1, //订购总月数
-					feem:orderData.feem*1,//订购花费
-					funclist:funcArray//订购的扩展参数
+				var data = {
+					servid: orderDetailData.orderDetail.serviceid, //套餐代码
+					servm: orderData.servm * 1, //订购总月数
+					feem: orderData.feem * 1, //订购花费
+					funclist: funcArray //订购的扩展参数
 				}
-
-				appPay.UserFeeFunc('UserFee',data,function success(){
+				console.log(JSON.stringify(data));
+				appPay.UserFeeFunc('UserFee', data, function success() {
 					mui.toast('套餐订购成功');
 					//通知套餐详情页面刷新时间
 					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
-						newEtime:orderDetailData.newEtime
+						newEtime: orderDetailData.newEtime
 					});
 					mui.back();
-				},function fail(err){
+				}, function fail(err) {
 					mui.toast(err);
 				});
 			}
- 
-			//套餐功能及扩展栏目
+
+			//3.19:套餐功能及扩展栏目
 			var getSysBusFunc = function() {
 				var enData1 = {};
+				var fcodes = orderDetailData.orderDetail.fcodes;
+				// 获取当前项目套餐功能代码串
+				if(functypes) {
+					var this_funcs = orderDetailData.orderDetail.funcs.filter(function(v){
+						return v.ftype==functypes;
+					});
+					if(this_funcs[0]) {
+						fcodes = this_funcs[0].fcode;
+					}
+				}
 				//不需要加密的数据
 				var comData1 = {
 					uuid: publicParameter.uuid, //用户设备号
-					fcodes: orderDetailData.orderDetail.fcodes, //功能代码串,留空为全部,多个用逗号隔开
+					fcodes: fcodes, //功能代码串,留空为全部,多个用逗号隔开
 					utoken: personal.utoken, //用户令牌
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
 				events.showWaiting();
-				//获取验证码
-				//发送网络请求，data为网络返回值
 				postDataEncry('SysBusFunc', enData1, comData1, 0, function(data1) {
-					console.log('SysBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
-					if(data1.RspCode == 0) {
-						var sysfunc=[];
-						for(var i = 0; i < data1.RspData.sysfunc.length; i++) {
+					if (data1.RspCode == 0) {
+						var sysfunc = [];
+						// 循环套餐功能列表
+						for (var i = 0; i < data1.RspData.sysfunc.length; i++) {
 							var tempModel0 = data1.RspData.sysfunc[i];
-							if(tempModel0.fext==null){
+							if (tempModel0.fext == null) {
 								continue;
-							}else{
-								var str =JSON.stringify(tempModel0.fext);
-								if(str.indexOf('prd')!=-1){
-									for(var a = 0; a < tempModel0.fext.length; a++) {
+							} else {
+								var str = JSON.stringify(tempModel0.fext);//功能栏目表
+								if (str.indexOf('prd') != -1) { //存在学段选项时
+									// 循环栏目表, 添加labelName和gid, itemsons转成数组
+									for (var a = 0; a < tempModel0.fext.length; a++) {
 										var tempModel1 = tempModel0.fext[a];
-										tempModel1.labelName=tempModel1.itemname+'（最多可选'+tempModel1.itemsonsc+'个）'
+										tempModel1.labelName = '请选择' + tempModel1.itemname + '（最多可选' + tempModel1.itemsonsc + '个）'
 										tempModel1.itemsons = tempModel1.itemsons.split(',');
-										if(tempModel1.itemcode=='grd'){
-											var gid=tempModel1.itemsons[0].split("|")[0].substring(0,1);
-											tempModel1.gid=gid;
+										if (tempModel1.itemcode == 'grd') {
+											var gid = tempModel1.itemsons[0].split("|")[0].substring(0, 1);
+											tempModel1.gid = gid;
 										}
-										tempModel0.fext[a]=tempModel1;
+										tempModel0.fext[a] = tempModel1;
 									}
 									sysfunc.push(tempModel0)
 								}
 							}
 						}
 						orderData.sysfuncList = [].concat(sysfunc);
-						mui('.mui-scroll-wrapper').scroll();
+						funcPopover.sysfuncList = orderData.sysfuncList;
+						console.log("套餐功能列表:");
+						console.log(orderData.sysfuncList);
 					} else {
 						mui.toast(data1.RspTxt);
 					}
 				});
 			}
-			
-			String.prototype.startWith=function(str){     
-			  var reg=new RegExp("^"+str);     
-			  return reg.test(this);        
-			}  
-			
-			String.prototype.endWith=function(str){     
-			  var reg=new RegExp(str+"$");     
-			  return reg.test(this);        
+
+			String.prototype.startWith = function(str) {
+				var reg = new RegExp("^" + str);
+				return reg.test(this);
 			}
-			
-//			orderData.sysfuncList = [{"fext":[{"itemcode":"prd","itemname":"学段","itemsons":"3|初中","itemsonsc":0},{"itemcode":"grd","itemname":"年级","itemsons":"3001|初一,3002|初二,3003|初三","itemsonsc":3}],"fid":82,"fcode":"YCYX02","ftype":"YCYXZS","fname":"益测益学（初中）","frange":"益测益学APP","fset":"sub!null!","fnote":"","fdes":""}];
-//			orderData.monthList = [1,2,3,4,5,6,7,8,9,10];
-		</script> 
+
+			String.prototype.endWith = function(str) {
+				var reg = new RegExp(str + "$");
+				return reg.test(this);
+			}
+
+			// orderData.sysfuncList = [{"fext":[{"itemcode":"sub","itemname":"科目","itemsons":["01|语文","02|数学","03|英语"],"itemsonsc":3,"labelName":"请选择科目（最多可选3个）"},{"itemcode":"prd","itemname":"学段","itemsons":["1|幼儿园","2|小学","3|初中","4|高中"],"itemsonsc":1,"labelName":"请选择学段（最多可选1个）"},{"itemcode":"grd","itemname":"年级","itemsons":["1001|小小班","1002|小班","1003|中班","1004|大班","1005|学前班"],"itemsonsc":1,"labelName":"请选择年级（最多可选1个）","gid":"1"},{"itemcode":"grd","itemname":"年级","itemsons":["2001|一年级","2002|二年级","2003|三年级","2004|四年级","2005|五年级","2006|六年级"],"itemsonsc":1,"labelName":"请选择年级（最多可选1个）","gid":"2"},{"itemcode":"grd","itemname":"年级","itemsons":["3001|初一","3002|初二","3003|初三","3004|初四"],"itemsonsc":1,"labelName":"请选择年级（最多可选1个）","gid":"3"},{"itemcode":"grd","itemname":"年级","itemsons":["4001|高一","4002|高二","4003|高三"],"itemsonsc":1,"labelName":"请选择年级（最多可选1个）","gid":"4"}],"fid":3,"fcode":"ycyx001","ftype":"ycyx","fname":"益测益学功能","frange":"一个年级","fset":"sub!01,02,03!3","fnote":"","fdes":"益测益学功能"}];
+// 			orderData.monthList = [1,2,3,4,5,6,7,8,9,10];
+			// funcPopover.sysfuncList = orderData.sysfuncList;
+		</script>
 	</body>
 
 </html>

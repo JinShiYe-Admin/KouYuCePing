@@ -5,7 +5,7 @@ function reLogin(flag) {
 	var login = plus.webview.create('../../html/index/login.html');
 	login.onloaded = function(){
 		plus.nativeUI.closeWaiting();
-		login.show("fade-in");
+		login.show(mui.os.ios?"fade-in":"slide-in-right");
 		var wvs = plus.webview.all();
 		for(var i = 0, len = wvs.length; i < len; i++) {
 			//关闭除login页面外的其他页面
@@ -36,11 +36,16 @@ function getPrdName(fx) {
 }
 
 //接口地址
-var host = window.storageKeyName.ORALSHOST;
+var host = window.storageKeyName?window.storageKeyName.ORALSHOST:"";
 
 //分数格式
 function setWordsScore(score) {
 	return Math.round(score*20);
+}
+
+// 套餐价格
+function orderPrice(fee) {
+	return fee/100;
 }
 
 //选择教材
@@ -156,6 +161,40 @@ function readTree(tree, callback) {
             readTree(tree[i].childList, callback);
         }
     }
+}
+
+//监听上拉刷新，el被监听的元素
+function setPullRefresh(el, callback) {
+	var startX, startY;
+	refreshBox = document.querySelector(el);
+	if(refreshBox){
+		refreshBox.addEventListener('touchstart',function (ev) {
+            startX = ev.touches[0].pageX;
+            startY = ev.touches[0].pageY;
+        }, false);
+        refreshBox.addEventListener("touchend", function(ev){
+        	var endX, endY;
+            endX = ev.changedTouches[0].pageX;
+            endY = ev.changedTouches[0].pageY;
+            var direction = GetSlideDirection(startX, startY, endX, endY);
+			// console.log(this.scrollHeight+"---"+this.scrollTop);
+            if(direction==1&&(this.scrollHeight<=this.scrollTop+this.clientHeight)) {
+            	callback();
+            }
+        }, false);
+		if(mui.os.android&&parseFloat(mui.os.version)<6.0){
+			refreshBox.addEventListener("touchcancel", function(ev){
+			 	var endX, endY;
+			     endX = ev.changedTouches[0].pageX;
+			     endY = ev.changedTouches[0].pageY;
+			     var direction = GetSlideDirection(startX, startY, endX, endY);
+			 	// console.log(this.scrollHeight+"---"+this.scrollTop);
+			     if(direction==1&&(this.scrollHeight<=this.scrollTop+this.clientHeight)) {
+			     	callback();
+			     }
+			 }, false);
+		}
+	}
 }
 
 //滑动方向

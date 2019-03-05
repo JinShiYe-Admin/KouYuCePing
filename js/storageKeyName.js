@@ -2,7 +2,7 @@
 
 var storageKeyName = (function(mod) {
 
-	mod.key = 1;//0测试；1正式
+	mod.key = 0;//0测试；1正式
 	var exLog = console.log;
 	console.log = function(hint, object) {
 		if(mod.key === 0) {
@@ -20,7 +20,15 @@ var storageKeyName = (function(mod) {
 			mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/'; //用户信息接口
 			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
-			mod.ANDROIDUPDATEURL='http://zhxy.jiaobaowang.net:8015/appupdate/versionCode.xml';
+			mod.ANDROIDUPDATEURL='http://zhxy.jiaobaowang.net:8015/appupdate/versionCode.xml';//安卓升级地址
+			
+			mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/AppServer.aspx';//微信支付地址
+			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
+			if(mod.pay==0) {//单商家
+				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+			}else if(mod.pay==1){//多商家
+				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+			}
 
 			//---七牛空间和接口---
 //			mod.QNPB = 'https://qn-educds.jiaobaowang.net/'; //公开空间域名
@@ -52,6 +60,10 @@ var storageKeyName = (function(mod) {
 		default:
 			break;
 	}
+	
+	//套餐功能类型，多个之间用英文逗号隔开
+	mod.FUNCTYPES = 'kycp'; 
+	
 	mod.BADGENUMBER = 'badgeNumber'//app角标
 	mod.PUBLICPARAMETER = 'publicParameter'//共用参数
 	mod.ISFIRST = 'isFitst'; //是否是第一次登陆
@@ -59,13 +71,6 @@ var storageKeyName = (function(mod) {
 	mod.PERSONALINFO = 'personalInfo1111'; //个人信息，登录成功后返回值
 	mod.SHAKEHAND = 'ShakeHand'; //公钥，登录时，返回的握手信息，
 	mod.AUTOLOGIN = 'autoLogin'; //登录信息
-	// mod.DOCUMENTSPATH = 'DOCUMENTSPATH'; //记录document的地址
-//	mod.SEHISTORY = 'seHistory'; //科教历史记录
-//	mod.SECITY = 'seCity'; //科教订制的城市
-//	mod.SHOWCITY = 'showCity'; //展现订制的城市
-
-//	mod.VIDEOSIZE = -1;//视频大小限制 -1为不限制   30 * 1024 * 1024 =30M
-//	mod.VIDEOLENGTH = 301; //视频时长限制 -1为不限制
 
 	mod.WAITING = '加载中...'; //
 	mod.UPLOADING = '上传中...';
