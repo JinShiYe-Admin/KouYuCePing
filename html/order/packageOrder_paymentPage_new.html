@@ -63,7 +63,7 @@
 				border: 0px;
 				margin-top: 5px;
 				text-align: left;
-				padding-left: 0;
+				padding-left: 10px;
 			}
 			.mui-input-row .fee {
 				text-align: right; font-size: 15px;color: #666666;width: 100%;
@@ -141,6 +141,7 @@
 			}
 			.pay-btn-je {
 				height: 50px;
+				line-height: 50px;
 				border: 0px;
 				text-align: left;
 			}
@@ -325,7 +326,7 @@
 		
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<!-- <script src='../../js/utils/vconsole.min.js'></script> -->
+		<script src='../../js/utils/vconsole.min.js'></script>
 		<script src='../../js/libs/jquery.js'></script>
 		<!--加密-->
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
@@ -734,12 +735,26 @@
 				},
 				watch: {
 					'sysfuncList': function(v) {
-						v.length && this.$nextTick(function () {
-							// 设置滚动
-							mui('.mui-scroll-wrapper').scroll({
-								indicators: false
+						if(v.length){
+							this.$nextTick(function () {
+								// 设置滚动
+								mui('.mui-scroll-wrapper').scroll({
+									indicators: false
+								});
 							});
-						});
+							// 学段唯一时,默认选择学段
+// 							var itemPrd;
+// 							for(var i=0; i<v.length; i++){
+// 								for(var j=0; j<v[i].fext.length; j++){
+// 									if(v[i].fext[j].itemcode=="prd"&&v[i].fext[j].itemsons[0]&&v[i].fext[j].itemsonsc<1){
+// 										var itemsons = v[i].fext[j].itemsons[0].split("|");
+// 										$("#"+v[i].fid+"prd"+j+"input0").val(itemsons[1]);
+// 										$("#"+v[i].fid+"prd"+j+"input1").val(itemsons[2]);
+// 										break;
+// 									}
+// 								}
+// 							}
+						}
 					}
 				},
 				methods: {

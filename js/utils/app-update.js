@@ -3,8 +3,10 @@
  */
 var appUpdate = (function(mod) {
 	
-	mod.androidUpdateUrl=window.storageKeyName.ANDROIDUPDATEURL;
-	mod.iosUpdateUrl='http://itunes.apple.com/lookup?id=1281905607';
+	mod.androidUpdateUrl = window.storageKeyName.ANDROIDUPDATEURL; //安卓更新信息
+	mod.iosUpdateUrl = "https://itunes.apple.com/lookup?id=111030274"; //获取当前上架APPStore版本信息
+	mod.iosDownloadUrl = "https://itunes.apple.com/cn/app/id111030274?mt=8"; //APPStore下载地址
+	var appName = "口语测评";
 	
 	mod.fileSize;
 	mod.updateFlag = 0; //1确认升级2取消升级
@@ -58,6 +60,7 @@ var appUpdate = (function(mod) {
 	
 	//获取android 更新信息
 	function getXml(school_id){
+		console.log("获取android 更新信息")
 		$.ajax({
 		    url:mod.androidUpdateUrl,
 		    type: 'GET',
@@ -70,7 +73,7 @@ var appUpdate = (function(mod) {
 	        success: function(xml){ 
 	            $(xml).find("school").each(function(i){
 	            	var school_id_text=$(this).children("school_id").text();
-	          		if(school_id==school_id_text){
+	          		if(school_id==school_id_text||school_id_text=="0"){
 			          	var update_info=$(this).children("update_info");
 				        var info={
 				        	version:update_info.children("new_version").text()
@@ -143,7 +146,7 @@ var appUpdate = (function(mod) {
 			if(appVersionMinMax.max < newestVersionMinMax.max) { //整包更新
 				if(mod.updateFlag == 0) {
 					//询问是否更新
-					    setDialog('校讯通有新版本，是否下载？', "您已取消下载", function() {
+					    setDialog(appName+'有新版本，是否下载？', "您已取消下载", function() {
 						mod.updateFlag = 1;
 						console.log("下载APK路径：" + versionInfo.download_url)
 						resolveFile(versionInfo.download_url, 1);
@@ -156,6 +159,7 @@ var appUpdate = (function(mod) {
 
 			} else if(appVersionMinMax.max == newestVersionMinMax.max) {
 				if(appVersionMinMax.min < newestVersionMinMax.min) { //在线更新
+					console.log("在线更新");
 					resolveFile(versionInfo.download_url, 0);
 				}
 			}
@@ -166,10 +170,10 @@ var appUpdate = (function(mod) {
 					return parseInt(verNo) > parseInt(appVersions[index]);
 				})
 				if(hasNewerVersion && mod.updateFlag == 0) { //如果有新版本
-					setDialog('校讯通有新版本，是否下载？', "您已取消下载", function() {
+					setDialog(appName+'有新版本，是否下载？', "您已取消下载", function() {
 						mod.updateFlag = 1;
 						console.log("下载APK路径：")
-						plus.runtime.openURL('https://itunes.apple.com/us/app/%E6%95%99%E5%AE%9D%E4%BA%91/id1281905607?l=zh&ls=1&mt=8');
+						plus.runtime.openURL(mod.iosDownloadUrl);
 					}, function() {
 						mod.updateFlag = 2;
 					})
@@ -184,7 +188,7 @@ var appUpdate = (function(mod) {
 	 */
 	var setDialog = function(hint, cancelToast, callback, cancelCallback) {
 		var btnArray = ['是', '否'];
-		mui.confirm(hint, '校讯通', btnArray, function(e) {
+		mui.confirm(hint, appName, btnArray, function(e) {
 			//console.log("当前点击的东东：" + JSON.stringify(e));
 			if(e.index == 0) {
 				callback();
@@ -221,17 +225,17 @@ var appUpdate = (function(mod) {
 	 * @param {Object} ApkUrl 整包地址
 	 */
 	function downApk(ApkUrl) {
-		//console.log(plus.os.name);
+//		console.log(plus.os.name);
 		if(plus.os.name == "Android") {
-			//console.log("下载APK路径：" + ApkUrl)
+//			console.log("下载APK路径：" + ApkUrl)
 			var url = "_doc/update/"; // 下载文件地址
 			var dtask = plus.downloader.createDownload(ApkUrl, {
 				filename: "_doc/update/"
 			}, function(d, status) {
-				//console.log("下载状态：" + status);
-				if(status == 200) { // 下载成功
+				console.log("下载状态：" + status+"，"+d.state);
+				if(d.state==4&&status == 200) { // 下载成功
 					var path = d.filename;
-					//console.log(d.filename);
+					console.log(d.filename);
 					if(mod.installFlag == 0) {
 						setDialog("新版app文件已下载，是否安装？", "您已取消安装", function() {
 							installApk(path);
@@ -289,8 +293,7 @@ var appUpdate = (function(mod) {
 		if(plus.os.name == "Android") {
 			plus.runtime.install(path); // 安装下载的apk文件
 		} else {
-			var url = 'itms-apps://itunes.apple.com/cn/app/hello-h5+/id682211190?l=zh&mt=8'; // HelloH5应用在appstore的地址
-			plus.runtime.openURL(url);
+			plus.runtime.openURL(mod.iosDownloadUrl);
 		}
 	}
 	/**
@@ -318,25 +321,25 @@ var appUpdate = (function(mod) {
 		var filePath = "_doc/update/" + fileUrl.split('/')[fileUrl.split('/').length - 1]
 		plus.io.resolveLocalFileSystemURL(filePath, function(entry) {
 			// 可通过entry对象操作test.html文件 
-			console.log('存在文件！' + entry.isFile);
+			console.log('存在文件！' + entry.isFile+"，"+entry.toLocalURL());
 			entry.getMetadata(function(metadata) {
-				if(store.get("loadFileSize") == metadata.size) {
-					//console.log("Remove succeeded:" + store.get("loadFileSize"));
-					if(type) {
-						if(mod.installFlag == 0) {
-							setDialog("新版app文件已下载，是否安装？", "您已取消安装app", function() {
-								installApk(filePath);
-								mod.installFlag = 1;
-							}, function() {
-								mod.installFlag = 2;
-							})
-						} else if(mod.installFlag == 1) {
-							installApk(filePath);
-						}
-					} else {
-						installWgt(filePath);
-					}
-				} else {
+//				if(store.get("loadFileSize") == metadata.size) {
+//					console.log("Remove succeeded:" + store.get("loadFileSize"));
+//					if(type) {
+//						if(mod.installFlag == 0) {
+//							setDialog("新版app文件已下载，是否安装？", "您已取消安装app", function() {
+//								installApk(filePath);
+//								mod.installFlag = 1;
+//							}, function() {
+//								mod.installFlag = 2;
+//							})
+//						} else if(mod.installFlag == 1) {
+//							installApk(filePath);
+//						}
+//					} else {
+//						installWgt(filePath);
+//					}
+//				} else {
 					entry.remove(function(entry) {
 						if(type) {
 							downApk(fileUrl);
@@ -347,7 +350,7 @@ var appUpdate = (function(mod) {
 						alert(e.message); 
 					});
 
-				}
+//				}
 			}, function() {
 				//console.log("文件错误");
 			});

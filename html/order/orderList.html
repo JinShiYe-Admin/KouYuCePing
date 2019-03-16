@@ -39,23 +39,22 @@
 		</header>
 		
 		<div class="mui-content">
-			<div class="mui-content">
+			<div id='orders' class="mui-content">
 				<div id='scroll' class="mui-scroll-wrapper">
 					<div class="mui-pull-top-pocket mui-block mui-hidden">
-						<div class="mui-pull">
+						<div class="mui-pull" v-if="orderList.length">
 							<div class="mui-pull-loading mui-icon mui-icon-pulldown" style="transition: -webkit-transform 0.3s ease-in 0s; transform: rotate(0deg);"></div>
 							<div class="mui-pull-caption">下拉可以刷新</div>
 						</div>
+						<div class="mui-pull"  v-else>暂无套餐</div>
 					</div>
-					<div id='orders' class="mui-scroll">
+					<div class="mui-scroll">
 						<ul class="mui-table-view">
 							<li v-for="item in orderList" @click.stop="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
 								<a href="javascript:;" v-cloak>
 									<img class="mui-media-object mui-pull-left" :src="item.busimg">
 									<div class="mui-media-body">
-										<p class='mui-ellipsis-title'>{{item.cnname}}
-											<span v-for="pn in getPrdName(item.fext)" class="mark">{{pn}}</span>
-										</p>
+										<p class='mui-ellipsis-title'>{{item.cnname}}</p>
 										<p class='mui-ellipsis-2'>{{item.busnote}}</p>
 										<div v-if="item.orderFlag==1" class="flex-between">
 											<p class="mui-ellipsis-2">结束时间：{{item.etime}}</p>
@@ -73,6 +72,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
 		<script src='../../js/utils/vconsole.min.js'></script>
@@ -95,7 +95,7 @@
 		
 		<script src="../../js/orals/common.js"></script>
 		<script>
-			var self, isLoading, rendered;
+			var self, isLoading;
 			
 			mui.init({
 				beforeback: function() {
@@ -110,20 +110,28 @@
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 			var functypes = window.storageKeyName.FUNCTYPES;
-
+			
 			mui.plusReady(function() {
 				self = plus.webview.currentWebview();
-
+			
 				//获取套餐表
 				getOrderList();
 				
 				// 滚动区域
 				mui('.mui-scroll-wrapper').scroll({
-					indicators: false
+					indicators: false,
+					bounce: true
 				});
-				document.querySelector('.mui-scroll-wrapper').addEventListener("scroll", function(e){
-					var translateY = $('#orders.mui-scroll').css('transform').replace(/[^0-9\-\.,]/g,'').split(',').pop();
-					if(translateY>95 && !isLoading) {
+				
+				// 下拉刷新
+				var translateY_start, translateY_end;
+				document.querySelector('.mui-scroll-wrapper').addEventListener("touchstart", function(e){
+					translateY_start = $('#orders .mui-scroll').css('transform').replace(/[^0-9\-\.,]/g,'').split(',').pop();
+				});
+				document.querySelector('.mui-scroll-wrapper').addEventListener("touchend", function(e){
+					// 获取列表容器偏移量translateY
+					translateY_end = $('#orders .mui-scroll').css('transform').replace(/[^0-9\-\.,]/g,'').split(',').pop();
+					if(parseFloat(translateY_end)>65 && translateY_end-translateY_start>65 && !isLoading) {
 						console.log("刷新");
 						getOrderList();
 					}
@@ -136,7 +144,9 @@
 					orderList: [],
 					flag: 0, //0刷新，1加载更多
 					pageIndex: 1, //当前页数
-					canTap: true //下拉刷新时，上拉加载能否使用 true
+					canTap: true, //下拉刷新时，上拉加载能否使用 true
+					isRendered: false, //是否渲染完成
+					isPullingDown: false //是否正在下拉
 				},
 				methods: {
 					toMealDetails: function(event, item) {
@@ -160,8 +170,8 @@
 					orderPrice: orderPrice
 				}
 			});
-
-
+			
+			var cur_fcodes = []; //套餐功能代码串
 			//3.12.获取套餐表
 			function getOrderList() {
 				isLoading = true;
@@ -175,7 +185,7 @@
 					// functypes: "YCYXZS",
 					functypes: functypes
 				};
-				var ycyx_fcodes = []; //益测益学套餐功能代码串
+				cur_fcodes = []; //套餐功能代码串
 				events.showWaiting();
 				//根据餐表类型获取套餐表
 				postDataEncry('SysBusType', enData1, comData1, 0, function(data1) {
@@ -184,23 +194,26 @@
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						//主动添加是否订购字段
-						for(var i = 0; i < data1.RspData.sysbus.length; i++) {
-							var tempModel = data1.RspData.sysbus[i];
+						var sysbus = data1.RspData?data1.RspData.sysbus:[];
+						for(var i = 0; i < sysbus.length; i++) {
+							var tempModel = sysbus[i];
 							tempModel.orderFlag = 0;
 							tempModel.busimg = setImg(tempModel.busimg,1);
-							// 获取益测益学套餐功能代码串
+							// 获取套餐功能代码串
 							tempModel.funcs.forEach(function(v){
 								if(v.ftype==functypes) {
-									ycyx_fcodes.push(v.fcode);
+									cur_fcodes.push(v.fcode);
+									tempModel.thiscodes = tempModel.thiscodes?tempModel.thiscodes+","+v.fcode:v.fcode;
 								}
 							});
 						}
-						orders.orderList = [].concat(data1.RspData.sysbus);
-						//用户已订购套餐及功能扩展栏目
-						getUserBusFunc();
+						orders.orderList = [].concat(sysbus);
 						
 						// 根据功能获取套餐功能及扩展栏目
-						// getSysBusFunc(ycyx_fcodes.join());
+						// getSysBusFunc();
+						
+						//用户已订购套餐及功能扩展栏目
+						getUserBusFunc();
 						
 					} else {
 						mui.toast(data1.RspTxt);
@@ -227,6 +240,7 @@
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						if(data1.RspData) {
+							// var orderModelBus = [];
 							//循环当前套餐列表
 							for(var i = 0; i < orders.orderList.length; i++) {
 								var orderModel = orders.orderList[i];
@@ -235,21 +249,25 @@
 									var userBusModel = data1.RspData.userbus[a];
 									//当前已订购套餐
 									if(orderModel.serviceid == userBusModel.servid) {
+										// orderModelBus.push($.extend({}, orderModel)); //已订购套餐,保留原套餐信息
 										orderModel = $.extend(orderModel, userBusModel);
 										orderModel.orderFlag = 1;
 										break;
 									}
 								}
 							}
+							// 补上已订购套餐
+							// orders.orderList = orders.orderList.concat(orderModelBus);
 						}
 						// 已订购的排前面
 						orders.orderList.sort(function(a,b){
 							return b.orderFlag-a.orderFlag;
 						});
-						console.log('GetUserBusFunc合并后:' + JSON.stringify(orders.orderList));
-						if(!rendered){
+						console.log('GetUserBusFunc合并后:');
+						console.log(orders.orderList);
+						if(!orders.isRendered){
 							document.querySelector('.mui-pull-top-pocket').classList.remove('mui-hidden');
-							rendered = true;
+							orders.isRendered = true;
 						}
 					} else {
 						mui.toast(data1.RspTxt);
@@ -259,10 +277,10 @@
 			}
 			
 			// 3.19:套餐功能及扩展栏目
-			function getSysBusFunc(fcodes) {
+			function getSysBusFunc() {
 				var comData2 = {
 					uuid: publicParameter.uuid, //用户设备号
-					fcodes: fcodes, //功能代码串,留空为全部,多个用逗号隔开
+					fcodes: cur_fcodes.join(), //功能代码串,留空为全部,多个用逗号隔开
 					utoken: personal.utoken, //用户令牌
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
@@ -273,13 +291,13 @@
 						//循环当前套餐列表
 						for(var i = 0; i < orders.orderList.length; i++) {
 							var orderModel = orders.orderList[i];
-							orderModel.fext = []; //功能附加栏目表
+							orders.$set(orderModel, "fext", []);//功能附加栏目表
 							// 循环相关功能套餐
 							for(var a = 0; a < data2.RspData.sysfunc.length; a++) {
 								var sysFuncModel = data2.RspData.sysfunc[a];
 								//当前套餐的功能栏目
 								if(orderModel.fcodes.indexOf(sysFuncModel.fcode) != -1) {
-									orderModel.fext=sysFuncModel.fext;
+									orderModel.fext=orderModel.fext.concat(sysFuncModel.fext);
 								}
 							}
 						}
@@ -289,16 +307,6 @@
 				});
 			}
 			
-// 			orders.orderList = [
-// 				{"funcs":[{"fcode":"ycyx04","itemcode":null,"itemsons":null}],"serviceid":"tcycyx04","feecode":"10","cnname":"益测益学（小初）","fcodes":"ycyx04","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小初）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":1,"busext":[{"forid":106,"fcode":"ycyx04","itemcode":"prd","itemsons":"2|小学"}],"forid":106,"uid":"ceshi01","utname":null,"servid":"tcycyx04","servtype":1,"cname":"益测益学（小初）","stime":"2018.11.14","etime":"2018.12.14","frmtype":0,"serstat":1},
-// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX02","ftype":"YCYXZS","fname":"益测益学（初中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx02","feecode":"10","cnname":"益测益学（初中）","fcodes":"YCYX02","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（初中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
-// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
-// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
-// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
-// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
-// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0},
-// 				{"funcs":[{"fext":null,"fid":0,"fcode":"ycyx01","ftype":"YCYXZS","fname":"益测益学（小学）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx01","feecode":"10","cnname":"益测益学（小学）","fcodes":"ycyx01","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小学）","note":"","busimg":"../../img/auto_order_img.png","orderFlag":0}
-// 			];
 		</script>
 	</body>
 

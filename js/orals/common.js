@@ -21,10 +21,15 @@ function reLogin(flag) {
 }
 
 // 获取套餐学段名
-function getPrdName(fx) {
+function getPrdName(ext, fcodes) {
 	var names = [];
-	fx && fx.forEach(function(v){
-		if(v.itemcode=="prd"){
+	ext && ext.forEach(function(v){
+		if(fcodes && v.fcode) {
+			var itemCase = v.itemcode=="prd"&&fcodes.indexOf(v.fcode)!=-1;
+		}else{
+			var itemCase = v.itemcode=="prd";
+		}
+		if(itemCase){
 			var values = v.itemsons.split(",");
 			for(var i=0;i<values.length;i++){
 				var fv = values[i].split("|").pop();
@@ -35,17 +40,17 @@ function getPrdName(fx) {
     return  names;
 }
 
+// 套餐价格
+function orderPrice(fee) {
+	return fee/100;
+}
+
 //接口地址
 var host = window.storageKeyName?window.storageKeyName.ORALSHOST:"";
 
 //分数格式
 function setWordsScore(score) {
 	return Math.round(score*20);
-}
-
-// 套餐价格
-function orderPrice(fee) {
-	return fee/100;
 }
 
 //选择教材
@@ -359,7 +364,24 @@ function reload() {
 
 //时间比较
 function compareDate(d1,d2){
-	return ((new Date(d1.replace(/-/g,"\/")))>(new Date(d2.replace(/-/g,"\/"))));
+	return (new Date(d1.replace(/[-\.]/g,"\/")).getTime()) - (new Date(d2.replace(/[-\.]/g,"\/")).getTime());
+}
+
+//获取当前日期(年月日格式)
+function getNowFormatDate(sep) {
+	var date = new Date();
+	var seperator1 = sep||"-";
+	var year = date.getFullYear();
+	var month = date.getMonth() + 1;
+	var strDate = date.getDate();
+	if (month >= 1 && month <= 9) {
+		month = "0" + month;
+	}
+	if (strDate >= 0 && strDate <= 9) {
+		strDate = "0" + strDate;
+	}
+	var currentdate = year + seperator1 + month + seperator1 + strDate;
+	return currentdate;
 }
 
 //请求时判断token过期

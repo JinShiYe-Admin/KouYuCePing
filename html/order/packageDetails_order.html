@@ -80,7 +80,7 @@
 					</p>
 					<p v-cloak class="user-title-body">{{orderDetail.busnote}}</p>
 					<div v-cloak class="user-title-footer flex-between">
-						<p class="ul-p">资费金额：{{orderDetail.feecode}}元/{{orderDetail.busmonth}}月</p>
+						<p class="ul-p">资费金额：{{orderPrice(orderDetail.feecode)}}元/{{orderDetail.busmonth}}月</p>
 						<button class="btn-ordered mui-btn-mini" onclick="placeOrder()">立即订购</button>
 					</div>
 				</div>
@@ -110,7 +110,7 @@
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			console.log('personal********:' + JSON.stringify(personal));
-		
+			
 			mui.init();
 			var orders;
 			var curPageData;
@@ -118,17 +118,18 @@
 				orders.orderDetail = utils.getDataFromUrl(window.location.href);
 				orders.orderDetail.imgUrl = setImg(orders.orderDetail.imgUrl,1);
 			});
-		
+			
 			var orders = new Vue({
 				el: '#orders',
 				data: {
 					orderDetail: {}
 				},
 				methods: {
-					getPrdName: getPrdName
+					getPrdName: getPrdName,
+					orderPrice: orderPrice
 				}
 			});
-		
+			
 			//套餐订购
 			function placeOrder() {
 				utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", orders.orderDetail);

@@ -149,7 +149,7 @@
 					<img class="mui-media-object" :src="orderDetail.busimg" v-cloak>
 					<div class="mui-media-body" v-cloak>
 						<p class='mui-ellipsis-title'>{{orderDetail.cnname}}
-							<span v-for="pn in getPrdName(orderDetail.fext)" class="mark">{{pn}}</span>
+							<!-- <span v-for="pn in getPrdName(orderDetail.fext, orderDetail.thiscodes)" class="mark">{{pn}}</span> -->
 						</p>
 						<p class='mui-ellipsis-2'>{{orderDetail.busnote}}</p>
 						<p class="ul-p">缴费金额：{{orderPrice(orderDetail.feecode)}}元/{{orderDetail.busmonth}}月</p>
@@ -157,10 +157,16 @@
 				</div>
 				<div class="mui-row">
 						<h5 class="mui-content-padded">原订购信息</h5>
+						<!-- <div class="mui-input-row line">
+							<a class="">
+								<label>订购学段</label>
+								<input  type="button" :value="getPrdName(orderDetail.busext, orderDetail.thiscodes).join()" disabled/>
+							</a>
+						</div> -->
 						<div class="mui-input-row line">
 							<a class="">
 								<label>缴费金额</label>
-								<input  type="button" :value="orderDetail.feecode+'元/'+orderDetail.busmonth+'月'" disabled/>
+								<input  type="button" :value="orderPrice(orderDetail.feecode)+'元/'+orderDetail.busmonth+'月'" disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
@@ -179,9 +185,9 @@
 				<form id="orderForm">
 					<div class="mui-row">
 						<div class="mui-input-row">
-							<a class="mui-navigate-right">
+							<a class="mui-navigate-right" @tap.stop="gradeChange">
 								<label>时长</label> 
-								<input name="sc" type="button" class="mui-btn-block" :value="servm?servm+'个月':'请选择时长'" @tap.stop="gradeChange">
+								<input name="sc" type="button" class="mui-btn-block" :value="servm?servm+'个月':'请选择时长'">
 								<!-- <select name="sc" class="mui-btn-block" @change="gradeChange($event)">
 									<option value="" disabled selected>请选择时长</option>
 									<option :value=index+1 v-for="(item,index) in monthList" :monthnum=item>{{item}}个月</option>
@@ -189,9 +195,9 @@
 							</a>
 						</div>
 						<div class="mui-input-row line feem-list" v-cloak>
-							<label>缴费金额：<span id="zfje-1">{{feem}}</span>元</label>
+							<label>缴费金额：<span id="zfje-1">{{orderPrice(feem)}}</span>元</label>
 							<label>缴费时间：{{nowDate}}</label>
-							<label v-if="newEtime ==''">新结束时间：{{orderDetail.etime}}</label>
+							<label v-if="!newEtime">新结束时间：{{orderDetail.etime}}</label>
 							<label v-else>新结束时间：{{newEtime}}</label>
 						</div>
 					</div>
@@ -215,7 +221,7 @@
 				
 				<div class="mui-row bottom-row">
 					<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
-						¥ <span id="zfje-2" v-cloak>{{feem}}</span>元
+						¥ <span id="zfje-2" v-cloak>{{orderPrice(feem)}}</span>元
 						<span id="zffs"></span>
 					</button>
 					<button class="mui-btn mui-btn-success mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>
@@ -250,11 +256,11 @@
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 			mui.init();
-
+			
 			var timePicker;//时长选择器
 			var univlent;//单价
 			var monthList=[];//月份集合
-			var nowDate=getNowFormatDate();
+			var nowDate=getNowFormatDate1();
 			
 			var orderDetailData = new Vue({
 				el: '#orderDetailData',
@@ -291,18 +297,12 @@
 							this.isDisabled = false
 					},
 					gradeChange:function(e){//月份下拉选选中事件
-// 						 var domDiv=e.target;
-// 						 var selectTime=$(domDiv).val();
-// 						 this.servm=$(domDiv).find("option:selected").attr('monthnum');
-// 						 this.feem=(selectTime*1*univlent*1).toFixed(2);
-// 						 appPay.feem=this.feem;
-// 						 this.newEtime=addMonths(this.orderDetail.etime,this.servm);
 						 var _this = this;
 						 timePicker.show(function(items){
-							_this.servm = items[0].value;
-							_this.feem = (items[0].value * 1 * univlent * 1).toFixed(2);
-							appPay.feem = _this.feem;
-							_this.newEtime=addMonths(_this.orderDetail.etime,_this.servm);
+						 	_this.servm = items[0].value;
+						 	_this.feem = (items[0].value * 1 * univlent * 1).toFixed(2);
+						 	appPay.feem = _this.feem;
+							_this.newEtime=addMonths(compareDate(_this.orderDetail.etime,_this.nowDate)>=0?_this.orderDetail.etime:_this.nowDate,_this.servm);
 						 });
 					},
 					payAction:function(){//支付
@@ -392,12 +392,15 @@
 					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
 						newEtime:orderDetailData.newEtime
 					});
+					// 刷新首页
+					mui.fire(plus.webview.getWebviewById("bl-index"),'refreshBusFunc');
+					
 					mui.back();
 				},function fail(err){
 					mui.toast(err);
 				});
 			}
-
+			
 			//年月日加减
 			var addMonths = function(date,months) {
 			   var nd=date.split(".").join("/");
@@ -406,36 +409,36 @@
 			   var y=d.getFullYear()
 			   var m=d.getMonth()+1; 
 			   var d=d.getDate(); 
-			   return getNowFormatDate(y,m,d); 
+			   return getNowFormatDate1(y,m,d); 
 			}
-
+			
 			//获取当前日期
-			function getNowFormatDate(years,months,days) {
+			function getNowFormatDate1(years,months,days) {
 				  var date = new Date();
 				  var seperator1 = ".";
 				  var year ='';
 				  var month ='';
 				  var strDate ='';
 				  if(years==undefined)
-					year=date.getFullYear();
+				    year=date.getFullYear();
 				  else
-					year=years*1
-					
+				    year=years*1
+				    
 				  if(months==undefined)
-					month=date.getMonth() + 1;
+				  	month=date.getMonth() + 1;
 				  else
-					month =months;
-					
+				  	month =months;
+				  	
 				  if(days==undefined)
-					strDate=date.getDate();
+				  	strDate=date.getDate();
 				  else
-					strDate=days;
+				  	strDate=days;
 				  
 				  if (month >= 1 && month <= 9) 
-					month = "0" + month;
+				    month = "0" + month;
 				  
 				  if (strDate >= 0 && strDate <= 9) 
-					strDate = "0" + strDate;
+				    strDate = "0" + strDate;
 				  
 				  var currentdate = year + seperator1 + month + seperator1 + strDate;
 				  return currentdate;

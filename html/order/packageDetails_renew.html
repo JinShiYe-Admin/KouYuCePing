@@ -127,31 +127,31 @@
 			<h1 class="mui-title" >套餐详情</h1>
 		</header>
 		<div id="scroll"  class="mui-content">
-	    	<div id='renews'>
-	    		<div class="mui-row title-info">
-	    			 <img v-cloak  class="head-portrait" :src=curPageData.busimg />
-	    			 <p v-cloak class="user-title">{{curPageData.cname||curPageData.cnname}}
-	    			 	<span v-for="pn in getPrdName(curPageData.fext)" class="mark">{{pn}}</span>
-	    			 </p>
-	    			 <p v-cloak class="user-title-body">{{curPageData.busnote}}</p>
-	    			 <div v-cloak class="user-title-footer">
-	    			 	<p class="ul-p">结束时间：{{curPageData.etime}}</p>
+			<div id='renews'>
+				<div class="mui-row title-info">
+					 <img v-cloak  class="head-portrait" :src=curPageData.busimg />
+					 <p v-cloak class="user-title">{{curPageData.cname||curPageData.cnname}}
+					 	<span v-for="pn in getPrdName(curPageData.busext, curPageData.thiscodes)" class="mark">{{pn}}</span>
+					 </p>
+					 <p v-cloak class="user-title-body">{{curPageData.busnote}}</p>
+					 <div v-cloak class="user-title-footer">
+					 	<p class="ul-p">结束时间：{{curPageData.etime}}</p>
 					 	<button class="ul-btn btn-order mui-btn-mini" onclick="packageRenew()">套餐续费</button>
-					 	<p class="ul-p-right">{{curPageData.feecode}}元/{{curPageData.busmonth}}月</p>
-	    			 </div>
-	    		</div>
-	    		<div class="mui-row ul-list-title">
-	    			<p class="ul-list-title-p">订购记录</p>
-	    		</div>
-	    		<div class="mui-row ul-list"> 
+					 	<p class="ul-p-right">{{orderPrice(curPageData.feecode)}}元/{{curPageData.busmonth}}月</p>
+					 </div>
+				</div>
+				<div class="mui-row ul-list-title">
+					<p class="ul-list-title-p">订购记录</p>
+				</div>
+				<div class="mui-row ul-list"> 
 		    		<ul class="mui-table-view">
 							 <li v-cloak v-for="item in orderRecordList" class="mui-table-view-cell">
 							 	<p class="ul-li-l">{{item.rectime}}</p>
-							 	<p class="ul-li-r">{{item.feem}}元</p>
+							 	<p class="ul-li-r">{{orderPrice(item.feem)}}元</p>
 							 	<p class="ul-li-r">{{item.servm}}个月</p>
 							 </li>
 					</ul>
-	    		</div>
+				</div>
 			</div>
 		</div>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
@@ -178,7 +178,7 @@
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-			console.log('personal********:' + JSON.stringify(personal));
+			// console.log('personal********:' + JSON.stringify(personal));
 			
 			mui.init({
 //				pullRefresh: {
@@ -210,7 +210,8 @@
 			var curPageData;
 			mui.plusReady(function() {
 					curPageData = utils.getDataFromUrl(window.location.href);
-					console.log('curPage********:' + JSON.stringify(curPageData));
+					console.log('当前套餐：' + JSON.stringify(curPageData));
+					console.log(curPageData);
 					renew =new Vue({
 						el:'#renews'
 						,data:{
@@ -221,7 +222,8 @@
 							,curPageData:curPageData
 						},
 						methods: {
-							getPrdName: getPrdName
+							getPrdName: getPrdName,
+							orderPrice: orderPrice
 						}
 					});
 					getRenewList();
@@ -248,7 +250,8 @@
 				//获取验证码
 				//发送网络请求，data为网络返回值
 				postDataEncry('UserFeeDetail', enData1, comData1, 0, function(data1) {
-					console.log('UserFeeDetail:' + JSON.stringify(data1));
+					console.log(data1)
+					// console.log('UserFeeDetail:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						if(data1.RspData) {
