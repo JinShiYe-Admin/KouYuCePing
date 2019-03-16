@@ -3,6 +3,7 @@
 var storageKeyName = (function(mod) {
 
 	mod.key = 0;//0测试；1正式
+	mod.pay=0;
 	var exLog = console.log;
 	console.log = function(hint, object) {
 		if(mod.key === 0) {
@@ -22,11 +23,11 @@ var storageKeyName = (function(mod) {
 			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
 			mod.ANDROIDUPDATEURL='http://zhxy.jiaobaowang.net:8015/appupdate/versionCode.xml';//安卓升级地址
 			
-			mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/AppServer.aspx';//微信支付地址
-			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
 			if(mod.pay==0) {//单商家
-				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+				mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/AppServer.aspx';//微信支付地址
+				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
 			}else if(mod.pay==1){//多商家
+				mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/AppServer.aspx';//微信支付地址
 				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
 			}
 
