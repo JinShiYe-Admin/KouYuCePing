@@ -315,7 +315,7 @@
 		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<script src='../../js/utils/vconsole.min.js'></script>
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/layer/layer.js"></script>
 		
@@ -329,9 +329,10 @@
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
-		<!--<script src="../../js/utils/events.js"></script>-->
+		<script src="../../js/utils/events.js"></script>
 		
 		<script src="../../js/orals/common.js"></script>
+		<script src="../../js/utils/app-update.js"></script>
 		<script type="text/javascript">
 			var muiTitle = document.querySelector('.mui-bar .mui-title');
 			var go_record = document.getElementById("goRecord");
@@ -392,8 +393,162 @@
 					}
 				});
 				
+				// 套餐刷新
+				window.addEventListener("refreshBusFunc", function(e){
+					getUserBusFunc();
+				});
+				
 				//获取数据
-				getInitData();
+				// getInitData();
+				getUserBusFunc();
+				
+				// 版本更新
+				appUpdate.updateApp(userInfo.schid);
+				
+				// 用户已订购套餐及功能扩展栏目
+				function getUserBusFunc() {
+					var personal = store.get(window.storageKeyName.PERSONALINFO);
+					var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+					var userbus = []; //已购买的当前套餐
+					var bookLimit = {per:[], fasc: []}; //目录限制
+					store.set('book_limit', bookLimit);
+					
+					// 获取当前套餐
+					var enData = {};
+					var comData = {
+						uuid: publicParameter.uuid, //用户设备号
+						bustp: '0', //套餐类型,0全部,1基本套餐,2CP套餐
+						utoken: personal.utoken, //用户令牌
+						appid: publicParameter.appid, //系统所分配的应用ID
+						functypes: window.storageKeyName.FUNCTYPES
+					};
+					events.showWaiting();
+					postDataEncry('SysBusType', enData, comData, 0, function(data) {
+						console.log("当前套餐："); console.log(data); 
+						if(data.RspCode == 0) {
+							var sysbus = data.RspData?data.RspData.sysbus:[];
+							
+							// 获取已购买的套餐
+							var enData1 = {};
+							var comData1 = {
+								uuid: publicParameter.uuid, //用户设备号
+								uid: personal.uid, //用户账号
+								utoken: personal.utoken, //用户令牌
+								appid: publicParameter.appid //系统所分配的应用ID
+							}
+							postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+								console.log("获取用户已经购买套餐："); console.log(data1);
+								events.closeWaiting();
+								if(data1.RspCode == 0) {
+									var busext = []; //已购买的当前套餐的 可用的 功能信息
+									var disabledCount = 0; //不可用套餐数
+									// 筛选已购买的当前套餐
+									for(var i = 0; i < sysbus.length; i++) {
+										// 添加套餐当前功能的fcode
+										sysbus[i].funcs.forEach(function(v){
+											if(v.ftype==window.storageKeyName.FUNCTYPES) {
+												sysbus[i].thiscodes = sysbus[i].thiscodes?sysbus[i].thiscodes+","+v.fcode:v.fcode;
+											}
+										});
+										var data_userbus = data1.RspData?data1.RspData.userbus:[];
+										for(var a = 0; a < data_userbus.length; a++) {
+											var userBusModel = data_userbus[a];
+											// 判断是否为同一套餐，并检查是否过时
+											if(sysbus[i].serviceid==userBusModel.servid) {
+												userbus.push($.extend(sysbus[i], userBusModel));
+												// 判断已订购套餐是否过期
+												if(compareDate(userBusModel.etime,getNowFormatDate("."))>=0){
+													userBusModel.busext.forEach(function(v){
+														if(sysbus[i].thiscodes.indexOf(v.fcode)!=-1){ //判断是否为当前功能
+															busext.push(v);
+														}
+													});
+												}else{
+													disabledCount++;
+												}
+												break;
+											}
+										}
+									}
+									// 根据 已订购的当前套餐 进行限权
+									if(userbus.length){
+										var noBusext = false; //是否无可用功能
+										store.set("book_items", {});
+										store.set("orals_menu", []);
+										store.set("orals_catalog", []);
+										if(busext.length){
+											// 获取可用的功能信息的学段信息
+											console.log("功能信息:");console.log(busext);
+											var book_items = store.get('book_items')||{};
+											if(!book_items.per) {
+												book_items.per = {};
+												book_items.per.list = [];
+											}
+											if(!book_items.fasc) {
+												book_items.fasc = {};
+												book_items.fasc.list = [];
+											}
+											book_items.per.list = [];
+											book_items.fasc.list = [];
+											var per_selected = "", fasc_selected = "";
+											busext.forEach(function(v){
+												var sons = v.itemsons.split("|");
+												if(v.itemcode=="prd"){
+													book_items.per.list.push({percode: sons[0], pername: sons[1]});
+													if(book_items.per.selected==sons[0]) per_selected = sons[0];
+												}else if(v.itemcode=="grd"){
+													book_items.fasc.list.push({fasccode: sons[0], fascname: sons[1]});
+													if(book_items.fasc.selected) fasc_selected = sons[0];
+												}
+											});
+											if(per_selected&&fasc_selected) {
+												//保存目录
+												book_items.per.selected = per_selected;
+												book_items.fasc.selected = fasc_selected;
+												store.set('book_items', book_items); 
+												// 目录限制
+												bookLimit.per = book_items.per.list;
+												bookLimit.fasc = book_items.fasc.list;
+												store.set('book_limit', bookLimit);
+												// 请求初始数据
+												getInitData();
+											}else{
+												noBusext = true;
+											}
+										}
+										if(busext.length<1 || noBusext){
+											mui.alert('请前往订购','无可用套餐','去订购',function (e) {
+											   mui.openWindow("../../html/order/orderList.html");
+											},'div');
+										}else if(userbus.length==disabledCount){
+											mui.alert('请前往续订套餐','套餐已全部过期','去续订',function (e) {
+											   mui.openWindow("../../html/order/orderList.html");
+											},'div');
+										}else{
+											mui.confirm('是否前往续订', '有 '+disabledCount+' 个套餐已过期', ["不去","去续订"], function(e) {
+												if (e.index == 1) mui.openWindow("../../html/order/orderList.html");
+											}, 'div');
+										}
+									}else{
+										// 无套餐时
+										mui.alert('请先订购套餐，订购后才能测评！','您尚未订购套餐','去订购',function (e) {
+											mui.openWindow("../../html/order/orderList.html");
+										},'div');
+										store.set("orals_menu", []);
+										store.set("orals_catalog", []);
+									}
+								}else{
+									mui.toast(data1.RspTxt);
+								}
+							});
+							
+						}else{
+							events.closeWaiting();
+							mui.toast(data.RspTxt);
+						}
+					});
+					
+				}
 				
 				function getInitData() {
 					var book_items = store.get('book_items');
@@ -416,6 +571,7 @@
 				// 获取教材信息
 				var persubmatTime = 0;
 				function getBook(data, ser) {
+					console.log("获取教材信息:"); console.log(data);
 					oralsAjax('/persubmat', data, function(res){
 						//教材
 						var auto_book = res.data||{};

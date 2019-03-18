@@ -198,7 +198,7 @@
 					
 					<div class="mui-row" v-for="(sysfuncModel,index1) in sysfuncList">
 						<h5 class="mui-content-padded">{{sysfuncModel.fname}}</h5>
-						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext">
+						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext" v-if="fextModel.itemcode!='prd'&&fextModel.itemcode!='grd'">
 							<!-- 学段 选项 -->
 							<a v-if="fextModel.itemcode=='prd'" :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2" class="mui-clearfix">
 								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
@@ -742,14 +742,13 @@
 									indicators: false
 								});
 							});
-							// 学段唯一时,默认选择学段
-// 							var itemPrd;
+							// 选项唯一时,默认选择学段
 // 							for(var i=0; i<v.length; i++){
 // 								for(var j=0; j<v[i].fext.length; j++){
-// 									if(v[i].fext[j].itemcode=="prd"&&v[i].fext[j].itemsons[0]&&v[i].fext[j].itemsonsc<1){
+// 									if(v[i].fext[j].itemsons[0]&&v[i].fext[j].itemsonsc<1){
 // 										var itemsons = v[i].fext[j].itemsons[0].split("|");
-// 										$("#"+v[i].fid+"prd"+j+"input0").val(itemsons[1]);
-// 										$("#"+v[i].fid+"prd"+j+"input1").val(itemsons[2]);
+// 										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input0").val(itemsons[1]);
+// 										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input1").val(itemsons[2]);
 // 										break;
 // 									}
 // 								}
@@ -784,7 +783,6 @@
 					var sysfuncModel = orderData.sysfuncList[i];
 					for (var a = 0; a < sysfuncModel.fext.length; a++) {
 						var fextModel = sysfuncModel.fext[a];
-						console.log("fextModel:" + fextModel.checked);
 						if (fextModel.checked != '' && fextModel.checked != undefined) {
 							var tempModel = {
 								fcode: sysfuncModel.fcode, //功能代码
@@ -792,7 +790,7 @@
 								itemsons: fextModel.checked //栏目选择子集
 							}
 							funcArray.push(tempModel);
-						} else if (fextModel.itemcode != 'prd' && fextModel.itemcode != 'grd' && fextModel.itemsonsc == 0) {
+						} else if (fextModel.itemsonsc == 0) {
 							var sons = fextModel.itemsons[0];
 							var checked = sons.split("|")[0];
 							var tempModel = {
@@ -810,13 +808,15 @@
 					feem: orderData.feem * 1, //订购花费
 					funclist: funcArray //订购的扩展参数
 				}
-				console.log(JSON.stringify(data));
+				console.log("套餐订购: "+JSON.stringify(data));
 				appPay.UserFeeFunc('UserFee', data, function success() {
 					mui.toast('套餐订购成功');
 					//通知套餐详情页面刷新时间
 					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
 						newEtime: orderDetailData.newEtime
 					});
+					// 刷新首页
+					mui.fire(plus.webview.getWebviewById("orals-index"),'refreshBusFunc');
 					mui.back();
 				}, function fail(err) {
 					mui.toast(err);

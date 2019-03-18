@@ -21,7 +21,7 @@ var storageKeyName = (function(mod) {
 			mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/'; //用户信息接口
 			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
-			mod.ANDROIDUPDATEURL='https://zhxy.jiaobaowang.net:8515/yiceyixueapp/versionCode.xml';//安卓升级地址
+			mod.ANDROIDUPDATEURL='https://zhxy.jiaobaowang.net:8515/kouyuceping/versionCode.xml';//安卓升级地址
 			
 			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
 			if(mod.pay==0) {//单商家

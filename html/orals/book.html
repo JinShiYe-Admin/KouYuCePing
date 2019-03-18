@@ -118,19 +118,29 @@
                 		params[item+"code"] = this.items[item].selected;
 //              		console.log(JSON.stringify(params));
                 		oralsAjax('/persubmat', params, function(res){
+							var bookLimit = store.get('book_limit');
                 			var rd = res.data;
 //              			console.log(JSON.stringify(rd));
-							_this.items.per = rd.per;
+							// 学段限权
+							_this.items.per = bookLimit.per;
 							_this.items.sub = rd.sub;
 							_this.items.mater = rd.mater;
-//							var has_mater = rd.mater.list.some(function(v){return v.matercode==_this.items.mater.selected});
-//							if(!has_mater){
-//								_this.items.mater = rd.mater;
-//							}
-							var has_fasc = rd.fasc.list.some(function(v){return v.fasccode==_this.items.fasc.selected});
-							if(!has_fasc){
-								_this.items.fasc = rd.fasc;
+							// 年级限权
+							_this.items.fasc.list = [];
+							var fascSelected = "";
+							rd.fasc.list.forEach(function(v){
+								var vitem =  bookLimit.fasc.filter(function(item){return item.fasccode==v.fasccode});
+								if(vitem[0]){
+									_this.items.fasc.list.push(v);
+								}
+								if(v.fasccode==_this.items.fasc.selected){
+									fascSelected = v.fasccode;
+								}
+							});
+							if(!fascSelected) {
+								fascSelected = _this.items.fasc.list[0]?_this.items.fasc.list[0].fasccode:"";
 							}
+							_this.items.fasc.selected = fascSelected;
 							
 							if(rd.per.selected&&rd.sub.selected&&rd.mater.selected&&rd.fasc.selected){
 								_this.fascChange();
@@ -195,7 +205,11 @@
 				
 				//当前教材	
 				var s_items = store.get('book_items');
-				book.items = s_items;
+				book.items.mater = s_items.mater||{};
+				book.items.sub = s_items.sub||{};
+				book.items.fasc = s_items.fasc||{};
+				book.items.per = s_items.per||{};
+				book.items.ser = s_items.ser||{};
 				book.itemChange("mater");
 				
 				//点击 完成
