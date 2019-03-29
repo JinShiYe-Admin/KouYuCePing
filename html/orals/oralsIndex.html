@@ -117,7 +117,7 @@
 			<!--副标题-->
 			<div id="second-title" class="second-title mui-text-center" :class="{'no-second': !isContentTitle}">
 		    	<div class="book-items-box" @tap.stop="bookSelect()" @touchend.prevent v-cloak>
-		    		<div id="bookItems">{{bookItems}}</div>
+		    		<div id="bookItems">{{bookItems||"暂无教材"}}</div>
 		    		<a>
 		    			<svg class="icon" aria-hidden="true">
 						  <use xlink:href="#icon-icon-change"></use>
@@ -350,6 +350,11 @@
 				
 				var self = plus.webview.currentWebview();
 				
+				//关闭登录页
+				self.addEventListener("show",function(){
+					self.opener() && self.opener().close("none");
+				});
+				
 				//判断登录者是否有上一次记录
 				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
 				var auth = getAuth();
@@ -454,11 +459,11 @@
 										for(var a = 0; a < data_userbus.length; a++) {
 											var userBusModel = data_userbus[a];
 											// 判断是否为同一套餐，并检查是否过时
-											if(sysbus[i].serviceid==userBusModel.servid) {
+											if(sysbus[i].serviceid==userBusModel.servid && userBusModel.serstat) {
 												userbus.push($.extend(sysbus[i], userBusModel));
 												// 判断已订购套餐是否过期
 												if(compareDate(userBusModel.etime,getNowFormatDate("."))>=0){
-													userBusModel.busext.forEach(function(v){
+													userBusModel.busext&&userBusModel.busext.forEach(function(v){
 														if(sysbus[i].thiscodes.indexOf(v.fcode)!=-1){ //判断是否为当前功能
 															busext.push(v);
 														}
@@ -472,60 +477,36 @@
 									}
 									// 根据 已订购的当前套餐 进行限权
 									if(userbus.length){
-										var noBusext = false; //是否无可用功能
-										store.set("book_items", {});
-										store.set("orals_menu", []);
-										store.set("orals_catalog", []);
 										if(busext.length){
 											// 获取可用的功能信息的学段信息
 											console.log("功能信息:");console.log(busext);
-											var book_items = store.get('book_items')||{};
-											if(!book_items.per) {
-												book_items.per = {};
-												book_items.per.list = [];
-											}
-											if(!book_items.fasc) {
-												book_items.fasc = {};
-												book_items.fasc.list = [];
-											}
-											book_items.per.list = [];
-											book_items.fasc.list = [];
-											var per_selected = "", fasc_selected = "";
 											busext.forEach(function(v){
-												var sons = v.itemsons.split("|");
+												var sons = v.itemsons.split(",");
 												if(v.itemcode=="prd"){
-													book_items.per.list.push({percode: sons[0], pername: sons[1]});
-													if(book_items.per.selected==sons[0]) per_selected = sons[0];
-												}else if(v.itemcode=="grd"){
-													book_items.fasc.list.push({fasccode: sons[0], fascname: sons[1]});
-													if(book_items.fasc.selected) fasc_selected = sons[0];
+													sons.forEach(function(s){
+														var ss = s.split("|");
+														//去重
+														if(!bookLimit.per.filter(function(p){return p.percode==ss[0];})[0]) { 
+															bookLimit.per.push({percode: ss[0], pername: ss[1]});
+														}
+													});
 												}
 											});
-											if(per_selected&&fasc_selected) {
-												//保存目录
-												book_items.per.selected = per_selected;
-												book_items.fasc.selected = fasc_selected;
-												store.set('book_items', book_items); 
-												// 目录限制
-												bookLimit.per = book_items.per.list;
-												bookLimit.fasc = book_items.fasc.list;
-												store.set('book_limit', bookLimit);
-												// 请求初始数据
-												getInitData();
-											}else{
-												noBusext = true;
-											}
+											store.set('book_limit', bookLimit);
+											getInitData();
 										}
-										if(busext.length<1 || noBusext){
+										if(busext.length<1){
+											store.set("book_items", {mater:{list:[]},sub:{list:[]},fasc:{list:[]},per:{list:[]},ser: {list:[]}});
 											mui.alert('请前往订购','无可用套餐','去订购',function (e) {
 											   mui.openWindow("../../html/order/orderList.html");
 											},'div');
 										}else if(userbus.length==disabledCount){
+											store.set("book_items", {mater:{list:[]},sub:{list:[]},fasc:{list:[]},per:{list:[]},ser: {list:[]}});
 											mui.alert('请前往续订套餐','套餐已全部过期','去续订',function (e) {
 											   mui.openWindow("../../html/order/orderList.html");
 											},'div');
 										}else{
-											mui.confirm('是否前往续订', '有 '+disabledCount+' 个套餐已过期', ["不去","去续订"], function(e) {
+											disabledCount>0&&mui.confirm('是否前往续订', '有 '+disabledCount+' 个套餐已过期', ["不去","去续订"], function(e) {
 												if (e.index == 1) mui.openWindow("../../html/order/orderList.html");
 											}, 'div');
 										}
@@ -534,6 +515,7 @@
 										mui.alert('请先订购套餐，订购后才能测评！','您尚未订购套餐','去订购',function (e) {
 											mui.openWindow("../../html/order/orderList.html");
 										},'div');
+										store.set("book_items", {mater:{list:[]},sub:{list:[]},fasc:{list:[]},per:{list:[]},ser: {list:[]}});
 										store.set("orals_menu", []);
 										store.set("orals_catalog", []);
 									}
@@ -552,14 +534,11 @@
 				
 				function getInitData() {
 					var book_items = store.get('book_items');
-//					console.log(JSON.stringify(book_items));
-					var book_code = {};
+					console.log("book_items: "+JSON.stringify(book_items));
+					var book_code = getBookCodes(book_items);
 					//保存了上一次记录时
-					if(isGetLast&&book_items&&book_items.per.list.length){
+					if(isGetLast&&book_items&&book_items.per&&book_items.per.list.length){
 						book_code.percode = book_items.per.selected||book_items.per.list[0].percode;
-						book_code.subcode = book_items.sub.selected;
-						book_code.matercode = book_items.mater.selected;
-						book_code.fasccode = book_items.fasc.selected;
 					}
 					var ser = 0;
 					if(book_items&&book_items.ser){
@@ -571,11 +550,34 @@
 				// 获取教材信息
 				var persubmatTime = 0;
 				function getBook(data, ser) {
-					console.log("获取教材信息:"); console.log(data);
+					console.log("获取教材信息:"+JSON.stringify(data));
 					oralsAjax('/persubmat', data, function(res){
 						//教材
 						var auto_book = res.data||{};
-						console.log("教材:"+JSON.stringify(auto_book));
+						console.log("教材: "+JSON.stringify(auto_book));
+						var bookLimit = store.get('book_limit');
+						console.log("限权: "+JSON.stringify(bookLimit));
+						var per_selected;
+						// 学段限权
+						auto_book.per.list = bookLimit.per;
+						auto_book.per.list.forEach(function(v){
+							if(v.percode==auto_book.per.selected) per_selected=v.percode;
+						});
+						if(!per_selected) {
+							auto_book.per.selected = auto_book.per.list[0]?auto_book.per.list[0].percode:"";
+							if(auto_book.per.selected){
+								getBook({percode: auto_book.per.selected}, ser);
+								return false;
+							}else{
+								auto_book.sub = {list: [], selected: null};
+								auto_book.mater = {list: [], selected: null};
+								auto_book.fasc = {list: [], selected: null};
+							}
+						}
+						console.log("限权后的教材："+JSON.stringify(auto_book));
+// 						auto_book.ser = {list:[], selected: null};
+// 						store.set("book_items", auto_book);
+						
 						//获取目录
 						if(ser){
 							getCatalog(auto_book, ser);
@@ -606,6 +608,7 @@
 						fasccode: auto_book.fasc.selected
 					};
 					oralsAjax('/catalog', data, function(res){
+						console.log(res);
 						persubmatTime = 0;
 						//保存教材
 						var book_ser = {list:[], selected: ser||0}
@@ -626,12 +629,25 @@
 		               	
 					}, function(res){
 						//获取不到 目录和教材 时
-						console.log(JSON.stringify(res));
-						auto_book.ser = {list:[], selected: null};
-						store.set("book_items", auto_book);
-						store.set("orals_menu", []);
-						store.set("orals_catalog", []);
-						plus.nativeUI.closeWaiting();
+						console.log("获取不到目录和教材: "+JSON.stringify(res));
+						var book_items = store.get('book_items');
+						var per_index=0;
+						for(var i=0; i<book_items.per.list.length; i++) {
+							if(book_items.per.list[i].percode==book_items.per.selected) per_index = i;
+						}
+						per_index++;
+						if(per_index<book_items.per.list.length){
+							book_items.per.selected = book_items.per.list[per_index].percode;
+							store.set('book_items', book_items);
+							getInitData();
+							return "noToast";
+						}else{
+							store.set("book_items", auto_book);
+							store.set("orals_menu", []);
+							store.set("orals_catalog", []);
+							plus.nativeUI.closeWaiting();
+							setBaseData(); //设置数据
+						}
 					}, function(){
 						plus.nativeUI.closeWaiting();
 						netErrorTip();
@@ -643,7 +659,9 @@
 					var auto_node = testVue.menu[0];
                     if(auto_node) {
 						testVue.catalogId = auto_node.id;
-                    }
+                    }else{
+						testVue.catalogId = 0;
+					}
 	            }
 				
 				//设置基础数据
@@ -750,8 +768,6 @@
 						});
 					});
 					
-					//关闭登录页
-					// self.opener()&&self.opener().close("none");
 				}
 				
 				//退出
@@ -980,6 +996,10 @@
 						!audioEle.ended && audioEle.pause();
 						var _this = this;
 						if(!_this.catalogId) {
+							_this.list = [];
+							_this.index = 0;
+							_this.state = 3;
+							secondTitle.contentTitle = "...";
 							plus.nativeUI.closeWaiting();
 							return false;
 						}
@@ -992,7 +1012,7 @@
 						}
 						_this.state = 2;
 						oralsAjax('/orals', data, function(res){
-//								console.log(res);
+								console.log(res);
 							//添加单词句子列表
 							res.data.list.forEach(function(v){
 								//成绩清零
@@ -1192,11 +1212,17 @@
 					audioStop: function() {
 						this.isPlaying = false;
 						!audioEle.ended && audioEle.pause();
-						document.querySelectorAll('.btns .btn-voice, .btns .btn-play').forEach(function(v){
-							if(v.classList.contains('active')) {
-								v.classList.remove('active');
+						var playBtns = document.querySelectorAll('.btns .btn-voice, .btns .btn-play');
+						for(var i=0;i<playBtns.length;i++){
+							if(playBtns[i].classList.contains('active')) {
+								playBtns[i].classList.remove('active');
 							}
-						});
+						}
+// 						document.querySelectorAll('.btns .btn-voice, .btns .btn-play').forEach(function(v){
+// 							if(v.classList.contains('active')) {
+// 								v.classList.remove('active');
+// 							}
+// 						});
 					},
 					//点击录音
 					record: function(cur, e) {

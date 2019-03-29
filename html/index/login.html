@@ -105,7 +105,7 @@
 	<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/utils/events.js"></script>
 	<!--<script src='../../js/utils/sortSign.js'></script>-->
-	<!--<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>-->
+	<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
 	<!--<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>-->
 	
 	<script type="text/javascript" src="../../js/orals/common.js" ></script>
@@ -113,7 +113,7 @@
 		mui.init();
 		setRem(document, window);
 		var tempModel = {};
-		var loginFlag = 1; //0自动登录，1不自动登录
+		var loginFlag = 0; //0自动登录，1不自动登录
 		mui.plusReady(function() {
 			plus.webview.currentWebview().setStyle({
 		        softinputMode: "adjustResize"
@@ -315,14 +315,14 @@
 									permission = false;
 								}
 								if(permission) {
-									if(mui.os.ios){
-										plus.webview.open('../orals/oralsIndex.html','orals-index',{},'slide-in-right');
-									}else{
+// 									if(mui.os.ios){
+// 										plus.webview.open('../orals/oralsIndex.html','orals-index',{},'slide-in-right');
+// 									}else{
 										mui.openWindow({
 											url: '../orals/oralsIndex.html',
 											id: 'orals-index'
 										});
-									}
+									// }
 								}else{
 									mui.toast("您没有登录权限");
 								}

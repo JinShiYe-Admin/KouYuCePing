@@ -42,15 +42,16 @@
 			<div id='orders' class="mui-content">
 				<div id='scroll' class="mui-scroll-wrapper">
 					<div class="mui-pull-top-pocket mui-block mui-hidden">
-						<div class="mui-pull" v-if="orderList.length">
+						<!-- <div class="mui-pull" v-if="orderList.length">
 							<div class="mui-pull-loading mui-icon mui-icon-pulldown" style="transition: -webkit-transform 0.3s ease-in 0s; transform: rotate(0deg);"></div>
 							<div class="mui-pull-caption">下拉可以刷新</div>
 						</div>
-						<div class="mui-pull"  v-else>暂无套餐</div>
+						<div class="mui-pull"  v-else>暂无套餐</div> -->
+						<div class="mui-pull"  v-if="!orderList.length">暂无套餐</div>
 					</div>
 					<div class="mui-scroll">
 						<ul class="mui-table-view">
-							<li v-for="item in orderList" @click.stop="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
+							<li v-for="item in orderListLimit" @click.stop="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
 								<a href="javascript:;" v-cloak>
 									<img class="mui-media-object mui-pull-left" :src="item.busimg">
 									<div class="mui-media-body">
@@ -124,18 +125,18 @@
 				});
 				
 				// 下拉刷新
-				var translateY_start, translateY_end;
-				document.querySelector('.mui-scroll-wrapper').addEventListener("touchstart", function(e){
-					translateY_start = $('#orders .mui-scroll').css('transform').replace(/[^0-9\-\.,]/g,'').split(',').pop();
-				});
-				document.querySelector('.mui-scroll-wrapper').addEventListener("touchend", function(e){
-					// 获取列表容器偏移量translateY
-					translateY_end = $('#orders .mui-scroll').css('transform').replace(/[^0-9\-\.,]/g,'').split(',').pop();
-					if(parseFloat(translateY_end)>65 && translateY_end-translateY_start>65 && !isLoading) {
-						console.log("刷新");
-						getOrderList();
-					}
-				});
+// 				var translateY_start, translateY_end;
+// 				document.querySelector('.mui-scroll-wrapper').addEventListener("touchstart", function(e){
+// 					translateY_start = $('#orders .mui-scroll').css('transform').replace(/[^0-9\-\.,]/g,'').split(',').pop();
+// 				});
+// 				document.querySelector('.mui-scroll-wrapper').addEventListener("touchend", function(e){
+// 					// 获取列表容器偏移量translateY
+// 					translateY_end = $('#orders .mui-scroll').css('transform').replace(/[^0-9\-\.,]/g,'').split(',').pop();
+// 					if(parseFloat(translateY_end)>65 && translateY_end-translateY_start>65 && !isLoading) {
+// 						console.log("刷新");
+// 						getOrderList();
+// 					}
+// 				});
 			});
 			
 			var orders = new Vue({
@@ -147,6 +148,30 @@
 					canTap: true, //下拉刷新时，上拉加载能否使用 true
 					isRendered: false, //是否渲染完成
 					isPullingDown: false //是否正在下拉
+				},
+				computed: {
+					// 筛选出可用套餐
+					orderListLimit: function(){
+						var list = this.orderList.filter(function(v){
+							// 排除停用的
+							if(v.orderFlag){
+								return v.serstat?true:false;
+							}else{
+								// 排除无学段的
+								if(v.fext){
+									var hasItem = false;
+									for(var i=0; i<v.fext.length; i++){
+										if(v.fext[i]&&v.fext[i].itemcode=="prd") hasItem=true;
+									}
+									return hasItem;
+								}else{
+									return true;
+								}
+							}
+							
+						});
+						return list;
+					}
 				},
 				methods: {
 					toMealDetails: function(event, item) {
@@ -210,7 +235,7 @@
 						orders.orderList = [].concat(sysbus);
 						
 						// 根据功能获取套餐功能及扩展栏目
-						// getSysBusFunc();
+						getSysBusFunc();
 						
 						//用户已订购套餐及功能扩展栏目
 						getUserBusFunc();
@@ -259,6 +284,14 @@
 							// 补上已订购套餐
 							// orders.orderList = orders.orderList.concat(orderModelBus);
 						}
+						// 排除停用的
+// 						orders.orderList = orders.orderList.filter(function(v){
+// 							if(v.orderFlag){
+// 								return v.serstat?true:false;
+// 							}else{
+// 								return true;
+// 							}
+// 						});
 						// 已订购的排前面
 						orders.orderList.sort(function(a,b){
 							return b.orderFlag-a.orderFlag;

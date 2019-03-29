@@ -23,7 +23,7 @@
 			<div id="bookSelect" class="book-select" v-cloak>
                 <p class="title">学段</p>
                 <div class="radio-group mui-row">
-                    <div v-for="(item, index) in items.per.list" :key="index" class="mui-col-xs-4" v-if="item.enabled">
+                    <div v-for="(item, index) in items.per.list" :key="index" class="mui-col-xs-4">
                         <label class="radio-item">
 				    		<input type="radio" v-model="items.per.selected" name="book_per" :value="item.percode" 
 				    			@change="itemChange('per')" />
@@ -76,7 +76,7 @@
 		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<script src='../../js/utils/vconsole.min.js'></script>
 		
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
@@ -119,30 +119,30 @@
 //              		console.log(JSON.stringify(params));
                 		oralsAjax('/persubmat', params, function(res){
 							var bookLimit = store.get('book_limit');
+							console.log("限权："+JSON.stringify(bookLimit));
                 			var rd = res.data;
-//              			console.log(JSON.stringify(rd));
+							console.log("教材："+JSON.stringify(rd));
 							// 学段限权
-							_this.items.per = bookLimit.per;
+							// _this.items.per = rd.per;
+							_this.items.per.list = bookLimit.per;
+							var per_selected = _this.items.per.list.filter(function(v){
+								return v.percode == rd.per.selected;
+							});
+							_this.items.per.selected = per_selected[0]?per_selected[0].percode:"";
+							if(!_this.items.per.selected) {
+								_this.items.sub = {list:[]};
+								_this.items.mater = {list:[]};
+								_this.items.fasc = {list:[]};
+								return false;
+							}
+							
 							_this.items.sub = rd.sub;
 							_this.items.mater = rd.mater;
 							// 年级限权
-							_this.items.fasc.list = [];
-							var fascSelected = "";
-							rd.fasc.list.forEach(function(v){
-								var vitem =  bookLimit.fasc.filter(function(item){return item.fasccode==v.fasccode});
-								if(vitem[0]){
-									_this.items.fasc.list.push(v);
-								}
-								if(v.fasccode==_this.items.fasc.selected){
-									fascSelected = v.fasccode;
-								}
-							});
-							if(!fascSelected) {
-								fascSelected = _this.items.fasc.list[0]?_this.items.fasc.list[0].fasccode:"";
-							}
-							_this.items.fasc.selected = fascSelected;
-							
-							if(rd.per.selected&&rd.sub.selected&&rd.mater.selected&&rd.fasc.selected){
+							_this.items.fasc = rd.fasc;
+
+							console.log("限权后的教材："+JSON.stringify(_this.items))
+							if(rd.sub.selected&&rd.mater.selected&&_this.items.fasc.selected){
 								_this.fascChange();
 							}else{
 								_this.items.ser = {list:[]};
@@ -166,7 +166,7 @@
 						if(_this.items.fasc) {
 							data.fasccode = _this.items.fasc.selected;
 						}
-//						console.log(JSON.stringify(data));
+						console.log(JSON.stringify(data));
 						oralsAjax('/catalog', data, function(r){
 							var book_ser = {list:[], selected:0}
 			               	r.data.forEach(function(v, i){
@@ -205,11 +205,11 @@
 				
 				//当前教材	
 				var s_items = store.get('book_items');
-				book.items.mater = s_items.mater||{};
-				book.items.sub = s_items.sub||{};
-				book.items.fasc = s_items.fasc||{};
-				book.items.per = s_items.per||{};
-				book.items.ser = s_items.ser||{};
+				book.items.mater = s_items.mater||{list:[]};
+				book.items.sub = s_items.sub||{list:[]};
+				book.items.fasc = s_items.fasc||{list:[]};
+				book.items.per = s_items.per||{list:[]};
+				book.items.ser = s_items.ser||{list:[]};
 				book.itemChange("mater");
 				
 				//点击 完成

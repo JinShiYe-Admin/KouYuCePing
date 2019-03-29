@@ -306,6 +306,8 @@ var appUpdate = (function(mod) {
 		}, function() {
 			removeFile(path);
 			console.log("安装wgt文件成功！");
+// 			mui.toast("在线更新完成");
+// 			plus.runtime.restart();
 		}, function(e) {
 			plus.nativeUI.closeWaiting();
 			console.log("安装wgt文件失败[" + e.code + "]：" + e.message);

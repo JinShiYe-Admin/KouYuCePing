@@ -95,7 +95,7 @@ function goResult(extras) {
 //获取教材名
 function getBookNames() {
 	var book_items = store.get("book_items");
-	if(!book_items||!book_items.sub||!book_items.mater||!book_items.per||!book_items.fasc){
+	if(!book_items||!book_items.sub||!book_items.mater||!book_items.per||!book_items.fasc||!book_items.ser){
 		return "";
 	}else{
 		var book = {
@@ -107,6 +107,32 @@ function getBookNames() {
 		}
 		return (book.sub?book.sub.subname:"")+(book.mater?book.mater.matername:"")+(book.fasc?book.fasc.fascname:"")+(book.ser?book.ser.sername:"");
 	}
+}
+
+// 检查确保教材的selected是否都在list中
+function bookCheck(book) {
+	for(var key  in book) {
+		var selected="";
+		for(var i=0; i<book[key].list.length; i++) {
+			if(book[key].list[i][key+"code"]==book[key].selected) {
+				selected = book[key].list[i][key+"code"];
+				break;
+			}
+		}
+		if(!selected) book[key].selected = book[key].list[0]?book[key].list[0][key+"code"]:"";
+	}
+	return book;
+}
+
+// 获取教材code
+function getBookCodes(book) {
+	var codes = {};
+	for(var key  in book) {
+		if(key=="per"||key=="sub"||key=="mater"||key=="fasc") {
+			if(book[key].selected) codes[key+"code"] = book[key].selected;
+		}
+	}
+	return codes;
 }
 
 //获取目录名

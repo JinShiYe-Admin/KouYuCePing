@@ -123,7 +123,7 @@
 			}
 			.check > label {
 				padding-left: 45px;
-				margin-top: 8px;
+				margin-top: 6px;
 			}
 			.check > label a {
 				color: #00CFBD;
@@ -316,9 +316,14 @@
 							}else{
 								appPay.payCode=true;
 								//调起支付
+								plus.nativeUI.showWaiting( "正在调起支付" );
+								setTimeout(function(){
+									plus.nativeUI.closeWaiting();
+								}, 2000);
 								appPay.pay(appPay.wxpay,function success(){
+									plus.nativeUI.closeWaiting();
 								},function fail(code,err){
-									
+									plus.nativeUI.closeWaiting();
 								});
 							}
 						}
@@ -339,7 +344,7 @@
 				
 				//计算可以订购的时长  为月份数组 start
 				timePicker = new mui.PopPicker();
-				univlent = _data.feecode;
+				univlent = _data.feecode/_data.busmonth;
 				var month = _data.busmonth;
 				var num = 36 / month;
 				for (var i = 1; i <= num; i++) {

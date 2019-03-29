@@ -163,7 +163,7 @@
 			}
 			.check > label {
 				padding-left: 45px;
-				margin-top: 8px;
+				margin-top: 6px;
 			}
 			.check > label a {
 				color: #00CFBD;
@@ -198,7 +198,7 @@
 					
 					<div class="mui-row" v-for="(sysfuncModel,index1) in sysfuncList">
 						<h5 class="mui-content-padded">{{sysfuncModel.fname}}</h5>
-						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext" v-if="fextModel.itemcode!='prd'&&fextModel.itemcode!='grd'">
+						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext" >
 							<!-- 学段 选项 -->
 							<a v-if="fextModel.itemcode=='prd'" :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2" class="mui-clearfix">
 								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
@@ -206,7 +206,7 @@
 								<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name="fextModel.itemcode" />
 							</a>
 							<!-- 年级 -->
-							<a v-else-if="fextModel.itemcode=='grd'" style="display: none;" :id="sysfuncModel.fid+fextModel.itemcode+index2+'grd'" class="mui-clearfix">
+							<!-- <a v-else-if="fextModel.itemcode=='grd'" style="display: none;" :id="sysfuncModel.fid+fextModel.itemcode+index2+'grd'" class="mui-clearfix">
 								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
 								<template v-if="fextModel.itemsonsc>0">
 									<a :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2">
@@ -220,8 +220,9 @@
 										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name="fextModel.itemcode" />
 									</a>
 								</template>
-							</a>
-							<a v-else class="mui-clearfix">
+							</a> -->
+							<!-- 其他 -->
+							<!-- <a v-else class="mui-clearfix">
 								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
 								<template v-if="fextModel.itemsonsc>0">
 									<a :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2">
@@ -235,7 +236,7 @@
 										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name="fextModel.itemcode" />
 									</a>
 								</template>
-							</a>
+							</a> -->
 						</div>
 					</div>
 		
@@ -285,7 +286,7 @@
 			<template v-for="(sysfuncModel,index) in sysfuncList">
 				<div class="mui-popover" v-for="(fextModel,index2) in sysfuncModel.fext" 
 				:id="sysfuncModel.fid+fextModel.itemcode+index2" 
-				:style="'height:'+itemLength(sysfuncModel,index2)+'px;'"
+				:style="itemStyle(sysfuncModel,index2)"
 				:fid="sysfuncModel.fid">
 					<div class='mui-scroll-wrapper'>
 						<div class="mui-scroll">
@@ -297,10 +298,11 @@
 									<li class="mui-table-view-cell" v-for="(item,index) in fextModel.itemsons">
 										<div class="mui-input-row mui-checkbox mui-right" @tap="childCheckAll($event)">
 											<label name="parentLabel">{{getValue(item)}}</label>
-											<input v-if="fextModel.itemsonsc==0" name="parent" :value="item" type="checkbox" disabled checked>
+											<input v-if="fextModel.itemsons.length==1" name="parent" :value="item" type="checkbox" disabled checked>
 											<input v-else name="parent" :value="item" type="checkbox">
 										</div>
-										<template v-for="(grdItem,index) in sysfuncModel.fext" v-if="fextModel.itemcode=='prd' && grdItem.itemcode=='grd' && grdItem.gid==getId(item)">
+										<!-- 年级选项 -->
+										<!-- <template v-for="(grdItem,index) in sysfuncModel.fext" v-if="fextModel.itemcode=='prd' && grdItem.itemcode=='grd' && grdItem.gid==getId(item)">
 											<div class="label-name mui-ellipsis">{{grdItem.labelName}}</div>
 											<ul class="mui-table-view" :maxCheck2="grdItem.itemsonsc">
 												<li class="mui-table-view-cell" v-for="(item2,index2) in grdItem.itemsons">
@@ -311,7 +313,7 @@
 													</div>
 												</li>
 											</ul>
-										</template>
+										</template> -->
 									</li>
 								</ul>
 							</form>
@@ -374,7 +376,7 @@
 				
 				//计算可以订购的时长  为月份数组 start
 				timePicker = new mui.PopPicker();
-				univlent = _data.feecode;
+				univlent = _data.feecode/_data.busmonth;
 				var month = _data.busmonth;
 				var num = 36 / month;
 				for (var i = 1; i <= num; i++) {
@@ -414,7 +416,7 @@
 					mui.toast(e);
 				}, function(e) { //查询超时
 					mui.toast(e);
-				}, '正尝试重新查询...', 10000);
+				}, '正尝试重新查询...', 5000);
 			}
 
 			// 套餐详情
@@ -589,28 +591,28 @@
 								mui.toast('请选择学段');
 								return;
 							}
-
-							for (var z = 0; z < value.length; z++) {
-								var pid = value[z];
-								var pname = name[z];
-								var sz = [];
-								for (var i = 0; i < value_nj.length; i++) {
-									var gid = value_nj[i];
-									if (gid.startWith(pid)) {
-										sz.push(gid);
-									}
-								}
-								if (max2 == 0 && sz.length > 1) {
-									mui.toast(pname + '年级最多选1个');
-									return;
-								} else if (max2 > 0 && sz.length > max2) {
-									mui.toast(pname + '年级最多选' + max2 + '个');
-									return;
-								} else if (sz.length == 0) {
-									mui.toast('请选择' + pname + '年级');
-									return;
-								}
-							}
+							// 检查年级选项
+// 							for (var z = 0; z < value.length; z++) {
+// 								var pid = value[z];
+// 								var pname = name[z];
+// 								var sz = [];
+// 								for (var i = 0; i < value_nj.length; i++) {
+// 									var gid = value_nj[i];
+// 									if (gid.startWith(pid)) {
+// 										sz.push(gid);
+// 									}
+// 								}
+// 								if (max2 == 0 && sz.length > 1) {
+// 									mui.toast(pname + '年级最多选1个');
+// 									return;
+// 								} else if (max2 > 0 && sz.length > max2) {
+// 									mui.toast(pname + '年级最多选' + max2 + '个');
+// 									return;
+// 								} else if (sz.length == 0) {
+// 									mui.toast('请选择' + pname + '年级');
+// 									return;
+// 								}
+// 							}
 						} else {
 							if (value.length > max) {
 								mui.toast('最多选' + max + '个');
@@ -686,27 +688,33 @@
 						} else {
 							//判断必选项大于0的是否都选择了
 							var strs = [];
-							var prdModel;
+							var needModel={};//必须的附加信息
 							for (var i = 0; i < orderData.sysfuncList.length; i++) {
 								var sysfuncModel = orderData.sysfuncList[i];
 								for (var j = 0; j < sysfuncModel.fext.length; j++) {
 									var model = sysfuncModel.fext[j];
 									if (model.itemcode == 'prd') {
 										_gid = model.checked;
+										needModel.prd=true;
 									}
-									if (model.itemsonsc > 0) {
+									// 只控制学段
+									if (model.itemsonsc > 0 && model.itemcode=="prd") {
 										//										console.log(model.itemname+","+model.checked)
 										if (model.checked == undefined) {
 											strs.push(model.itemname);
 										}
-
 									}
+									// 只控制学段end
 								}
 							}
 							if (strs.length > 0) {
-								//								mui.toast("功能："+strs.join(",")+'为必选项')
-								mui.toast("您选择的信息不完整")
+								mui.toast("功能："+strs.join(",")+'为必选项')
+								// mui.toast("您选择的信息不完整")
 							} else {
+								if(!needModel.prd) {
+									mui.toast("无学段信息，订购失败");
+									return;
+								}
 								//如果是0元套餐，直接走订购
 								if (this.feem == 0) {
 									order();
@@ -714,10 +722,16 @@
 									//										order();
 									appPay.payCode = true;
 									//调起支付
+									plus.nativeUI.showWaiting( "正在调起支付" );
+									setTimeout(function(){
+										plus.nativeUI.closeWaiting();
+									}, 2000);
 									appPay.pay(appPay.wxpay, function success() {
 										console.log("支付成功");
+										plus.nativeUI.closeWaiting();
 									}, function fail(code, err) {
-										plus.nativeUI.alert("支付失败");
+										plus.nativeUI.closeWaiting();
+										// plus.nativeUI.alert("支付失败");
 									});
 								}
 
@@ -742,17 +756,17 @@
 									indicators: false
 								});
 							});
-							// 选项唯一时,默认选择学段
-// 							for(var i=0; i<v.length; i++){
-// 								for(var j=0; j<v[i].fext.length; j++){
-// 									if(v[i].fext[j].itemsons[0]&&v[i].fext[j].itemsonsc<1){
-// 										var itemsons = v[i].fext[j].itemsons[0].split("|");
-// 										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input0").val(itemsons[1]);
-// 										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input1").val(itemsons[2]);
-// 										break;
-// 									}
-// 								}
-// 							}
+							// 选项唯一时,默认选择
+							for(var i=0; i<v.length; i++){
+								for(var j=0; j<v[i].fext.length; j++){
+									if(v[i].fext[j].itemsons.length==1&&v[i].fext[j].itemsonsc<2){
+										var itemsons = v[i].fext[j].itemsons[0].split("|");
+										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input0").val(itemsons[1]);
+										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input1").val(itemsons[2]);
+										break;
+									}
+								}
+							}
 						}
 					}
 				},
@@ -762,14 +776,15 @@
 					hidePop: orderData.hidePop,
 					getValue: orderData.getValue,
 					getId: orderData.getId,
-					itemLength: function(model,i) {
+					// 设置样式
+					itemStyle: function(model,i) {
 						var item = model.fext[i];
-						var l = 65 + item.itemsons.length*40;
-						if(item.itemcode=="prd"){
-							var grd = model.fext.filter(function(v){return v.itemcode=="grd";});
-							l = l + grd.length*60 + 50;
-						}
-						return l;
+						var l = 60 + 35 + item.itemsons.length*36;
+// 						if(item.itemcode=="prd"){ //如果是学段,还需加上年纪高度
+// 							var grd = model.fext.filter(function(v){return v.itemcode=="grd";});
+// 							l = l + grd.length*60 + 50;
+// 						}
+						return "height:"+l+"px;";
 					}
 				}
 			});
@@ -783,20 +798,23 @@
 					var sysfuncModel = orderData.sysfuncList[i];
 					for (var a = 0; a < sysfuncModel.fext.length; a++) {
 						var fextModel = sysfuncModel.fext[a];
-						if (fextModel.checked != '' && fextModel.checked != undefined) {
+						// 学段 年级 默认选择
+						if(fextModel.itemcode=="prd"||fextModel.itemcode=="grd"){
+							var sons = [];
+							fextModel.itemsons.forEach(function(v){
+								sons.push(v.split("|")[0]);
+							});
+							var tempModel = {
+								fcode: sysfuncModel.fcode, //功能代码
+								itemcode: fextModel.itemcode, //栏目代码
+								itemsons:  sons.join() //栏目选择子集
+							}
+							funcArray.push(tempModel);
+						}else if (fextModel.checked != '' && fextModel.checked != undefined) {
 							var tempModel = {
 								fcode: sysfuncModel.fcode, //功能代码
 								itemcode: fextModel.itemcode, //栏目代码
 								itemsons: fextModel.checked //栏目选择子集
-							}
-							funcArray.push(tempModel);
-						} else if (fextModel.itemsonsc == 0) {
-							var sons = fextModel.itemsons[0];
-							var checked = sons.split("|")[0];
-							var tempModel = {
-								fcode: sysfuncModel.fcode, //功能代码
-								itemcode: fextModel.itemcode, //栏目代码
-								itemsons: checked //栏目选择子集
 							}
 							funcArray.push(tempModel);
 						}
