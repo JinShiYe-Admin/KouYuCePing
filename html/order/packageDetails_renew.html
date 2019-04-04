@@ -204,6 +204,7 @@
 			window.addEventListener('refreshList', function(data) {
 				console.log(data.detail.newEtime);
 				renew.curPageData.etime=data.detail.newEtime;
+				mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
 			});		
 			
 			var  renew;

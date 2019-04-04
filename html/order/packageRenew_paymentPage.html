@@ -26,16 +26,17 @@
 				margin-bottom: 5px;
 			}
 			.mui-row.mui-media {
-				padding: 10px 15px;
+				padding: 10px;
 			}
 			.flex-between .mui-media-object {
 				width: 90px;
 				height: 90px;
-				margin-right: 5px;
-				flex-shrink: 0;
 			}
 			.flex-between .mui-media-body {
-				flex-grow: 1;
+				width: calc(100% - 110px);
+			}
+			.mui-media-body > p {
+				margin-bottom: 5px;
 			}
 			.mui-media-body .mui-ellipsis-title + .mui-ellipsis-2 {
 				height: 42px;
@@ -102,6 +103,7 @@
 			}
 			.pay-btn-je {
 				height: 50px;
+				line-height: 50px;
 				border: 0px;
 				text-align: left;
 			}
@@ -145,12 +147,10 @@
 		<div class="mui-content">
 			
 			<div id='orderDetailData'>
-				<div class="mui-row mui-media flex-between">
-					<img class="mui-media-object" :src="orderDetail.busimg" v-cloak>
-					<div class="mui-media-body" v-cloak>
-						<p class='mui-ellipsis-title'>{{orderDetail.cnname}}
-							<!-- <span v-for="pn in getPrdName(orderDetail.fext, orderDetail.thiscodes)" class="mark">{{pn}}</span> -->
-						</p>
+				<div class="mui-row mui-media flex-between" v-cloak>
+					<img class="mui-media-object" :src="orderDetail.busimg" >
+					<div class="mui-media-body">
+						<p class='mui-ellipsis-title'>{{orderDetail.cnname}}</p>
 						<p class='mui-ellipsis-2'>{{orderDetail.busnote}}</p>
 						<p class="ul-p">缴费金额：{{orderPrice(orderDetail.feecode)}}元/{{orderDetail.busmonth}}月</p>
 					</div>
@@ -319,7 +319,7 @@
 								plus.nativeUI.showWaiting( "正在调起支付" );
 								setTimeout(function(){
 									plus.nativeUI.closeWaiting();
-								}, 2000);
+								}, 3000);
 								appPay.pay(appPay.wxpay,function success(){
 									plus.nativeUI.closeWaiting();
 								},function fail(code,err){
@@ -448,6 +448,8 @@
 				  var currentdate = year + seperator1 + month + seperator1 + strDate;
 				  return currentdate;
 			};
+			
+			// orderDetailData.orderDetail = {"funcs":[{"fcode":"ycyx04","itemcode":null,"itemsons":null}],"serviceid":"tcycyx04","feecode":"10","cnname":"益测益学（小初）","fcodes":"ycyx04","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小初）","note":"","busimg":"../../img/logo.png","orderFlag":1,"busext":[{"forid":106,"fcode":"ycyx04","itemcode":"prd","itemsons":"2|小学"}],"forid":106,"uid":"ceshi01","utname":null,"servid":"tcycyx04","servtype":1,"cname":"益测益学（小初）","stime":"2018.11.14","etime":"2018.12.14","frmtype":0,"serstat":1};
 			
 		</script>
 	</body>

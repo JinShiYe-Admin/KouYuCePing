@@ -26,7 +26,7 @@
                     <div v-for="(item, index) in items.per.list" :key="index" class="mui-col-xs-4">
                         <label class="radio-item">
 				    		<input type="radio" v-model="items.per.selected" name="book_per" :value="item.percode" 
-				    			@change="itemChange('per')" />
+				    			@change.stop="itemChange('per')" />
 				    		<span>{{item.pername}}</span>
 					    </label>
                     </div>
@@ -36,7 +36,7 @@
                     <div v-for="(item, index) in items.sub.list" :key="index" class="mui-col-xs-4">
                         <label class="radio-item">
 				    		<input type="radio" v-model="items.sub.selected" name="book_sub" :value="item.subcode" 
-				    			@change="itemChange('sub')"/>
+				    			@change.stop="itemChange('sub')"/>
 				    		<span>{{item.subname}}</span>
 					    </label>
                     </div>
@@ -46,7 +46,7 @@
                     <div v-for="(item, index) in items.mater.list" :key="index" class="mui-col-xs-4">
                         <label class="radio-item">
 				    		<input type="radio" v-model="items.mater.selected" name="book_mater" :value="item.matercode" 
-				    			@change="itemChange('mater')"/>
+				    			@change.stop="itemChange('mater')"/>
 				    		<span>{{item.matername}}</span>
 					    </label>
                     </div>
@@ -56,7 +56,7 @@
                     <div v-for="(item, index) in items.fasc.list" :key="index" class="mui-col-xs-4">
                         <label class="radio-item">
 				    		<input type="radio" v-model="items.fasc.selected" name="book_fasc" :value="item.fasccode" 
-				    			@change="fascChange"/>
+				    			@change.stop="fascChange"/>
 				    		<span>{{item.fascname}}</span>
 					    </label>
                     </div>
@@ -66,7 +66,7 @@
                     <div v-for="(item, index) in items.ser.list" :key="index" class="mui-col-xs-4">
                         <label class="radio-item">
 				    		<input type="radio" v-model="items.ser.selected" name="book_ser" :value="item.sercode" 
-				    			@change="serChange"/>
+				    			@change.stop="serChange"/>
 				    		<span>{{item.sername}}</span>
 					    </label>
                     </div>
@@ -111,91 +111,108 @@
 				methods: {
 					itemChange: function(item) {
 						var params = {}, _this = this;
-						if(item=="mater"){
-							params.subcode = this.items.sub.selected;
-							params.percode = this.items.per.selected;
-						}
-                		params[item+"code"] = this.items[item].selected;
-//              		console.log(JSON.stringify(params));
-                		oralsAjax('/persubmat', params, function(res){
-							var bookLimit = store.get('book_limit');
-							console.log("限权："+JSON.stringify(bookLimit));
-                			var rd = res.data;
-							console.log("教材："+JSON.stringify(rd));
-							// 学段限权
-							// _this.items.per = rd.per;
-							_this.items.per.list = bookLimit.per;
-							var per_selected = _this.items.per.list.filter(function(v){
-								return v.percode == rd.per.selected;
-							});
-							_this.items.per.selected = per_selected[0]?per_selected[0].percode:"";
-							if(!_this.items.per.selected) {
-								_this.items.sub = {list:[]};
-								_this.items.mater = {list:[]};
-								_this.items.fasc = {list:[]};
-								return false;
-							}
-							
-							_this.items.sub = rd.sub;
-							_this.items.mater = rd.mater;
-							// 年级限权
-							_this.items.fasc = rd.fasc;
-
-							console.log("限权后的教材："+JSON.stringify(_this.items))
-							if(rd.sub.selected&&rd.mater.selected&&_this.items.fasc.selected){
-								_this.fascChange();
+						this.$nextTick(function () {
+							if(!item){
+								params = getBookCodes(_this.items);
 							}else{
-								_this.items.ser = {list:[]};
+								params[item+"code"] = _this.items[item].selected;
+								if(item=="sub"){
+									params.percode = _this.items.per.selected;
+								}
+								if(item=="mater"){
+									params.subcode = _this.items.sub.selected;
+									params.percode = _this.items.per.selected;
+									// params.fasccode = _this.items.fasc.selected;
+								}
 							}
-							_this.isChange = true;
-                		});
+							console.log("获取教材："+JSON.stringify(params));
+							oralsAjax('/persubmat', params, function(res){
+								console.log("教材："+JSON.stringify(rd));
+								var bookLimit = store.get('book_limit');
+								console.log("限权："+JSON.stringify(bookLimit));
+								var rd = res.data;
+								// 学段限权
+								// _this.items.per = rd.per;
+								_this.items.per.list = bookLimit.per;
+								var per_selected = _this.items.per.list.filter(function(v){
+									return v.percode == rd.per.selected;
+								});
+								_this.items.per.selected = per_selected[0]?per_selected[0].percode:"";
+								if(!_this.items.per.selected) {
+									_this.items.sub = {list:[]};
+									_this.items.mater = {list:[]};
+									_this.items.fasc = {list:[]};
+									return false;
+								}
+								
+								_this.items.sub = rd.sub;
+								_this.items.mater = rd.mater;
+								// 年级限权
+								_this.items.fasc = rd.fasc;
+							
+								console.log("限权后的教材："+JSON.stringify(_this.items))
+								if(rd.sub.selected&&rd.mater.selected&&_this.items.fasc.selected){
+									_this.fascChange();
+								}else{
+									_this.items.ser = {list:[]};
+								}
+								_this.isChange = true;
+							});
+						});
+
 					},
 					//改变年级
 					fascChange: function() {
 						var _this = this;
-						var data = {};
-						if(_this.items.per){
-							data.percode = _this.items.per.selected;
-						}
-						if(_this.items.sub){
-							data.subcode = _this.items.sub.selected;
-						}
-						if(_this.items.mater) {
-							data.matercode = _this.items.mater.selected;
-						}
-						if(_this.items.fasc) {
-							data.fasccode = _this.items.fasc.selected;
-						}
-						console.log(JSON.stringify(data));
-						oralsAjax('/catalog', data, function(r){
-							var book_ser = {list:[], selected:0}
-			               	r.data.forEach(function(v, i){
-			               		book_ser.list.push({sercode: i, sername: v.name});
-			               	});
-							if(_this.items.hasOwnProperty("ser")){
-								_this.items.ser.list = book_ser.list;
-								if(r.data.length-1<_this.items.ser.selected||!_this.items.ser.selected) {
-									_this.items.ser.selected = 0;
-								}
-							}else{
-								Vue.set(_this.items, "ser", book_ser);
+						this.$nextTick(function () {
+							var data = {};
+							if(_this.items.per){
+								data.percode = _this.items.per.selected;
 							}
-			               	//请求成功后，保存教材信息
-			               	store.set("orals_menu", r.data);
-			               	
-			               	_this.serChange();
-			               	_this.isChange = true;
+							if(_this.items.sub){
+								data.subcode = _this.items.sub.selected;
+							}
+							if(_this.items.mater) {
+								data.matercode = _this.items.mater.selected;
+							}
+							if(_this.items.fasc) {
+								data.fasccode = _this.items.fasc.selected;
+							}
+							console.log(JSON.stringify(data));
+							oralsAjax('/catalog', data, function(r){
+								var book_ser = {list:[], selected:0}
+							   	r.data.forEach(function(v, i){
+							   		book_ser.list.push({sercode: i, sername: v.name});
+							   	});
+								if(_this.items.hasOwnProperty("ser")){
+									_this.items.ser.list = book_ser.list;
+									if(r.data.length-1<_this.items.ser.selected||!_this.items.ser.selected) {
+										_this.items.ser.selected = 0;
+									}
+								}else{
+									Vue.set(_this.items, "ser", book_ser);
+								}
+							   	//请求成功后，保存教材信息
+							   	store.set("orals_menu", r.data);
+							   	
+							   	_this.serChange();
+							   	_this.isChange = true;
+							});
 						});
 					},
 					//改变分册
 					serChange: function() {
 						var _this = this;
-						var menu_tree = store.get("orals_menu");
-						if(menu_tree&&menu_tree.length){
-							//获取最终目录，并存储目录
-							catalog = getFinalCatalog(menu_tree[_this.items.ser.selected].childList);
-							_this.isChange = true;
-						}
+						this.$nextTick(function () {
+							var menu_tree = store.get("orals_menu");
+							if(menu_tree&&menu_tree.length){
+								//获取最终目录，并存储目录
+								catalog = getFinalCatalog(menu_tree[_this.items.ser.selected].childList);
+							}else{
+								catalog = [];
+							}
+						});
+						_this.isChange = true;
 					}
 				}
 			});
@@ -210,7 +227,7 @@
 				book.items.fasc = s_items.fasc||{list:[]};
 				book.items.per = s_items.per||{list:[]};
 				book.items.ser = s_items.ser||{list:[]};
-				book.itemChange("mater");
+				book.itemChange();
 				
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){

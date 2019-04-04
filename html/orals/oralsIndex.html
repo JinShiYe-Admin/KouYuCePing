@@ -80,14 +80,14 @@
 				<a class="mui-icon mui-pull-left" style="padding: 6px 10px;">
 					<img id="headImg" src="" class="head-img"/>
 				</a>
-				<a id="goRecord" class="mui-btn-link mui-pull-right">测评记录</a>
+				<a id="goRecord" class="mui-btn-link mui-pull-right">单词测评记录</a>
 			</div>
 		    <h1 class="mui-title">单词测评</h1>
 		</header>
 		
 		<nav class="mui-bar mui-bar-tab">
 		    <a class="mui-tab-item mui-active" data-type="word" href="#orals-test">
-		        <span class="mui-icon">
+		        <span class="mui-icon" style="pointer-events: none;">
 		        	<svg class="icon" aria-hidden="true">
 					  <use xlink:href="#icon-icon-word"></use>
 					</svg>
@@ -95,7 +95,7 @@
 		        <span class="mui-tab-label">单词测评</span>
 		    </a>
 		    <a class="mui-tab-item" data-type="sentence" href="#orals-test">
-		        <span class="mui-icon">
+		        <span class="mui-icon" style="pointer-events: none;">
 		        	<svg class="icon" aria-hidden="true">
 					  <use xlink:href="#icon-icon-sentece"></use>
 					</svg>
@@ -103,7 +103,7 @@
 		        <span class="mui-tab-label">句子测评</span>
 		    </a>
 		    <a class="mui-tab-item" data-type="errs" href="#orals-errs">
-		        <span class="mui-icon">
+		        <span class="mui-icon" style="pointer-events: none;">
 		        	<svg class="icon" aria-hidden="true">
 					  <use xlink:href="#icon-icon-wrong"></use>
 					</svg>
@@ -125,13 +125,13 @@
 		    		</a>
 		    	</div>
 		    	<div class="content-title" v-show="isContentTitle" v-cloak>
-		    		<a class="mui-icon" @tap.stop="changeMenu(-1)">
+		    		<a class="mui-icon" @tap.stop="changeMenu(-1)" @touchend.prevent>
 		    			<svg class="icon" aria-hidden="true">
 						  <use xlink:href="#icon-icon-left"></use>
 						</svg>
 		    		</a>
 		    		<div id="contentTitle" @tap="showMenu" v-html="contentTitle"></div>
-		    		<a class="mui-icon" @tap.stop="changeMenu(1)">
+		    		<a class="mui-icon" @tap.stop="changeMenu(1)" @touchend.prevent>
 		    			<svg class="icon" aria-hidden="true">
 						  <use xlink:href="#icon-icon-right"></use>
 						</svg>
@@ -708,12 +708,14 @@
 					{
 					    case "word":
 					    	muiTitle.innerHTML = "单词测评";
+							go_record.innerHTML = "单词测评记录";
 					    	go_record.style.display = "block";
 					    	testVue.category = "word";
 					    	secondTitle.isContentTitle = true;
 					        break;
 					    case "sentence":
 					    	muiTitle.innerHTML = "句子测评";
+							go_record.innerHTML = "句子测评记录";
 					    	go_record.style.display = "block";
 					    	testVue.category = "sentence";
 					    	secondTitle.isContentTitle = true;
@@ -838,7 +840,12 @@
 						catalog.forEach(function(v, i){
 							if(v.id==testVue.catalogId) c_index=i;
 						});
-						if(c_index+d>=0&&c_index+d<=catalog.length){
+						var new_index = c_index+d;
+						if(new_index<0) {
+							mui.toast("当前已是第一单元", {type: 'div'});
+						}else if(new_index>=catalog.length) {
+							mui.toast("已到达最后一个单元！", {type: 'div'});
+						}else {
 							if(testVue.state==4){
 								layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function(){
 									testVue.catalogId = catalog[c_index+d].id;
@@ -1076,9 +1083,13 @@
 							this.isRecording = true;
 							this.startRecord();
 							var _this = this;
+							var time_len = _this.list[_this.index].time_len||4;
+							if(_this.list[_this.index].category=="read_sentence"){
+								time_len = time_len+4;
+							}
 							recorderTimer = setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
-							}, _this.list[_this.index].time_len*1000||5000);
+							}, time_len*1000);
 							touchStart(event.targetTouches[0]);
 						}
 					},
@@ -1234,7 +1245,7 @@
 							this.startRecord(cur);
 							recorderTimer = setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
-							}, cur.time_len*1000||5000);
+							}, cur.time_len?(cur.time_len+4)*1000:5000);
 							touchStart(e.targetTouches[0]);
 						}
 					},

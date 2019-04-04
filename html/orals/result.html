@@ -211,11 +211,10 @@
 					},
 					audioStop: function() {
 						!audioEle.ended && audioEle.pause();
-						document.querySelectorAll('.btns .btn-voice, .btns .btn-play').forEach(function(v){
-							if(v.classList.contains('active')) {
-								v.classList.remove('active');
-							}
-						});
+						var audioBtns = document.querySelectorAll('.btns .btn-voice, .btns .btn-play');
+						for(var i=0;i<audioBtns.length;i++) {
+							if(audioBtns[i].classList.contains('active')) audioBtns[i].classList.remove('active');
+						}
 					},
 					//点击录音
 					record: function(cur, e) {
@@ -227,7 +226,7 @@
 							this.startRecord(cur);
 							recorderTimer = setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
-							}, cur.time_len*1000||5000);
+							}, cur.time_len?(cur.time_len+4)*1000:5000);
 							touchStart(e.targetTouches[0]);
 						}
 					},

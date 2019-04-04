@@ -16,7 +16,11 @@
 				max-width: 90px;
 			}
 			.mui-table-view .mui-media-object.mui-pull-left {
-				margin-right: 5px;
+				margin-right:0;
+			}
+			.mui-table-view .mui-media-body {
+				float: right;
+				width: calc(100% - 100px);
 			}
 			.mui-content > .mui-content {
 				position: relative;
@@ -50,14 +54,15 @@
 						<div class="mui-pull"  v-if="!orderList.length">暂无套餐</div>
 					</div>
 					<div class="mui-scroll">
-						<ul class="mui-table-view">
+						<ul class="mui-table-view" v-cloak>
 							<li v-for="item in orderListLimit" @click.stop="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
-								<a href="javascript:;" v-cloak>
+								<a href="javascript:;" v-cloak class="mui-clearfix">
 									<img class="mui-media-object mui-pull-left" :src="item.busimg">
 									<div class="mui-media-body">
 										<p class='mui-ellipsis-title'>{{item.cnname}}</p>
 										<p class='mui-ellipsis-2'>{{item.busnote}}</p>
-										<div v-if="item.orderFlag==1" class="flex-between">
+										<!-- 已订且未停用时 续费 -->
+										<div v-if="item.orderFlag==1&&item.serstat==1" class="flex-between">
 											<p class="mui-ellipsis-2">结束时间：{{item.etime}}</p>
 											<button class="ul-btn btn-ordered" class="mui-btn mui-btn-mini">套餐续费</button>
 										</div>
@@ -154,9 +159,9 @@
 					orderListLimit: function(){
 						var list = this.orderList.filter(function(v){
 							// 排除停用的
-							if(v.orderFlag){
-								return v.serstat?true:false;
-							}else{
+// 							if(v.orderFlag){
+// 								return v.serstat?true:false;
+// 							}else{
 								// 排除无学段的
 								if(v.fext){
 									var hasItem = false;
@@ -167,7 +172,7 @@
 								}else{
 									return true;
 								}
-							}
+							// }
 							
 						});
 						return list;
@@ -179,14 +184,15 @@
 						if($(_event).hasClass('ul-btn')) { //点击li下的button
 							this.$options.methods.btnClick(item);
 						} else { //点击li标签
-							if(item.orderFlag == 0)
+							if(item.orderFlag == 0 || item.serstat==0)
 								utils.mOpenWithData("../../html/order/packageDetails_order.html", item);
 							else
 								utils.mOpenWithData("../../html/order/packageDetails_renew.html", item);
 						}
 					},
 					btnClick: function(item) {
-						if(item.orderFlag == 0)
+						// 未购买和停用的套餐 立即订购
+						if(item.orderFlag == 0 || item.serstat==0)
 							utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", item);
 						else
 							utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
@@ -339,6 +345,20 @@
 					}
 				});
 			}
+			
+// 			orders.orderList = [
+// 				{"funcs":[{"fcode":"ycyx04","itemcode":null,"itemsons":null}],"serviceid":"tcycyx04","feecode":"10","cnname":"益测益学（小初）","fcodes":"ycyx04","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小初）","note":"","busimg":"../../img/logo.png","orderFlag":1,"busext":[{"forid":106,"fcode":"ycyx04","itemcode":"prd","itemsons":"2|小学"}],"forid":106,"uid":"ceshi01","utname":null,"servid":"tcycyx04","servtype":1,"cname":"益测益学（小初）","stime":"2018.11.14","etime":"2018.12.14","frmtype":0,"serstat":1},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX02","ftype":"YCYXZS","fname":"益测益学（初中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx02","feecode":"10","cnname":"益测益学（初中）","fcodes":"YCYX02","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（初中）","note":"","busimg":"../../img/logo.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/logo.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/logo.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/logo.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/logo.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"YCYX03","ftype":"YCYXZS","fname":"益测益学（高中）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx03","feecode":"10","cnname":"益测益学（高中）","fcodes":"YCYX03","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（高中）","note":"","busimg":"../../img/logo.png","orderFlag":0},
+// 				{"funcs":[{"fext":null,"fid":0,"fcode":"ycyx01","ftype":"YCYXZS","fname":"益测益学（小学）","frange":null,"fset":null,"fnote":null,"fdes":null}],"serviceid":"tcycyx01","feecode":"10","cnname":"益测益学（小学）","fcodes":"ycyx01","busmonth":1,"bustype":1,"busnote":"以测试的形式发现学习特长（小学）","note":"","busimg":"../../img/logo.png","orderFlag":0}
+// 			];
+// 			mui('.mui-scroll-wrapper').scroll({
+// 				indicators: false
+// 			});
 			
 		</script>
 	</body>

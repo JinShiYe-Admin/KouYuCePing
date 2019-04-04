@@ -23,7 +23,7 @@
 				margin-bottom: 5px;
 			}
 			.mui-row.mui-media {
-				padding: 10px 15px;
+				padding: 10px;
 			}
 			#orderData {
 				padding-top: 5px;
@@ -32,11 +32,12 @@
 			.flex-between .mui-media-object {
 				width: 90px;
 				height: 90px;
-				margin-right: 5px;
-				flex-shrink: 0;
 			}
 			.flex-between .mui-media-body {
-				flex-grow: 1;
+				width: calc(100% - 110px);
+			}
+			.mui-media-body > p {
+				margin-bottom: 5px;
 			}
 			.mui-media-body .mui-ellipsis-title + .mui-ellipsis-2 {
 				height: 42px;
@@ -283,7 +284,7 @@
 		
 		<div id="funcPopover">
 			<!--用户类型多选列表-->
-			<template v-for="(sysfuncModel,index) in sysfuncList">
+			<!-- <template v-for="(sysfuncModel,index) in sysfuncList">
 				<div class="mui-popover" v-for="(fextModel,index2) in sysfuncModel.fext" 
 				:id="sysfuncModel.fid+fextModel.itemcode+index2" 
 				:style="itemStyle(sysfuncModel,index2)"
@@ -300,7 +301,7 @@
 											<label name="parentLabel">{{getValue(item)}}</label>
 											<input v-if="fextModel.itemsons.length==1" name="parent" :value="item" type="checkbox" disabled checked>
 											<input v-else name="parent" :value="item" type="checkbox">
-										</div>
+										</div> -->
 										<!-- 年级选项 -->
 										<!-- <template v-for="(grdItem,index) in sysfuncModel.fext" v-if="fextModel.itemcode=='prd' && grdItem.itemcode=='grd' && grdItem.gid==getId(item)">
 											<div class="label-name mui-ellipsis">{{grdItem.labelName}}</div>
@@ -314,7 +315,7 @@
 												</li>
 											</ul>
 										</template> -->
-									</li>
+									<!-- </li>
 								</ul>
 							</form>
 						</div>
@@ -323,7 +324,7 @@
 						<button class="mui-btn mui-btn-success" @click="hidePop($event,fextModel,sysfuncModel.fext)">确定</button>
 					</div>
 				</div>
-			</template>
+			</template> -->
 		</div>
 		
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
@@ -361,7 +362,8 @@
 			
 			// 支付按钮
 			var payBtn = document.getElementById("payBtn");
-			payBtn.addEventListener("tap", function(){
+			payBtn.addEventListener("click", function(e){
+				e.stopPropagation();
 				orderData.payAction();
 			});
 			var pay_feem = document.getElementById("zfje-2");
@@ -694,7 +696,7 @@
 								for (var j = 0; j < sysfuncModel.fext.length; j++) {
 									var model = sysfuncModel.fext[j];
 									if (model.itemcode == 'prd') {
-										_gid = model.checked;
+										model.checked=true;
 										needModel.prd=true;
 									}
 									// 只控制学段
@@ -725,7 +727,7 @@
 									plus.nativeUI.showWaiting( "正在调起支付" );
 									setTimeout(function(){
 										plus.nativeUI.closeWaiting();
-									}, 2000);
+									}, 3000);
 									appPay.pay(appPay.wxpay, function success() {
 										console.log("支付成功");
 										plus.nativeUI.closeWaiting();
@@ -759,10 +761,15 @@
 							// 选项唯一时,默认选择
 							for(var i=0; i<v.length; i++){
 								for(var j=0; j<v[i].fext.length; j++){
-									if(v[i].fext[j].itemsons.length==1&&v[i].fext[j].itemsonsc<2){
-										var itemsons = v[i].fext[j].itemsons[0].split("|");
-										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input0").val(itemsons[1]);
-										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input1").val(itemsons[2]);
+									if(v[i].fext[j].itemcode=="prd"){
+										var vals = [], names = [];
+										v[i].fext[j].itemsons.forEach(function(ss){
+											var its = ss.split("|");
+											vals.push(its[0]);
+											names.push(its[1]);
+										});
+										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input0").val(names.join());
+										$("#"+v[i].fid+v[i].fext[j].itemcode+j+"input1").val(vals.join());
 										break;
 									}
 								}
@@ -792,53 +799,70 @@
 
 			//4.用户订购套餐
 			var order = function() {
-				//循环得到附加信息
-				var funcArray = [];
-				for (var i = 0; i < orderData.sysfuncList.length; i++) {
-					var sysfuncModel = orderData.sysfuncList[i];
-					for (var a = 0; a < sysfuncModel.fext.length; a++) {
-						var fextModel = sysfuncModel.fext[a];
-						// 学段 年级 默认选择
-						if(fextModel.itemcode=="prd"||fextModel.itemcode=="grd"){
-							var sons = [];
-							fextModel.itemsons.forEach(function(v){
-								sons.push(v.split("|")[0]);
-							});
-							var tempModel = {
-								fcode: sysfuncModel.fcode, //功能代码
-								itemcode: fextModel.itemcode, //栏目代码
-								itemsons:  sons.join() //栏目选择子集
+				if(orderDetailData.orderDetail.serstat==0){
+					var data={
+						servid:orderDetailData.orderDetail.serviceid,//套餐代码
+						servm:orderData.servm * 1, //订购总月数
+						feem:orderData.feem * 1//订购花费
+					}
+					appPay.UserFeeFunc('UserReFee',data,function success(){
+						mui.toast('套餐订购成功');
+						//通知套餐详情页面刷新时间
+						mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
+						// 刷新首页
+						mui.fire(plus.webview.getWebviewById("orals-index"),'refreshBusFunc');
+						mui.back();
+					},function fail(err){
+						mui.toast(err);
+					});
+				}else{
+					//循环得到附加信息
+					var funcArray = [];
+					for (var i = 0; i < orderData.sysfuncList.length; i++) {
+						var sysfuncModel = orderData.sysfuncList[i];
+						for (var a = 0; a < sysfuncModel.fext.length; a++) {
+							var fextModel = sysfuncModel.fext[a];
+							// 学段 年级 默认选择
+							if(fextModel.itemcode=="prd"||fextModel.itemcode=="grd"){
+								var sons = [];
+								fextModel.itemsons.forEach(function(v){
+									sons.push(v.split("|")[0]);
+								});
+								var tempModel = {
+									fcode: sysfuncModel.fcode, //功能代码
+									itemcode: fextModel.itemcode, //栏目代码
+									itemsons:  sons.join() //栏目选择子集
+								}
+								funcArray.push(tempModel);
+							}else if (fextModel.checked != '' && fextModel.checked != undefined) {
+								var tempModel = {
+									fcode: sysfuncModel.fcode, //功能代码
+									itemcode: fextModel.itemcode, //栏目代码
+									itemsons: fextModel.checked //栏目选择子集
+								}
+								funcArray.push(tempModel);
 							}
-							funcArray.push(tempModel);
-						}else if (fextModel.checked != '' && fextModel.checked != undefined) {
-							var tempModel = {
-								fcode: sysfuncModel.fcode, //功能代码
-								itemcode: fextModel.itemcode, //栏目代码
-								itemsons: fextModel.checked //栏目选择子集
-							}
-							funcArray.push(tempModel);
 						}
 					}
-				}
-				var data = {
-					servid: orderDetailData.orderDetail.serviceid, //套餐代码
-					servm: orderData.servm * 1, //订购总月数
-					feem: orderData.feem * 1, //订购花费
-					funclist: funcArray //订购的扩展参数
-				}
-				console.log("套餐订购: "+JSON.stringify(data));
-				appPay.UserFeeFunc('UserFee', data, function success() {
-					mui.toast('套餐订购成功');
-					//通知套餐详情页面刷新时间
-					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
-						newEtime: orderDetailData.newEtime
+					var data = {
+						servid: orderDetailData.orderDetail.serviceid, //套餐代码
+						servm: orderData.servm * 1, //订购总月数
+						feem: orderData.feem * 1, //订购花费
+						funclist: funcArray //订购的扩展参数
+					}
+					console.log("套餐订购: "+JSON.stringify(data));
+					appPay.UserFeeFunc('UserFee', data, function success() {
+						mui.toast('套餐订购成功');
+						//通知套餐详情页面刷新时间
+						mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
+						// 刷新首页
+						mui.fire(plus.webview.getWebviewById("orals-index"),'refreshBusFunc');
+						mui.back();
+					}, function fail(err) {
+						mui.toast(err);
 					});
-					// 刷新首页
-					mui.fire(plus.webview.getWebviewById("orals-index"),'refreshBusFunc');
-					mui.back();
-				}, function fail(err) {
-					mui.toast(err);
-				});
+				}
+				
 			}
 
 			//3.19:套餐功能及扩展栏目

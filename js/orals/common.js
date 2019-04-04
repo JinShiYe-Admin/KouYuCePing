@@ -253,6 +253,9 @@ function uploadRecordFile(record, fs, callback) {
 	}
 	record.words = record.words?record.words.trim():record.words;
 	var wt=plus.nativeUI.showWaiting("正在评分");
+	setTimeout(function(){
+		if(task.state!=4) wt.close();
+	}, 5000);
 	var task=plus.uploader.createUpload(host+"/orals/record/",
 		{
 			method:"POST", timeout: 6, retry: 1, retryInterval: 8
