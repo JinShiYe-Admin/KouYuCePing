@@ -2,8 +2,8 @@
 
 var storageKeyName = (function(mod) {
 
-	mod.key = 0;//0测试；1正式
-	mod.pay=0;
+	mod.key = 1;//0开发；1云测试；2正式
+	mod.pay=1;
 	var exLog = console.log;
 	console.log = function(hint, object) {
 		if(mod.key === 0) {
@@ -15,7 +15,7 @@ var storageKeyName = (function(mod) {
 		}
 	}
 	switch(mod.key) {
-		case 0: //测试
+		case 0: //开发
 			mod.SCHOOLID = 0;
 //			mod.SCHOOLID = 100102; //学校ID
 			mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
@@ -46,17 +46,46 @@ var storageKeyName = (function(mod) {
 			
 			break;
 			
-			case 1:
+			case 1: //云测试
 				mod.SCHOOLID = 0;
-//				mod.SCHOOLID = 100131; //学校ID
+				mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
+				mod.INTERFACEGU = "https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/";//用户信息接口
+				mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
+				mod.ANDROIDUPDATEURL='https://zhxy.jiaobaowang.net:8515/kouyuceping/versionCode.xml';//安卓升级地址
+				mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
+				if(mod.pay==0) {//单商家
+					mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/AppServer.aspx';//微信支付地址
+					mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+				}else if(mod.pay==1){//多商家
+					mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/AppServer.aspx';//微信支付地址
+					mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+				}
+				mod.QNGETUPLOADTOKEN = 'https://jbyc.jiaobaowang.net:8504/Api/QiNiu/GetUpLoadToKen';
+				mod.QNGETUPTOKENHEADIMGE = 'https://jbyc.jiaobaowang.net:8504/Api/QiNiu/GetUpLoadToKen'; //获取上传个人头像，群头像，资料头像到七牛的token的url
+				
+				//口语测评接口
+				mod.ORALSHOST = "https://gxcs.jiaobaowang.net/speeking";
+			break;
+			
+			case 2: //正式
+				mod.SCHOOLID = 0;
 				mod.USERTYPE = 2; //用户类型，0老师,1家长,2学生
 				mod.INTERFACEGU = "https://boss.zhuxue101.net:444/api/Data/";//用户信息接口
-				mod.ORALSHOST = "https://zhxyx.jiaobaowang.net/speeking/";//口语测评接口
-				
-				mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net:8443/SchoolCommunicationService/';//孔工接口
-				mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
+				mod.TEACHERIMG = 'https://boss.zhuxue101.net:443/upuserimg.ashx?userid='; //老师上传头像
+				mod.ANDROIDUPDATEURL='http://boss.zhuxue101.net:8002/kouyuceping/versionCode.xml';//安卓升级地址
+				mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
+				if(mod.pay==0) {//单商家
+					mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/AppServer.aspx';//微信支付地址
+					mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+				}else if(mod.pay==1){//多商家
+					mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/AppServer.aspx';//微信支付地址
+					mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+				}
 				mod.QNGETUPLOADTOKEN = 'https://jbyc.jiaobaowang.net:8504/Api/QiNiu/GetUpLoadToKen';
-				mod.QNGETUPTOKENHEADIMGE = 'https://jbyc.jiaobaowang.net:8504/Api/QiNiu/GetUpLoadToKen'; //获取上传个人头像，群头像，
+				mod.QNGETUPTOKENHEADIMGE = 'https://jbyc.jiaobaowang.net:8504/Api/QiNiu/GetUpLoadToKen'; //获取上传个人头像，群头像，资料头像到七牛的token的url
+				
+				//口语测评接口
+				mod.ORALSHOST = "https://zyja.zhuxue101.net/speeking";
 			break;
 			
 		default:

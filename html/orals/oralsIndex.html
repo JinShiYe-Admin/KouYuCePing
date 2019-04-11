@@ -315,7 +315,7 @@
 		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src='../../js/utils/vconsole.min.js'></script>
+		<!-- <script src='../../js/utils/vconsole.min.js'></script> -->
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/layer/layer.js"></script>
 		
@@ -845,13 +845,13 @@
 							mui.toast("当前已是第一单元", {type: 'div'});
 						}else if(new_index>=catalog.length) {
 							mui.toast("已到达最后一个单元！", {type: 'div'});
-						}else {
+						}else if(catalog[new_index]) {
 							if(testVue.state==4){
 								layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function(){
-									testVue.catalogId = catalog[c_index+d].id;
+									testVue.catalogId = catalog[new_index].id;
 								});
 							}else{
-								testVue.catalogId = catalog[c_index+d].id;
+								testVue.catalogId = catalog[new_index].id;
 							}
 						}
 					},

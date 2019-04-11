@@ -152,6 +152,7 @@ nav.mui-bar {
 .orals-header .mui-title {
 	bottom: 0;
 	color: #FFFFFF;
+	z-index: -1;
 }
 .orals-header .mui-btn-link {
 	font-size: 14px;

@@ -136,7 +136,7 @@
 					 <p v-cloak class="user-title-body">{{curPageData.busnote}}</p>
 					 <div v-cloak class="user-title-footer">
 					 	<p class="ul-p">结束时间：{{curPageData.etime}}</p>
-					 	<button class="ul-btn btn-order mui-btn-mini" onclick="packageRenew()">套餐续费</button>
+					 	<button class="ul-btn btn-order mui-btn-mini" onclick="packageRenew()">{{curPageData.serstat?"套餐续费":"立即订购"}}</button>
 					 	<p class="ul-p-right">{{orderPrice(curPageData.feecode)}}元/{{curPageData.busmonth}}月</p>
 					 </div>
 				</div>
@@ -156,7 +156,7 @@
 		</div>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src='../../js/utils/vconsole.min.js'></script>
+		<!-- <script src='../../js/utils/vconsole.min.js'></script> -->
 		<script src='../../js/libs/jquery.js'></script>
 		<!--加密-->
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
@@ -232,7 +232,11 @@
 			
 			//套餐续订
 			function packageRenew(){
-				utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", curPageData);
+				if(curPageData.serstat) {
+					utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", curPageData);
+				}else{
+					utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", curPageData);
+				}
 			}
 			
 			 
