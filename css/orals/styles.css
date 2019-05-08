@@ -150,12 +150,12 @@ nav.mui-bar {
 	box-shadow: none;
 }
 .orals-header .mui-title {
-	bottom: 0;
+	bottom: 1px;
 	color: #FFFFFF;
 	z-index: -1;
 }
 .orals-header .mui-btn-link {
-	font-size: 14px;
+	font-size: 15px;
 	color: #FFFFFF;
 }
 .orals-header .mui-btn-link:active {

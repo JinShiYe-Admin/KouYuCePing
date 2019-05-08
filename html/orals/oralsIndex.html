@@ -621,7 +621,7 @@
 						
 						//保存目录
 						store.set("orals_menu", res.data);
-						var catalog = getFinalCatalog(res.data[book_ser.selected].childList);
+						var catalog = getFinalCatalog(res.data[book_ser.selected]?res.data[book_ser.selected].childList:[]);
 		               	//保存分册目录
 		               	store.set("orals_catalog", catalog); 
 

@@ -264,10 +264,10 @@
 						</div>
 					</div>
 		
-					<div class="check mui-checkbox mui-left">
+					<!-- <div class="check mui-checkbox mui-left">
 						<label for="checkBox">我已阅读并接受<a href="javascript:;;">《支付协议》</a></label>
 						<input @click="checkboxClick" id="checkBox" name="" type="checkbox" style="left: 15px;" />
-					</div>
+					</div> -->
 		
 				</form>
 		
@@ -425,7 +425,7 @@
 			var orderDetailData = new Vue({
 				el: '#orderDetailData',
 				data: {
-					orderDetail: {}
+					orderDetail: {cnname: "益测益学套餐", busnote: "套餐介绍"}
 				},
 				methods: {
 					orderPrice: orderPrice
@@ -461,6 +461,7 @@
 						this.radioChecked = !this.radioChecked
 						if (this.radioChecked == true)
 							$('#zffs').html('&ensp;|&ensp;微信支付');
+							this.isDisabled = false
 						if (this.radioChecked == false) {
 							this.isDisabled = true
 							$('#zffs').html('');

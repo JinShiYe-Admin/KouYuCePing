@@ -51,6 +51,9 @@
 				width: 100%;
 				padding: 0;
 			}
+			body,html {
+				height: auto;
+			}
 		</style>
 	</head>
 
@@ -115,9 +118,9 @@
 		var tempModel = {};
 		var loginFlag = 0; //0自动登录，1不自动登录
 		mui.plusReady(function() {
-			plus.webview.currentWebview().setStyle({
-		        softinputMode: "adjustResize"
-		    });
+// 			plus.webview.currentWebview().setStyle({
+// 		        softinputMode: "adjustResize"
+// 		    });
 		    //禁止横屏
 			plus.screen.lockOrientation("portrait-primary");
 			
@@ -206,6 +209,8 @@
 		var register = document.getElementById("register");
 		if(register) {
 			register.addEventListener('tap', function (event) {
+				document.getElementById("account").blur();
+				document.getElementById("password").blur();
 		        mui.openWindow({url: 'register.html'});
 		    });
 		}
